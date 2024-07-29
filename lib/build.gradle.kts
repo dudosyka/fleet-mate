@@ -1,9 +1,9 @@
 plugins {
-    id("buildlogic.kotlin-application-conventions")
+    id("buildlogic.kotlin-library-conventions")
 }
 
-//group = "com.fleetmate.lib"
+group = "com.fleetmate.lib"
 
-repositories {
-    mavenCentral()
+dependencies {
+    implementation(project(":crypt"))
 }

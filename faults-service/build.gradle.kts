@@ -10,5 +10,5 @@ dependencies {
 }
 
 application {
-//    mainClass.set("com.fleetmate.faults.ApplicationKt")
+    mainClass.set("com.fleetmate.faults.ApplicationKt")
 }
