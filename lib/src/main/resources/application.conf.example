@@ -1,0 +1,23 @@
+application {
+  debug = "" // true/false
+  file-location = ""
+  zoneOffset = 0
+
+  jwt {
+    domain = "" //Domain to create JWT on
+    secret = "" //Secret for jwt generation
+    expiration {
+      seconds = "" //Time to jwt token expiration time (in milliseconds)
+    }
+    refreshExpiration {
+      seconds = "" //Time to jwt refresh token expiration time (in milliseconds)
+    }
+  }
+
+  database {
+    url = "jdbc:..." //jdbc connection url
+    driver = "" //Driver class full path
+    user = "" //Database user name
+    password = "" //Database user password
+  }
+}
