@@ -26,7 +26,7 @@ abstract class KodeinController() : DIAware {
     /**
      * Method that subtypes must override to register the handled [Routing] routes.
      */
-    abstract fun Routing.registerRoutes()
+    abstract fun Route.registerRoutes()
 
     fun ApplicationCall.getAuthorized(): AuthorizedUser {
         val principal = principal<JWTPrincipal>()!!

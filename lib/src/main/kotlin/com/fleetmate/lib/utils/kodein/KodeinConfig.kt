@@ -15,6 +15,7 @@ inline fun <reified T : Any> DI.MainBuilder.bindSingleton(crossinline callback: 
 }
 
 fun Application.kodeinApplication(
+    baseControllerRouting: String,
     kodeinMapper: DI.MainBuilder.(Application) -> Unit = {}
 ) {
     val application = this
@@ -25,12 +26,14 @@ fun Application.kodeinApplication(
     }
 
     routing {
-        for (bind in kodein.container.tree.bindings) {
-            val bindClass = bind.key.type.jvmType as? Class<*>?
-            if (bindClass != null && KodeinController::class.java.isAssignableFrom(bindClass)) {
-                val res by kodein.Instance(bind.key.type)
-                Logger.debug("Registering '$res' routes...", "info")
-                (res as KodeinController).apply { registerRoutes() }
+        route(baseControllerRouting) {
+            for (bind in kodein.container.tree.bindings) {
+                val bindClass = bind.key.type.jvmType as? Class<*>?
+                if (bindClass != null && KodeinController::class.java.isAssignableFrom(bindClass)) {
+                    val res by kodein.Instance(bind.key.type)
+                    Logger.debug("Registering '$res' routes...", "info")
+                    (res as KodeinController).apply { this@route.registerRoutes() }
+                }
             }
         }
     }

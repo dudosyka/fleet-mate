@@ -12,3 +12,16 @@ dependencies {
 application {
     mainClass.set("com.fleetmate.trip.ApplicationKt")
 }
+
+tasks.named("build") {
+    doLast {
+        delete("$rootDir/docker/jvm-services/dist/trip-service.jar")
+        copy {
+            from("$rootDir/trip-service/build/libs/trip-service-all.jar")
+            into("$rootDir/docker/jvm-services/dist")
+            rename {
+                "trip-service.jar"
+            }
+        }
+    }
+}

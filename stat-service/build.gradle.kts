@@ -12,3 +12,16 @@ dependencies {
 application {
     mainClass.set("com.fleetmate.stat.ApplicationKt")
 }
+
+tasks.named("build") {
+    doLast {
+        delete("$rootDir/docker/jvm-services/dist/stat-service.jar")
+        copy {
+            from("$rootDir/stat-service/build/libs/stat-service-all.jar")
+            into("$rootDir/docker/jvm-services/dist")
+            rename {
+                "stat-service.jar"
+            }
+        }
+    }
+}

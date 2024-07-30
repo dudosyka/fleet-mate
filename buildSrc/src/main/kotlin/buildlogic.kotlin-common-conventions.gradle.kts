@@ -14,7 +14,6 @@ val jdbcPostgresVersion: String by project
 
 plugins {
     kotlin("jvm")
-    id("io.ktor.plugin")
     kotlin("plugin.serialization")
 }
 
@@ -72,6 +71,8 @@ dependencies {
 
     //Crypto
     implementation("org.mindrot:jbcrypt:$jbcryptVersion")
+
+    implementation("org.reflections:reflections:0.9.12")
 }
 
 

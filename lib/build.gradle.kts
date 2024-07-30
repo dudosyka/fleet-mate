@@ -3,7 +3,3 @@ plugins {
 }
 
 group = "com.fleetmate.lib"
-
-dependencies {
-    implementation(project(":crypt"))
-}

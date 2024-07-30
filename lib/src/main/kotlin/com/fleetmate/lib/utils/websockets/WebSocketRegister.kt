@@ -129,7 +129,7 @@ class WebSocketRegister(override val di: DI) : KodeinController() {
         websocketChannel.send(request)
     }
 
-    override fun Routing.registerRoutes() {
+    override fun Route.registerRoutes() {
         webSocket("/ws") {
             for (frame in incoming) {
                 Logger.debug("Websocket new frame", "websocket")

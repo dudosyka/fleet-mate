@@ -15,7 +15,7 @@ import org.kodein.di.instance
 class TripController(override val di: DI) : KodeinController() {
     private val tripService: TripService by instance()
 
-    override fun Routing.registerRoutes() {
+    override fun Route.registerRoutes() {
         get {
             call.respond(tripService.getAll())
         }

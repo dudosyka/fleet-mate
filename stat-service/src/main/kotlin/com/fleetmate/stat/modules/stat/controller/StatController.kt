@@ -15,28 +15,26 @@ import org.kodein.di.instance
 class StatController(override val di: DI) : KodeinController() {
     private val statService: StatService by instance()
 
-    override fun Routing.registerRoutes() {
-        route("stat") {
-            get {
-                call.respond(statService.getAll())
-            }
-            get("{statId}") {
-                val statId = call.parameters.getInt("statId", "Stat ID must be INT")
-                call.respond(statService.getOne(statId) ?: throw NotFoundException())
-            }
-            post {
-                val faultsCreateDto = call.receive<StatCreateDto>()
-                call.respond(statService.create(faultsCreateDto))
-            }
-            patch("{statId}") {
-                val statId = call.parameters.getInt("statId", "Stat ID must be INT")
-                val faultsUpdateDto = call.receive<StatUpdateDto>()
-                call.respond(statService.update(statId, faultsUpdateDto))
-            }
-            delete("{statId}") {
-                val statId = call.parameters.getInt("statId", "Stat ID must be INT")
-                call.respond(statService.delete(statId))
-            }
+    override fun Route.registerRoutes() {
+        get {
+            call.respond(statService.getAll())
+        }
+        get("{statId}") {
+            val statId = call.parameters.getInt("statId", "Stat ID must be INT")
+            call.respond(statService.getOne(statId) ?: throw NotFoundException())
+        }
+        post {
+            val faultsCreateDto = call.receive<StatCreateDto>()
+            call.respond(statService.create(faultsCreateDto))
+        }
+        patch("{statId}") {
+            val statId = call.parameters.getInt("statId", "Stat ID must be INT")
+            val faultsUpdateDto = call.receive<StatUpdateDto>()
+            call.respond(statService.update(statId, faultsUpdateDto))
+        }
+        delete("{statId}") {
+            val statId = call.parameters.getInt("statId", "Stat ID must be INT")
+            call.respond(statService.delete(statId))
         }
     }
 }

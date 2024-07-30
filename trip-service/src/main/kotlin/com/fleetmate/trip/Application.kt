@@ -23,11 +23,13 @@ fun Application.module() {
     configureSecurity()
     configureCORS()
     configureMonitoring()
+    install(aesCryptPluginReceive)
     configureSerialization()
+    install(aesCryptPluginRespond)
     configureSockets()
     configureExceptionFilter()
 
-    kodeinApplication {
+    kodeinApplication("/trip") {
         // ----- Services ------
         bindSingleton { TripService(it) }
 

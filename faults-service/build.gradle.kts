@@ -12,3 +12,16 @@ dependencies {
 application {
     mainClass.set("com.fleetmate.faults.ApplicationKt")
 }
+
+tasks.named("build") {
+    doLast {
+        delete("$rootDir/docker/jvm-services/dist/faults-service.jar")
+        copy {
+            from("$rootDir/faults-service/build/libs/faults-service-all.jar")
+            into("$rootDir/docker/jvm-services/dist")
+            rename {
+                "faults-service.jar"
+            }
+        }
+    }
+}

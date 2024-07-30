@@ -21,15 +21,15 @@ class DatabaseConnector(vararg tables: Table, initializer: Transaction.() -> Uni
     }
     companion object {
         private lateinit var hikariDataSource: HikariDataSource
-        fun connect() {
+        private fun connect() {
             hikariDataSource = HikariDataSource(
                 HikariConfig().apply {
                     driverClassName = database.driver
                     jdbcUrl = database.url
                     username = database.user
                     password = database.password
-                    maximumPoolSize = 25
-                    minimumIdle = 25
+                    maximumPoolSize = 1
+                    minimumIdle = 1
                     maxLifetime = 600000
                     keepaliveTime = 30000
                     isAutoCommit = false

@@ -1,0 +1,113 @@
+name: "fleet-mate"
+networks:
+  iternal:
+    name: iternal
+  exposed:
+    name: exposed
+services:
+  stat:
+    build: jvm-services
+    volumes:
+      - ./jvm-services/dist:/opt/application
+      - ./jvm-services/home:/home
+    networks:
+      - iternal
+      - exposed
+    depends_on:
+      - postgres
+#    Here u can set RAM and CPU limits for the container
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1.5'
+#          memory: 7168M #7GB
+    restart: always
+    entrypoint: /bin/bash /home/stat-startup.sh
+  trip:
+    build: jvm-services
+    volumes:
+      - ./jvm-services/dist:/opt/application
+      - ./jvm-services/home:/home
+    networks:
+      - iternal
+      - exposed
+    depends_on:
+      - postgres
+    #    Here u can set RAM and CPU limits for the container
+    #    deploy:
+    #      resources:
+    #        limits:
+    #          cpus: '1.5'
+    #          memory: 7168M #7GB
+    restart: always
+    entrypoint: /bin/bash /home/trip-startup.sh
+  faults:
+    build: jvm-services
+    volumes:
+      - ./jvm-services/dist:/opt/application
+      - ./jvm-services/home:/home
+    networks:
+      - iternal
+      - exposed
+    depends_on:
+      - postgres
+    #    Here u can set RAM and CPU limits for the container
+    #    deploy:
+    #      resources:
+    #        limits:
+    #          cpus: '1.5'
+    #          memory: 7168M #7GB
+    restart: always
+    entrypoint: /bin/bash /home/faults-startup.sh
+  crypt:
+    build: jvm-services
+    volumes:
+      - ./jvm-services/dist:/opt/application
+      - ./jvm-services/home:/home
+    networks:
+      - iternal
+      - exposed
+    depends_on:
+      - postgres
+    #    Here u can set RAM and CPU limits for the container
+    #    deploy:
+    #      resources:
+    #        limits:
+    #          cpus: '1.5'
+    #          memory: 7168M #7GB
+    restart: always
+    entrypoint: /bin/bash /home/crypt-startup.sh
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/home:/home
+    networks:
+      - exposed
+    depends_on:
+      - stat
+      - trip
+      - faults
+    entrypoint: /bin/bash /home/startup.sh
+  postgres:
+    build: ./postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: my-secret-pw
+    volumes:
+      - ./postgres/home:/home
+      - ./postgres/root:/root
+      - ./postgres/init.d:/docker-entrypoint-initdb.d
+    networks:
+      - iternal
+    ports:
+      - "5432:5432"
+#    Here u can set RAM and CPU limits for the container
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1.5'
+#          memory: 7168M #7G

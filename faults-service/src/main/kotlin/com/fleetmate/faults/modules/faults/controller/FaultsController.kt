@@ -15,7 +15,7 @@ import org.kodein.di.instance
 class FaultsController(override val di: DI) : KodeinController() {
     private val faultsService: FaultsService by instance()
 
-    override fun Routing.registerRoutes() {
+    override fun Route.registerRoutes() {
         get {
             call.respond(faultsService.getAll())
         }

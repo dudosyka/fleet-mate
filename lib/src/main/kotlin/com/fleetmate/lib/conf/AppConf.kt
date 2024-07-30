@@ -9,6 +9,7 @@ object AppConf {
     private val databaseConfig: ApplicationConfig = mainConfig.config("database")
 
     val isDebug: Boolean = mainConfig.getString("debug") == "true"
+    val needCrypt: Boolean = mainConfig.getString("crypt") == "true"
 
     private fun ApplicationConfig.getString(name: String): String = this.property(name).getString()
     private fun ApplicationConfig.getInt(name: String): Int = this.getString(name).toInt()

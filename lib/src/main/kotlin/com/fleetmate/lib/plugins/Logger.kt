@@ -27,7 +27,7 @@ object Logger {
         }
     }
 
-    fun debug(message: Any?, prefix: String) {
+    fun debug(message: Any?, prefix: String = "main") {
         logger[prefix].let {
             val logger = if (it == null) {
                 logger["main"]!!.debug("Logger $prefix not found")
