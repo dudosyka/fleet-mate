@@ -1,22 +1,27 @@
-package com.fleetmate.trip.modules.trip.service
+package com.fleetmate.trip.modules.trip.service.trip
 
+import com.fleetmate.lib.dto.trip.TripCreateDto
+import com.fleetmate.lib.dto.trip.TripFullOutputDto
+import com.fleetmate.lib.dto.trip.TripOutputDto
+import com.fleetmate.lib.dto.trip.TripUpdateDto
+import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
-import com.fleetmate.trip.modules.trip.data.dto.TripCreateDto
-import com.fleetmate.trip.modules.trip.data.dto.TripDto
-import com.fleetmate.trip.modules.trip.data.dto.TripUpdateDto
-import com.fleetmate.trip.modules.trip.data.model.TripModel
 import org.kodein.di.DI
+import kotlin.collections.map
 
 class TripService(di: DI) : KodeinService(di) {
-    fun getOne(id: Int): TripDto? {
-        return TripDto(TripModel.getOne(id) ?: return null)
+    fun getOne(id: Int): TripFullOutputDto? {
+        return TripFullOutputDto(TripModel.getOne(id) ?: return null)
     }
 
-    fun getAll(): List<TripDto> =
-        TripModel.getAll().map { TripDto(it) }
+    fun getAll(): List<TripOutputDto> {
+        return TripModel.getAll().map {
+            TripOutputDto(it)
+        }
+    }
 
-    fun create(tripCreateDto: TripCreateDto): TripDto =
-        TripDto(TripModel.create(tripCreateDto))
+    fun create(tripCreateDto: TripCreateDto): TripOutputDto =
+        TripOutputDto(TripModel.create(tripCreateDto))
 
     fun update(id: Int, tripUpdateDto: TripUpdateDto): Boolean =
         TripModel.update(id, tripUpdateDto)

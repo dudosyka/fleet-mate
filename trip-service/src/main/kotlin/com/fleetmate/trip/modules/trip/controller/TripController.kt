@@ -1,9 +1,10 @@
 package com.fleetmate.trip.modules.trip.controller
 
 import com.fleetmate.lib.utils.kodein.KodeinController
-import com.fleetmate.trip.modules.trip.data.dto.TripCreateDto
-import com.fleetmate.trip.modules.trip.data.dto.TripUpdateDto
-import com.fleetmate.trip.modules.trip.service.TripService
+import com.fleetmate.lib.dto.trip.TripCreateDto
+import com.fleetmate.lib.dto.trip.TripFullOutputDto
+import com.fleetmate.lib.dto.trip.TripUpdateDto
+import com.fleetmate.trip.modules.trip.service.trip.TripService
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
@@ -17,7 +18,7 @@ class TripController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         get {
-            call.respond(tripService.getAll())
+            call.respond<TripFullOutputDto>(tripService.getOne(2)!!)
         }
         get("{tripId}") {
             val tripId = call.parameters.getInt("tripId", "Trip ID must be INT")
