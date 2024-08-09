@@ -17,6 +17,16 @@ class UserOutputDto (
     val post: PostOutputDto?,
     val division: DivisionOutputDto?
 ){
+    constructor():
+            this(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+
     constructor(resultRow: ResultRow):
             this(
                 resultRow[UserModel.id].value,

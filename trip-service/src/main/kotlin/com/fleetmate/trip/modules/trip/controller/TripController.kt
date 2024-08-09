@@ -18,7 +18,7 @@ class TripController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         get {
-            call.respond<TripFullOutputDto>(tripService.getOne(2)!!)
+            call.respond<TripFullOutputDto>(tripService.getOne(1)!!)
         }
         get("{tripId}") {
             val tripId = call.parameters.getInt("tripId", "Trip ID must be INT")

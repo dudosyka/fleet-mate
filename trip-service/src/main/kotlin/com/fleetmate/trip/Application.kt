@@ -34,6 +34,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
+
 fun main() {
     embeddedServer(Netty, port = ServerConf.port, host = ServerConf.host, module = Application::module)
         .start(wait = true)
@@ -106,13 +107,6 @@ fun Application.module() {
 //        }
 //        PostModel.insert {
 //            it[name] = "post_model"
-//        }
-//        UserModel.insert {
-//            it[fullName] = "Иванов Иван Иванович"
-//            it[email] = "test@test.test"
-//            it[phoneNumber] = "+79998882221"
-//            it[post] = 1
-//            it[division] = 1
 //        }
 //        CheckModel.insert {
 //            it[author] = 1
