@@ -73,6 +73,9 @@ dependencies {
     implementation("org.mindrot:jbcrypt:$jbcryptVersion")
 
     implementation("org.reflections:reflections:0.9.12")
+
+    //GraphQL
+    implementation("com.expediagroup", "graphql-kotlin-ktor-server", "7.1.4")
 }
 
 

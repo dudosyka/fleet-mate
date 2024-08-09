@@ -5,15 +5,39 @@ import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.auth.jwt.*
 import io.ktor.util.date.*
 import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.data.dto.role.LinkedRoleOutputDto
+import com.fleetmate.lib.data.model.role.RbacModel
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.dto.auth.RefreshTokenDto
 import com.fleetmate.lib.dto.auth.AuthorizedUser
 import com.fleetmate.lib.plugins.Logger
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import java.util.*
 
 typealias EncodedRules = MutableMap<Int, MutableList<Int>>
 
 object JwtUtil {
+    private fun encodeRoles(linkedRules: List<LinkedRoleOutputDto>): EncodedRules {
+        val encoded = mutableMapOf<Int, MutableList<Int>>()
+        linkedRules.forEach {
+            encoded[it.roleId] = mutableListOf()
+        }
+
+        return encoded
+    }
+
+    private fun decodeRules(encoded: EncodedRules): List<LinkedRoleOutputDto> {
+        val decoded = mutableListOf<LinkedRoleOutputDto>()
+        encoded.forEach { (key, value) ->
+            if (value.isEmpty())
+                decoded.add(LinkedRoleOutputDto(roleId = key))
+            else
+                value.forEach { decoded.add(LinkedRoleOutputDto(roleId = key)) }
+        }
+
+        return decoded
+    }
 
     fun createToken(userId: Int, lastLogin: Long? = null): String {
         return JWT.create()
@@ -27,14 +51,19 @@ object JwtUtil {
             )
             .apply {
                 withClaim("id", userId)
+                val roles = RbacModel.userToRoleLinks(userId, expanded = true)
                 if (lastLogin != null)
                     withClaim("lastLogin", lastLogin)
+                else{
+                    withClaim("roles", Json.encodeToString(encodeRoles(roles)))
+                }
 
             }.sign(Algorithm.HMAC256(AppConf.jwt.secret))
     }
 
     fun decodeAccessToken(principal: JWTPrincipal): AuthorizedUser = AuthorizedUser(
         id = principal.getClaim("id", Int::class)!!,
+        roles = decodeRules(Json.decodeFromString(principal.getClaim("roles", String::class) ?: "{}"))
     )
 
     fun decodeRefreshToken(principal: JWTPrincipal): RefreshTokenDto = RefreshTokenDto(
@@ -66,7 +95,8 @@ object JwtUtil {
             }
             else {
                 AuthorizedUser(
-                    id = claims["id"]?.asInt() ?: throw ForbiddenException()
+                    id = claims["id"]?.asInt() ?: throw ForbiddenException(),
+                    roles = decodeRules(Json.decodeFromString(claims["rules"]?.asString() ?: "{}"))
                 )
             }
         } else {

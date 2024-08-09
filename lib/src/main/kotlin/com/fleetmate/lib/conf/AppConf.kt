@@ -5,6 +5,7 @@ import io.ktor.server.config.*
 
 object AppConf {
     private val mainConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load().getConfig("application"))
+    private val rolesConfig: ApplicationConfig = mainConfig.config("roles")
     private val jwtConfig: ApplicationConfig = mainConfig.config("jwt")
     private val databaseConfig: ApplicationConfig = mainConfig.config("database")
 
@@ -31,5 +32,10 @@ object AppConf {
         password = databaseConfig.getString("password")
     )
 
+    val roles = RolesConf(
+        driver = rolesConfig.getInt("driver"),
+        mechanic = rolesConfig.getInt("mechanic"),
+        admin = rolesConfig.getInt("admin")
+    )
 
 }
