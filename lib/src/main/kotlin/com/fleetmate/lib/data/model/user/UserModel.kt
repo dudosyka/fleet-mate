@@ -38,7 +38,7 @@ object UserModel : BaseIntIdTable() {
                 UserModel.id,
                 fullName,
                 email,
-//                phoneNumber,
+                phoneNumber,
                 PostModel.id,
                 PostModel.name,
                 DivisionModel.id,
@@ -59,7 +59,7 @@ object UserModel : BaseIntIdTable() {
                 UserModel.id,
                 fullName,
                 email,
-//                phoneNumber,
+                phoneNumber,
                 PostModel.id,
                 PostModel.name,
                 DivisionModel.id,
@@ -71,9 +71,9 @@ object UserModel : BaseIntIdTable() {
         (UserModel.insert {
             it[fullName] = userCreateDto.fullName
             it[email] = userCreateDto.email
-//            it[phoneNumber] = userCreateDto.phoneNumber
-//            it[post] = userCreateDto.post
-//            it[division] = userCreateDto.division
+            it[phoneNumber] = userCreateDto.phoneNumber
+            it[post] = userCreateDto.post
+            it[division] = userCreateDto.division
 
         }.resultedValues ?: throw InternalServerException("Failed to create user")).first()
     }
