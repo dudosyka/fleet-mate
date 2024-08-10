@@ -5,6 +5,7 @@ import com.fleetmate.crypt.modules.access.AccessController
 import com.fleetmate.crypt.modules.access.AccessService
 import com.fleetmate.crypt.modules.auth.controller.AuthController
 import com.fleetmate.crypt.modules.auth.data.models.UserLoginModel
+import com.fleetmate.crypt.modules.auth.service.AuthQrService
 import com.fleetmate.crypt.modules.auth.service.AuthService
 import com.fleetmate.crypt.modules.rbac.service.RbacService
 import com.fleetmate.crypt.modules.user.service.UserService
@@ -40,8 +41,10 @@ fun Application.module() {
         //Services
         bindSingleton { AccessService(it) }
         bindSingleton { AuthService(it) }
+        bindSingleton { AuthQrService(it) }
         bindSingleton { UserService(it) }
         bindSingleton { RbacService(it) }
+
 
 
         //Controllers

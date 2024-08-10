@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.auth.jwt.*
 import io.ktor.util.date.*
 import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.data.dto.auth.QrTokenDto
 import com.fleetmate.lib.data.dto.role.LinkedRoleOutputDto
 import com.fleetmate.lib.data.model.role.RbacModel
 import com.fleetmate.lib.exceptions.ForbiddenException
@@ -103,6 +104,19 @@ object JwtUtil {
             Logger.debug("verified exception", "main")
             throw ForbiddenException()
         }
+    }
+    fun createMobileAuthToken(qrTokenDto: QrTokenDto): String {
+        return JWT.create()
+            .withIssuer(AppConf.jwt.domain)
+            .withIssuedAt(Date(System.currentTimeMillis()))
+            .withExpiresAt(
+                Date(System.currentTimeMillis() + AppConf.jwt.expirationTime * 1000)
+            )
+            .apply {
+                withClaim("id", qrTokenDto.userId)
+                val roles = RbacModel.userToRoleLinks(qrTokenDto.userId, expanded = true)
+                withClaim("roles", Json.encodeToString(encodeRoles(roles)))
+            }.sign(Algorithm.HMAC256(AppConf.jwt.secret))
     }
 
 }

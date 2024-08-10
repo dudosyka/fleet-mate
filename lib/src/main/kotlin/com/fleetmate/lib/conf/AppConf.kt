@@ -1,5 +1,6 @@
 package com.fleetmate.lib.conf
 
+import com.fleetmate.lib.data.dto.role.LinkedRoleOutputDto
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.config.*
 
@@ -37,5 +38,4 @@ object AppConf {
         mechanic = rolesConfig.getInt("mechanic"),
         admin = rolesConfig.getInt("admin")
     )
-
 }

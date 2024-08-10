@@ -76,6 +76,9 @@ dependencies {
 
     //GraphQL
     implementation("com.expediagroup", "graphql-kotlin-ktor-server", "7.1.4")
+
+    //QR-generation
+    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1")
 }
 
 

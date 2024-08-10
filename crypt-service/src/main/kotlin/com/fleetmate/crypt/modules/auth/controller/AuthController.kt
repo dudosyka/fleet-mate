@@ -14,13 +14,9 @@ import org.kodein.di.instance
 
 class AuthController(override val di: DI) : KodeinController() {
     private val authService: AuthService by instance()
-
     override fun Route.registerRoutes() {
 
         route("auth") {
-            get{
-                call.respond("you are here!")
-            }
             post {
                 val authInput = call.receive<AuthInputDto>()
 
