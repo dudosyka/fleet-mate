@@ -15,6 +15,10 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.toList
 
@@ -93,14 +97,24 @@ object TripModel: BaseIntIdTable() {
 
     fun create(tripCreateDto: TripCreateDto): ResultRow = transaction {
         (TripModel.insert {
-            it[keyAcceptance] = timestamp(tripCreateDto.keyAcceptance.toString())
+            it[keyAcceptance] =
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(tripCreateDto.keyAcceptance),
+                    ZoneId.systemDefault()
+                ).toInstant(ZoneOffset.UTC)
+
             it[status] = tripCreateDto.status
             it[mechanicCheckBeforeTrip] = tripCreateDto.mechanicCheckBeforeTrip
             it[driverCheckBeforeTrip] = tripCreateDto.driverCheckBeforeTrip
             it[mechanicCheckAfterTrip] = tripCreateDto.mechanicCheckAfterTrip
             it[driverCheckAfterTrip] = tripCreateDto.driverCheckAfterTrip
             if (tripCreateDto.keyReturn != null){
-                it[keyReturn] = timestamp(tripCreateDto.keyReturn.toString())
+                it[keyReturn] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(tripCreateDto.keyReturn),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
+
             }
             it[route] = tripCreateDto.route
             it[speedInfo] = tripCreateDto.speedInfo
@@ -116,7 +130,11 @@ object TripModel: BaseIntIdTable() {
     fun update(id: Int, tripUpdateDto: TripUpdateDto): Boolean = transaction {
         TripModel.update({TripModel.id eq id }) {
             if (tripUpdateDto.keyAcceptance != null){
-                it[keyAcceptance] = timestamp(tripUpdateDto.keyAcceptance.toString())
+                it[keyAcceptance] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(tripUpdateDto.keyAcceptance),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (tripUpdateDto.status != null){
                 it[status] = tripUpdateDto.status
@@ -134,7 +152,11 @@ object TripModel: BaseIntIdTable() {
                 it[driverCheckAfterTrip] = tripUpdateDto.driverCheckAfterTrip
             }
             if (tripUpdateDto.keyReturn != null){
-                it[keyReturn] = timestamp(tripUpdateDto.keyReturn.toString())
+                it[keyReturn] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(tripUpdateDto.keyReturn),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (tripUpdateDto.route != null){
                 it[route] = tripUpdateDto.route

@@ -15,6 +15,10 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.firstOrNull
 import kotlin.collections.toList
@@ -40,7 +44,12 @@ object RefuelModel : BaseIntIdTable() {
 
     fun create(refuelCreateDto: RefuelCreateDto): ResultRow = transaction {
         (RefuelModel.insert {
-            it[date] = timestamp(refuelCreateDto.date.toString())
+            it[date] =
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(refuelCreateDto.date),
+                    ZoneId.systemDefault()
+                ).toInstant(ZoneOffset.UTC)
+
             it[volume] = refuelCreateDto.volume
             it[automobile] = refuelCreateDto.automobile
             it[trip] = refuelCreateDto.trip
@@ -54,7 +63,12 @@ object RefuelModel : BaseIntIdTable() {
         RefuelModel.update({ RefuelModel.id eq id })
         {
             if (refuelUpdateDto.date != null){
-                it[date] = timestamp(refuelUpdateDto.date.toString())
+                it[date] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(refuelUpdateDto.date),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
+
             }
             if (refuelUpdateDto.volume != null){
                 it[volume] = refuelUpdateDto.volume

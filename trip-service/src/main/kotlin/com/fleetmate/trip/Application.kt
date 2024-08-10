@@ -33,11 +33,6 @@ import com.fleetmate.trip.modules.violation.service.ViolationService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.javatime.timestampParam
-import org.jetbrains.exposed.sql.selectAll
-import java.util.Date
-
 
 fun main() {
     embeddedServer(Netty, port = ServerConf.port, host = ServerConf.host, module = Application::module)
@@ -88,22 +83,21 @@ fun Application.module() {
         ViolationTypeModel,
         ViolationModel
     ){
-        if (AutomobileModel.selectAll().empty()){
-            AutomobileTypeModel.insert {
-                it[name] = "name of type"
-                it[category] = "name of category"
-                it[speedLimit] = "45.5".toString().toFloat()
-                it[speedError] = "0.1".toString().toFloat()
-            }
-            AutomobileModel.insert {
-                it[stateNumber] = "p686pc"
-                it[fuelLevel] = "50.1".toString().toFloat()
-                it[mileage] = "45500".toString().toFloat()
-                it[additionDate] = timestampParam(Date().toInstant())
-                it[type] = 1
-            }
-        }
-
+//        if (AutomobileModel.selectAll().empty()){
+//            AutomobileTypeModel.insert {
+//                it[name] = "name of type"
+//                it[category] = "name of category"
+//                it[speedLimit] = "45.5".toString().toFloat()
+//                it[speedError] = "0.1".toString().toFloat()
+//            }
+//            AutomobileModel.insert {
+//                it[stateNumber] = "p686pc"
+//                it[fuelLevel] = "50.1".toString().toFloat()
+//                it[mileage] = "45500".toString().toFloat()
+//                it[additionDate] = timestampParam(Date().toInstant())
+//                it[type] = 1
+//            }
+//        }
 //        PhotoModel.insert {
 //            it[link] = "link_field"
 //            it[date] = timestampParam(Date().toInstant())

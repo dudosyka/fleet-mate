@@ -12,6 +12,10 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.firstOrNull
 import kotlin.collections.toList
@@ -35,7 +39,11 @@ object PhotoModel : BaseIntIdTable() {
     fun create(photoCreateDto: PhotoCreateDto): ResultRow = transaction {
         (PhotoModel.insert {
             it[link] = photoCreateDto.link
-            it[date] = timestamp(photoCreateDto.date.toString())
+            it[date] =
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(photoCreateDto.date),
+                    ZoneId.systemDefault()
+                ).toInstant(ZoneOffset.UTC)
             it[type] = photoCreateDto.type
         }.resultedValues ?: throw InternalServerException("Failed to create photo")).first()
     }
@@ -47,7 +55,11 @@ object PhotoModel : BaseIntIdTable() {
                 it[link] = photoUpdateDto.link
             }
             if (photoUpdateDto.date != null){
-                it[date] = timestamp(photoUpdateDto.date.toString())
+                it[date] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(photoUpdateDto.date),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (!photoUpdateDto.type.isNullOrEmpty()){
                 it[type] = photoUpdateDto.type

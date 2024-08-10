@@ -14,6 +14,10 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.firstOrNull
 import kotlin.collections.toList
@@ -74,9 +78,17 @@ object CheckModel : BaseIntIdTable() {
     fun create(checkCreateDto: CheckCreateDto): ResultRow = transaction {
         (CheckModel.insert {
             it[author] = checkCreateDto.author
-            it[startTime] = timestamp(checkCreateDto.startTime.toString())
+            it[startTime] =
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(checkCreateDto.startTime),
+                    ZoneId.systemDefault()
+                ).toInstant(ZoneOffset.UTC)
             if (checkCreateDto.finishTime != null){
-                it[finishTime] = timestamp(checkCreateDto.finishTime.toString())
+                it[finishTime] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(checkCreateDto.finishTime),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (checkCreateDto.timeExceeding != null){
                 it[timeExceeding] = checkCreateDto.timeExceeding
@@ -91,10 +103,18 @@ object CheckModel : BaseIntIdTable() {
                 it[author] = checkUpdateDto.author
             }
             if (checkUpdateDto.startTime != null){
-                it[startTime] = timestamp(checkUpdateDto.startTime.toString())
+                it[startTime] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(checkUpdateDto.startTime),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (checkUpdateDto.finishTime != null){
-                it[finishTime] = timestamp(checkUpdateDto.finishTime.toString())
+                it[finishTime] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(checkUpdateDto.finishTime),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (checkUpdateDto.timeExceeding != null){
                 it[timeExceeding] = checkUpdateDto.timeExceeding

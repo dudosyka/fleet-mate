@@ -9,10 +9,12 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
-import org.jetbrains.exposed.sql.javatime.timestampParam
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.firstOrNull
 import kotlin.collections.toList
@@ -65,7 +67,11 @@ object AutomobileModel : BaseIntIdTable() {
             it[stateNumber] = automobileCreateDto.stateNumber
             it[fuelLevel] = automobileCreateDto.fuelLevel
             it[mileage] = automobileCreateDto.mileage
-            it[additionDate] = timestampParam(Date().toInstant())
+            it[additionDate] =
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(automobileCreateDto.additionalDate),
+                    ZoneId.systemDefault()
+                ).toInstant(ZoneOffset.UTC)
             it[type] = automobileCreateDto.type
         }.resultedValues ?: throw InternalServerException("Failed to create automobile")).first()
     }
@@ -83,7 +89,11 @@ object AutomobileModel : BaseIntIdTable() {
                 it[mileage] = automobileUpdateDto.mileage
             }
             if (automobileUpdateDto.additionalDate != null){
-                it[additionDate] = timestampParam(Date().toInstant())
+                it[additionDate] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(automobileUpdateDto.additionalDate),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
             }
             if (automobileUpdateDto.type != null){
                 it[type] = automobileUpdateDto.type

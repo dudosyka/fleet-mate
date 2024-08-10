@@ -14,6 +14,10 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.firstOrNull
 import kotlin.collections.toList
@@ -53,7 +57,11 @@ object ViolationModel : BaseIntIdTable() {
 
     fun create(violationCreateDto: ViolationCreateDto) : ResultRow = transaction{
         (ViolationModel.insert {
-            it[date] = timestamp(violationCreateDto.date.toString())
+            it[date] =
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(violationCreateDto.date),
+                    ZoneId.systemDefault()
+                ).toInstant(ZoneOffset.UTC)
             it[type] = violationCreateDto.type
             it[duration] = violationCreateDto.duration
             it[hidden] = violationCreateDto.hidden != false
@@ -68,6 +76,13 @@ object ViolationModel : BaseIntIdTable() {
     fun update(id: Int, violationUpdateDto: ViolationUpdateDto): Boolean = transaction {
         ViolationModel.update({ ViolationModel.id eq id })
         {
+            if (violationUpdateDto.date != null){
+                it[date] =
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(violationUpdateDto.date),
+                        ZoneId.systemDefault()
+                    ).toInstant(ZoneOffset.UTC)
+            }
             if (violationUpdateDto.type != null){
                 it[type] = violationUpdateDto.type
             }
