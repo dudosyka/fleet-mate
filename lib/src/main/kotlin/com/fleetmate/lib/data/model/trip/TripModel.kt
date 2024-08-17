@@ -1,14 +1,20 @@
 package com.fleetmate.lib.model.trip
 
+import com.fleetmate.faults.modules.faults.data.model.FaultsModel
+import com.fleetmate.lib.data.dto.violation.TripViolationOutputDto
+import com.fleetmate.lib.data.dto.violation.ViolationOutputDto
 import com.fleetmate.lib.dto.trip.TripCreateDto
 import com.fleetmate.lib.dto.trip.TripUpdateDto
+import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.model.check.CheckModel
 import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
+import com.fleetmate.trip.modules.violation.data.model.ViolationModel
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
@@ -24,7 +30,7 @@ import kotlin.collections.toList
 
 object TripModel: BaseIntIdTable() {
     val keyAcceptance = timestamp("key acceptance")
-    val status = text("status")
+    val status = text("status").nullable().default(null)
     val mechanicCheckBeforeTrip = reference("mechanic_check_before_trip", CheckModel).nullable().default(null)
     val driverCheckBeforeTrip = reference("driver_check_before_trip", CheckModel).nullable().default(null)
     val mechanicCheckAfterTrip = reference("mechanic_check_after_trip", CheckModel).nullable().default(null)
@@ -187,5 +193,97 @@ object TripModel: BaseIntIdTable() {
 
     fun delete(id: Int): Boolean = transaction {
         TripModel.deleteWhere { TripModel.id eq id } != 0
+    }
+
+    fun getAllDriverTrip(driverId: Int, day: Int) = transaction {
+        val currentDay = LocalDateTime.now().dayOfMonth
+
+        if (currentDay >= day) {
+            val time = LocalDateTime.now().withDayOfMonth(day)
+            val trips = innerJoin(AutomobileModel)
+                .select(
+                    TripModel.id,
+                    keyAcceptance,
+                    keyReturn,
+                    route,
+                    avgSpeed,
+                    AutomobileModel.id,
+                    AutomobileModel.mileage,
+                    AutomobileModel.stateNumber,
+                    AutomobileModel.fuelLevel
+                ).where(
+                    driver eq driverId
+                ).andWhere {
+                    keyAcceptance greater time.toInstant(ZoneOffset.UTC)
+                }.toList()
+            val tripsId = mutableListOf<Int>()
+            trips.forEach {
+                tripsId.add(it[TripModel.id].value)
+            }
+            val violations = ViolationModel
+                .getAll()
+                .filter {
+                    tripsId.contains(it[ViolationModel.trip].value)
+                }
+                .map {
+                    ViolationOutputDto(it)
+                }
+            val list = mutableListOf<TripViolationOutputDto>()
+            trips.forEach { trip ->
+                list.add(
+                    TripViolationOutputDto(
+                        trip,
+                        violations.filter { violation ->
+                            violation.trip == trip[TripModel.id].value
+                        }
+                    )
+                )
+            }
+            return@transaction list
+        }
+    }
+    fun initTrip(driverId: Int, automobileId: Int): ResultRow = transaction{
+        val time = LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC)
+        val check = CheckModel.select(
+            CheckModel.driver,
+            CheckModel.finishTime
+        ).where{
+            CheckModel.driver eq driverId
+        }.andWhere {
+            CheckModel.finishTime greater time
+        }.firstOrNull()
+
+        val faults = FaultsModel.select(
+            FaultsModel.automobile,
+            FaultsModel.critical
+        ).where{
+            FaultsModel.automobile eq automobileId
+        }.adjustWhere {
+            FaultsModel.critical eq true
+        }.firstOrNull()
+
+        if (check == null || faults != null){
+            throw ForbiddenException()
+        }
+        else{
+            return@transaction (
+                    TripModel.insert {
+                        it[keyAcceptance] = time
+                        it[driver] = driverId
+                        it[automobile] = automobileId
+                    }.resultedValues ?: throw InternalServerException("Failed to create trip")
+            ).first()
+        }
+    }
+    fun getActiveTrip(automobileId: Int): ResultRow? = transaction{
+        TripModel.select(
+            TripModel.id,
+            washHappen,
+            driver
+        ).where(
+            automobile eq automobileId
+        ).andWhere {
+            keyReturn eq null
+        }.firstOrNull()
     }
 }

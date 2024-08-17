@@ -7,5 +7,6 @@ data class CheckCreateDto(
     val author: Int,
     val startTime: Long,
     val finishTime: Long? = null,
-    val timeExceeding: Boolean? = null
+    val timeExceeding: Boolean? = null,
+    val automobileId: Int
 )

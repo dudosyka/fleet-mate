@@ -10,7 +10,8 @@ class AutomobileTypeOutputDto (
     val name: String?,
     val category: String?,
     val speedLimit: Float?,
-    val speedError: Float?
+    val speedError: Float?,
+    val avgFuelConsumption: Float?
 ){
     constructor(resultRow: ResultRow):
             this(
@@ -18,6 +19,7 @@ class AutomobileTypeOutputDto (
                 resultRow[AutomobileTypeModel.name],
                 resultRow[AutomobileTypeModel.category],
                 resultRow[AutomobileTypeModel.speedLimit],
-                resultRow[AutomobileTypeModel.speedError]
+                resultRow[AutomobileTypeModel.speedError],
+                resultRow[AutomobileTypeModel.avgFuelConsumption]
             )
 }

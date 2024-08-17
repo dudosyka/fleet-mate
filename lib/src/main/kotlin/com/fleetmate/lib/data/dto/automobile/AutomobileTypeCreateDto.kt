@@ -7,5 +7,6 @@ data class AutomobileTypeCreateDto(
     val name: String,
     val category: String,
     val speedLimit: Float,
-    val speedError: Float
+    val speedError: Float,
+    val avgFuelConsumption: Float
 )

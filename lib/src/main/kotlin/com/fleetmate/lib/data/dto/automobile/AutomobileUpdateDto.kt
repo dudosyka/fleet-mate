@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AutomobileUpdateDto(
-    val stateNumber: String?,
-    val fuelLevel: Float?,
-    val mileage: Float?,
-    val additionalDate: Long?,
-    val type: Int?
+    val stateNumber: String? = null,
+    val fuelLevel: Float? = null,
+    val mileage: Float? = null,
+    val additionalDate: Long? = null,
+    val type: Int? = null
 )

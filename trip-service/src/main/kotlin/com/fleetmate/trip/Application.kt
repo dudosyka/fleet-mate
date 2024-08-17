@@ -1,5 +1,8 @@
 package com.fleetmate.trip
 
+import com.fleetmate.faults.modules.faults.data.model.FaultsModel
+import com.fleetmate.lib.data.model.automobile.AutomobilePartModel
+import com.fleetmate.lib.data.model.automobile.AutomobilePartToAutomobilePartModel
 import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.automobile.AutomobileTypeModel
 import com.fleetmate.lib.model.check.CheckModel
@@ -13,10 +16,11 @@ import com.fleetmate.lib.utils.database.DatabaseConnector
 import com.fleetmate.lib.utils.kodein.bindSingleton
 import com.fleetmate.lib.utils.kodein.kodeinApplication
 import com.fleetmate.trip.conf.ServerConf
-import com.fleetmate.trip.modules.automobile.data.model.AutomobilePhotoModel
-import com.fleetmate.trip.modules.automobile.data.model.AutomobileToAutomobilePhotoModel
+import com.fleetmate.lib.data.model.automobile.AutomobilePhotoModel
+import com.fleetmate.lib.data.model.automobile.AutomobileToAutomobilePhotoModel
+import com.fleetmate.trip.modules.automobile.controller.AutomobileController
+import com.fleetmate.trip.modules.automobile.service.AutomobilePartService
 import com.fleetmate.trip.modules.automobile.service.AutomobileService
-import com.fleetmate.trip.modules.check.service.CheckService
 import com.fleetmate.trip.modules.division.service.DivisionService
 import com.fleetmate.trip.modules.photo.service.PhotoService
 import com.fleetmate.trip.modules.post.service.PostService
@@ -53,7 +57,6 @@ fun Application.module() {
         // ----- Services ------
         bindSingleton { TripService(it) }
         bindSingleton { AutomobileService(it) }
-        bindSingleton { CheckService(it) }
         bindSingleton { DivisionService(it) }
         bindSingleton { PhotoService(it) }
         bindSingleton { PostService(it) }
@@ -61,10 +64,11 @@ fun Application.module() {
         bindSingleton { ReportService(it) }
         bindSingleton { UserService(it) }
         bindSingleton { ViolationService(it) }
-
+        bindSingleton { AutomobilePartService(it) }
 
         // ---- Controllers ----
         bindSingleton { TripController(it) }
+        bindSingleton { AutomobileController(it) }
     }
 
     DatabaseConnector(
@@ -72,6 +76,8 @@ fun Application.module() {
         AutomobileModel,
         AutomobilePhotoModel,
         AutomobileToAutomobilePhotoModel,
+        AutomobilePartModel,
+        AutomobilePartToAutomobilePartModel,
         CheckModel,
         DivisionModel,
         PhotoModel,
@@ -81,23 +87,99 @@ fun Application.module() {
         RefuelModel,
         ReportModel,
         ViolationTypeModel,
-        ViolationModel
-    ){
-//        if (AutomobileModel.selectAll().empty()){
+        ViolationModel,
+        FaultsModel
+    ) {
+//
+//
+//        if (AutomobileModel.selectAll().empty()) {
+//            PhotoModel.insert {
+//                it[id] = 1
+//                it[link] = "link_field"
+//                it[date] = timestampParam(Date().toInstant())
+//                it[type] = "some type"
+//            }
+//            DivisionModel.insert {
+//                it[id] = 1
+//                it[name] = "division_name"
+//            }
+//            PostModel.insert {
+//                it[id] = 1
+//                it[name] = "post_model"
+//            }
+//
+//            UserModel.insert {
+//                it[id] = 1
+//                it[login] = "admin"
+//                it[hash] = CryptoUtil.hash("admin")
+//                it[fullName] = "Admin User"
+//                it[email] = "email@email.email"
+//                it[phoneNumber] = "+79775468521"
+//                it[post] = 1
+//                it[division] = 1
+//            }
+//
 //            AutomobileTypeModel.insert {
+//                it[id] = 1
 //                it[name] = "name of type"
 //                it[category] = "name of category"
 //                it[speedLimit] = "45.5".toString().toFloat()
 //                it[speedError] = "0.1".toString().toFloat()
 //            }
 //            AutomobileModel.insert {
+//                it[id] = 1
 //                it[stateNumber] = "p686pc"
 //                it[fuelLevel] = "50.1".toString().toFloat()
 //                it[mileage] = "45500".toString().toFloat()
 //                it[additionDate] = timestampParam(Date().toInstant())
 //                it[type] = 1
 //            }
-//        }
+//
+//            FaultsModel.insert {
+//                it[id] = 1
+//                it[date] = timestampParam(Date().toInstant())
+//                it[status] = "fault_status"
+//                it[trip] = null
+//                it[user] = 1
+//                it[automobile] = 1
+//                it[photo] = 1
+//                it[comment] = "comment"
+//                it[critical] = false
+//            }
+//            AutomobilePartModel.insert {
+//                it[id] = 1
+//                it[fault] = null
+//                it[name] = "легковой автомобиль"
+//            }
+//            AutomobilePartModel.insert {
+//                it[id] = 2
+//                it[fault] = 1
+//                it[name] = "правый бок"
+//            }
+//            AutomobilePartModel.insert {
+//                it[id] = 3
+//                it[fault] = null
+//                it[name] = "левый бок"
+//            }
+//            AutomobilePartModel.insert {
+//                it[id] = 4
+//                it[fault] = 1
+//                it[name] = "ручка на двери"
+//            }
+//            AutomobilePartToAutomobilePartModel.insert {
+//                it[parent] = 1
+//                it[child] = 2
+//            }
+//            AutomobilePartToAutomobilePartModel.insert {
+//                it[parent] = 1
+//                it[child] = 3
+//            }
+//            AutomobilePartToAutomobilePartModel.insert {
+//                it[parent] = 2
+//                it[child] = 4
+//            }
+
+//
 //        PhotoModel.insert {
 //            it[link] = "link_field"
 //            it[date] = timestampParam(Date().toInstant())
@@ -173,5 +255,5 @@ fun Application.module() {
 //            it[automobile] = 1
 //            it[comment] = "pizdec"
 //        }
-    }
-}
+                }
+            }

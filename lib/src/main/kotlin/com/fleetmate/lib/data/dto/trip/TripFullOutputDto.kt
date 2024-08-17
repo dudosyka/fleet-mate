@@ -152,7 +152,8 @@ class TripFullOutputDto (
                         resultRows[5]?.get(AutomobileTypeModel.name),
                         resultRows[5]?.get(AutomobileTypeModel.category),
                         resultRows[5]?.get(AutomobileTypeModel.speedLimit),
-                        resultRows[5]?.get(AutomobileTypeModel.speedError)
+                        resultRows[5]?.get(AutomobileTypeModel.speedError),
+                        resultRows[5]?.get(AutomobileTypeModel.avgFuelConsumption)
                     )
                 ),
                 resultRows.last()?.get(TripModel.questionable),

@@ -26,7 +26,8 @@ class AutomobileOutputDto (
                     resultRow[AutomobileTypeModel.name],
                     resultRow[AutomobileTypeModel.category],
                     resultRow[AutomobileTypeModel.speedLimit],
-                    resultRow[AutomobileTypeModel.speedError]
+                    resultRow[AutomobileTypeModel.speedError],
+                    resultRow[AutomobileTypeModel.avgFuelConsumption]
                 )
             )
 }

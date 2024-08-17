@@ -3,6 +3,7 @@ package com.fleetmate.lib.model.check
 import com.fleetmate.lib.dto.check.CheckCreateDto
 import com.fleetmate.lib.dto.check.CheckUpdateDto
 import com.fleetmate.lib.exceptions.InternalServerException
+import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.division.DivisionModel
 import com.fleetmate.lib.model.post.PostModel
 import com.fleetmate.lib.model.user.UserModel
@@ -12,6 +13,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.timestamp
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.time.Instant
@@ -27,6 +29,8 @@ object CheckModel : BaseIntIdTable() {
     val startTime = timestamp("start")
     val finishTime = timestamp("finish").nullable().default(null)
     val timeExceeding = bool("time_exceeding").nullable().default(null)
+    val automobileId = reference("automobileId", AutomobileModel)
+    val driver = reference("driver", UserModel).nullable().default(null)
 
     fun getOne(id: Int?): ResultRow? = transaction {
         if (id == null){
@@ -48,7 +52,8 @@ object CheckModel : BaseIntIdTable() {
                 PostModel.name,
                 startTime,
                 finishTime,
-                timeExceeding
+                timeExceeding,
+                automobileId
             ).where(
                 CheckModel.id eq id
             ).firstOrNull()
@@ -70,7 +75,8 @@ object CheckModel : BaseIntIdTable() {
                 PostModel.name,
                 startTime,
                 finishTime,
-                timeExceeding
+                timeExceeding,
+                automobileId
             ).toList()
     }
 
@@ -93,6 +99,7 @@ object CheckModel : BaseIntIdTable() {
             if (checkCreateDto.timeExceeding != null){
                 it[timeExceeding] = checkCreateDto.timeExceeding
             }
+            it[automobileId] = checkCreateDto.automobileId
         }.resultedValues ?: throw InternalServerException("Failed to create check")).first()
     }
 
@@ -119,10 +126,43 @@ object CheckModel : BaseIntIdTable() {
             if (checkUpdateDto.timeExceeding != null){
                 it[timeExceeding] = checkUpdateDto.timeExceeding
             }
+            if (checkUpdateDto.automobileId != null){
+                it[automobileId] = checkUpdateDto.automobileId
+            }
         } != 0
     }
 
     fun delete(id: Int): Boolean = transaction {
         DivisionModel.deleteWhere{ DivisionModel.id eq id} != 0
+    }
+    fun start(authorId: Int, automobile: Int): ResultRow = transaction {
+        (CheckModel.insert {
+            it[author] = authorId
+            it[startTime] = LocalDateTime.now().toInstant(ZoneOffset.UTC)
+            it[automobileId] = automobile
+        }.resultedValues ?: throw InternalServerException("Failed to create check")).first()
+    }
+    fun finish(checkId: Int): ResultRow = transaction{
+        val finishTime = LocalDateTime.now()
+        var exceed = false
+        val check = selectAll().where{
+            CheckModel.id eq checkId
+        }.first()
+
+        if (check[startTime].epochSecond < finishTime.minusMinutes(15).toEpochSecond(ZoneOffset.UTC)){
+            exceed = true
+        }
+        update(
+            checkId,
+            CheckUpdateDto(
+                finishTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                timeExceeding = exceed
+            )
+        )
+        check
+    }
+
+    fun getAutomobile(checkId: Int) = transaction{
+        CheckModel.select(automobileId).where(CheckModel.id eq checkId).first()
     }
 }

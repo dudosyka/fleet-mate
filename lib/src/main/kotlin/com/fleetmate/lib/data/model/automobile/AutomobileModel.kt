@@ -41,7 +41,8 @@ object AutomobileModel : BaseIntIdTable() {
             AutomobileTypeModel.name,
             AutomobileTypeModel.speedLimit,
             AutomobileTypeModel.speedError,
-            AutomobileTypeModel.category
+            AutomobileTypeModel.category,
+            AutomobileTypeModel.avgFuelConsumption
         ).where {
             AutomobileModel.id eq id
         }.firstOrNull()
@@ -58,7 +59,8 @@ object AutomobileModel : BaseIntIdTable() {
             AutomobileTypeModel.name,
             AutomobileTypeModel.speedLimit,
             AutomobileTypeModel.speedError,
-            AutomobileTypeModel.category
+            AutomobileTypeModel.category,
+            AutomobileTypeModel.avgFuelConsumption
         ).toList()
     }
 

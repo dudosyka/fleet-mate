@@ -1,9 +1,9 @@
 package com.fleetmate.trip.modules.violation.service
 
 import com.fleetmate.lib.utils.kodein.KodeinService
-import com.fleetmate.trip.modules.violation.data.dto.ViolationCreateDto
-import com.fleetmate.trip.modules.violation.data.dto.ViolationOutputDto
-import com.fleetmate.trip.modules.violation.data.dto.ViolationUpdateDto
+import com.fleetmate.lib.data.dto.violation.ViolationCreateDto
+import com.fleetmate.lib.data.dto.violation.ViolationOutputDto
+import com.fleetmate.lib.data.dto.violation.ViolationUpdateDto
 import com.fleetmate.trip.modules.violation.data.model.ViolationModel
 import org.kodein.di.DI
 import kotlin.collections.map
