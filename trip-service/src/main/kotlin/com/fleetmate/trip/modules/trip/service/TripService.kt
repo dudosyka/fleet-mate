@@ -3,6 +3,7 @@ package com.fleetmate.trip.modules.trip.service.trip
 import com.fleetmate.lib.data.dto.trip.TripInitDto
 import com.fleetmate.lib.data.dto.trip.TripWashInputDto
 import com.fleetmate.lib.data.dto.violation.ViolationCreateDto
+import com.fleetmate.lib.dto.auth.AuthorizedUser
 import com.fleetmate.lib.dto.automobile.AutomobileUpdateDto
 import com.fleetmate.lib.dto.trip.TripCreateDto
 import com.fleetmate.lib.dto.trip.TripFullOutputDto
@@ -12,6 +13,8 @@ import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.automobile.service.AutomobileService
+import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
+import com.fleetmate.trip.modules.report.service.ReportService
 import com.fleetmate.trip.modules.trip.data.dto.TripDriverInputDto
 import com.fleetmate.trip.modules.trip.data.dto.TripFinishDto
 import com.fleetmate.trip.modules.trip.data.dto.TripInitOutputDto
@@ -27,8 +30,9 @@ class TripService(di: DI) : KodeinService(di) {
 
     private val violationService: ViolationService by instance()
     private val automobileService: AutomobileService by instance()
+    private val reportService: ReportService by instance()
 
-    fun getOne(id: Int): TripFullOutputDto? {
+    fun getOne(id: Int?): TripFullOutputDto? {
         return TripFullOutputDto(TripModel.getOne(id) ?: return null)
     }
 
@@ -65,7 +69,7 @@ class TripService(di: DI) : KodeinService(di) {
         )
     }
 
-    fun finishTrip(tripFinishDto: TripFinishDto) {
+    fun finishTrip(tripFinishDto: TripFinishDto, authorizedUser: AuthorizedUser) {
         val trip = getActiveTrip(tripFinishDto.automobileId)
 
         val auto = automobileService.getOne(tripFinishDto.automobileId) ?: throw NotFoundException("Automobile is not found")
@@ -82,6 +86,15 @@ class TripService(di: DI) : KodeinService(di) {
             trip[TripModel.id].value,
             TripUpdateDto(
                 keyReturn = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+            )
+        )
+        reportService.create(
+            ReportCreateDto(
+                mileage = tripMileage, //FIXME какой пробег ставить? пробег только за эту поездку или общий пробег авто
+                avgSpeed = trip[TripModel.avgSpeed]!!,
+                trip = trip[TripModel.id].value,
+                automobile = tripFinishDto.automobileId,
+                driver = authorizedUser.id
             )
         )
     }

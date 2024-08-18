@@ -54,7 +54,7 @@ class TripController(override val di: DI) : KodeinController() {
         route("finish"){
             post {
                 val tripFinishDto = call.receive<TripFinishDto>()
-                call.respond(tripService.finishTrip(tripFinishDto))
+                call.respond(tripService.finishTrip(tripFinishDto, call.getAuthorized()))
             }
         }
         route("wash"){

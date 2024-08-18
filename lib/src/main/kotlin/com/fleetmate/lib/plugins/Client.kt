@@ -1,13 +1,12 @@
 package com.fleetmate.lib.plugins
 
-import com.sun.security.ntlm.Client
 import io.ktor.client.HttpClient
 import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 
 val client = HttpClient()
-suspend fun Client.auth() {
+suspend fun auth() {
     val response: HttpResponse = client.post("https://bumerang-sat.ru/restapi/users/login/") {
         headers {
             append(HttpHeaders.Origin, "https://bumerang-sat.ru")
@@ -19,7 +18,7 @@ suspend fun Client.auth() {
         }
     }
 }
-suspend fun Client.getAll(token: String) {
+suspend fun getAll(token: String) {
     val response: HttpResponse = client.post("https://bumerang-sat.ru/restapi/objects/objects-tree-set/") {
         headers {
             append(HttpHeaders.Origin, "https://bumerang-sat.ru")
@@ -32,7 +31,7 @@ suspend fun Client.getAll(token: String) {
         }
     }
 }
-suspend fun Client.getCar(token: String, automobileId: Int) {
+suspend fun getCar(token: String, automobileId: Int) {
     val response: HttpResponse = client.post("https://bumerang-sat.ru/restapi/objects/obj-details/") {
         headers {
             append(HttpHeaders.Origin, "https://bumerang-sat.ru")

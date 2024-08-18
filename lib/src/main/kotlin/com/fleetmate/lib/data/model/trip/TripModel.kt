@@ -109,7 +109,7 @@ object TripModel: BaseIntIdTable() {
                     ZoneId.systemDefault()
                 ).toInstant(ZoneOffset.UTC)
 
-            it[status] = tripCreateDto.status
+            it[status] = tripCreateDto.status.name
             it[mechanicCheckBeforeTrip] = tripCreateDto.mechanicCheckBeforeTrip
             it[driverCheckBeforeTrip] = tripCreateDto.driverCheckBeforeTrip
             it[mechanicCheckAfterTrip] = tripCreateDto.mechanicCheckAfterTrip
@@ -143,7 +143,7 @@ object TripModel: BaseIntIdTable() {
                     ).toInstant(ZoneOffset.UTC)
             }
             if (tripUpdateDto.status != null){
-                it[status] = tripUpdateDto.status
+                it[status] = tripUpdateDto.status.name
             }
             if (tripUpdateDto.mechanicCheckBeforeTrip != null){
                 it[mechanicCheckBeforeTrip] = tripUpdateDto.mechanicCheckBeforeTrip

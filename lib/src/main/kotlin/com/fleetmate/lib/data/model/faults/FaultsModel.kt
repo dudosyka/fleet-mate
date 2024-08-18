@@ -69,7 +69,7 @@ object FaultsModel: BaseIntIdTable() {
 
         val fault = (FaultsModel.insert {
             it[date] = LocalDateTime.now().toInstant(ZoneOffset.UTC)
-            it[status] = faultsCreateDto.status
+            it[status] = faultsCreateDto.status.name
             if (faultsCreateDto.trip != null){
                 it[trip] = faultsCreateDto.trip
             }
@@ -78,7 +78,7 @@ object FaultsModel: BaseIntIdTable() {
             if (faultsCreateDto.comment != null){
                 it[comment] = faultsCreateDto.comment
             }
-            it[critical] = faultsCreateDto.critical
+            it[critical] = true
             if (photoId != null){
                 it[photo] = photoId[id].value
             }
@@ -92,7 +92,7 @@ object FaultsModel: BaseIntIdTable() {
     fun update(id: Int, faultsUpdateDto: FaultsUpdateDto): Boolean = transaction {
         FaultsModel.update({FaultsModel.id eq id }) {
             if (faultsUpdateDto.status != null){
-                it[status] = faultsUpdateDto.status
+                it[status] = faultsUpdateDto.status.name
             }
             if (faultsUpdateDto.trip != null){
                 it[trip] = faultsUpdateDto.trip
@@ -131,5 +131,13 @@ object FaultsModel: BaseIntIdTable() {
             }.andWhere {
                 critical eq true
             }.toList()
+    }
+
+    fun getAllByTrip(tripId: Int): List<ResultRow?> = transaction{
+        select(
+            FaultsModel.id
+        ).where{
+            trip eq tripId
+        }.toList()
     }
 }

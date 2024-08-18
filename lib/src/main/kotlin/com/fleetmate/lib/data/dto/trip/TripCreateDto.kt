@@ -1,11 +1,12 @@
 package com.fleetmate.lib.dto.trip
 
+import com.fleetmate.lib.conf.AppConf
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TripCreateDto(
     val keyAcceptance: Long,
-    val status: String,
+    val status: AppConf.Status,
     val mechanicCheckBeforeTrip: Int,
     val driverCheckBeforeTrip: Int,
     val mechanicCheckAfterTrip: Int? = null,

@@ -7,12 +7,16 @@ import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
 import com.fleetmate.trip.modules.report.data.dto.ReportUpdateDto
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import kotlin.collections.first
 import kotlin.collections.firstOrNull
 import kotlin.collections.toList
@@ -28,19 +32,33 @@ object ReportModel : BaseIntIdTable(){
     fun getOne(id: Int): ResultRow? = transaction {
 
         ReportModel.select(
-            ReportModel.id,
-            mileage,
-            avgSpeed,
-            trip,
-            automobile,
-            driver
-        ).where(
-            ReportModel.id eq id
-        ).firstOrNull()
+                ReportModel.id,
+                mileage,
+                avgSpeed,
+                trip,
+                automobile,
+                driver
+            ).where(
+                ReportModel.id eq id
+            ).firstOrNull()
     }
 
-    fun getAll(): List<ResultRow> = transaction {
-        select(ReportModel.id, mileage, avgSpeed, trip, automobile, driver).toList()
+    fun getAll(start: Long, finish: Long): List<ResultRow> = transaction {
+        val startTime = LocalDateTime.ofEpochSecond(start, 0, ZoneOffset.UTC)
+        val finishTime = LocalDateTime.ofEpochSecond(finish, 0, ZoneOffset.UTC)
+        ReportModel.join(
+            TripModel, JoinType.INNER, trip, TripModel.id
+        ).select(
+            ReportModel.id,
+            automobile,
+            TripModel.id,
+            TripModel.route,
+            TripModel.keyReturn
+        ).where{
+            createdAt less finishTime
+        }.andWhere {
+            createdAt greater startTime
+        }.toList()
     }
 
     fun create(reportCreateDto: ReportCreateDto): ResultRow = transaction {
