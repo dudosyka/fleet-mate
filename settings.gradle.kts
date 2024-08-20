@@ -8,5 +8,5 @@ rootProject.name = "fleet-mate"
 include(service("trip"))
 include(service("stat"))
 include(service("faults"))
-include("lib")
 include(service("crypt"))
+include("lib")
