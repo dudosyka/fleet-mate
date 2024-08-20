@@ -20,4 +20,28 @@ class WatchDogService(di: DI) : KodeinService(di) {
                 }
         }
     }
+
+    fun emitPlaceholderOn(userId: Int) {
+        webSocketRegister.emit {
+            connections ->
+                val connectionsByUser = connections[userId]
+                (connectionsByUser ?: listOf()).forEach { connection ->
+                    if (connection.isActive) {
+                        connection.sendEncoded(WebSocketResponseDto.wrap("placeholder+on"))
+                    }
+                }
+        }
+    }
+
+    fun emitPlaceholderOff(userId: Int) {
+        webSocketRegister.emit {
+                connections ->
+            val connectionsByUser = connections[userId]
+            (connectionsByUser ?: listOf()).forEach { connection ->
+                if (connection.isActive) {
+                    connection.sendEncoded(WebSocketResponseDto.wrap("placeholder+off"))
+                }
+            }
+        }
+    }
 }
