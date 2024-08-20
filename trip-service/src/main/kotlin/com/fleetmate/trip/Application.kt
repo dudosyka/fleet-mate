@@ -8,6 +8,7 @@ import com.fleetmate.trip.conf.ServerConf
 import com.fleetmate.trip.modules.trip.controller.TripController
 import com.fleetmate.trip.modules.trip.data.model.TripModel
 import com.fleetmate.trip.modules.trip.service.TripService
+import com.fleetmate.trip.modules.watchdog.WatchDogService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -32,6 +33,7 @@ fun Application.module() {
     kodeinApplication("/trip") {
         // ----- Services ------
         bindSingleton { TripService(it) }
+        bindSingleton { WatchDogService(it) }
 
 
         // ---- Controllers ----

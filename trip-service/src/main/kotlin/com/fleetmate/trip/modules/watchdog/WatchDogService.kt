@@ -35,11 +35,35 @@ class WatchDogService(di: DI) : KodeinService(di) {
 
     fun emitPlaceholderOff(userId: Int) {
         webSocketRegister.emit {
+            connections ->
+                val connectionsByUser = connections[userId]
+                (connectionsByUser ?: listOf()).forEach { connection ->
+                    if (connection.isActive) {
+                        connection.sendEncoded(WebSocketResponseDto.wrap("placeholder+off"))
+                    }
+                }
+        }
+    }
+
+    fun emitSpeed(userId: Int, speed: Double) {
+        webSocketRegister.emit {
+            connections ->
+                val connectionsByUser = connections[userId]
+                (connectionsByUser ?: listOf()).forEach { connection ->
+                    if (connection.isActive) {
+                        connection.sendEncoded(WebSocketResponseDto.wrap("speed+$speed"))
+                    }
+                }
+        }
+    }
+
+    fun emitViolation(userId: Int, violationAmount: Int) {
+        webSocketRegister.emit {
                 connections ->
             val connectionsByUser = connections[userId]
             (connectionsByUser ?: listOf()).forEach { connection ->
                 if (connection.isActive) {
-                    connection.sendEncoded(WebSocketResponseDto.wrap("placeholder+off"))
+                    connection.sendEncoded(WebSocketResponseDto.wrap("violation+$violationAmount"))
                 }
             }
         }
