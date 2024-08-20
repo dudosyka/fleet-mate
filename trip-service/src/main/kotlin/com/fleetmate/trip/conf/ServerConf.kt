@@ -9,7 +9,7 @@ import io.ktor.server.config.*
 object ServerConf {
     private val conf = HoconApplicationConfig(ConfigFactory.load().getConfig("server"))
     private val bumerangConf = conf.config("bumerang")
-    private val nobilisConf = conf.config("bumerang")
+    private val nobilisConf = conf.config("nobilis")
     val host: String = conf.host
     val port: Int = conf.port
 

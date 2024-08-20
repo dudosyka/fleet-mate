@@ -15,7 +15,7 @@ object AesUtil {
         return SecretKeySpec(key, "AES")
     }
 
-    private fun encrypt(keyBase: String, value: ByteArray): ByteArray {
+    fun encrypt(keyBase: String, value: ByteArray): ByteArray {
         val key = createKey(keyBase)
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val ivParameterSpec = IvParameterSpec(ByteArray(16))
@@ -23,16 +23,19 @@ object AesUtil {
         return cipher.doFinal(value)
     }
 
-    private fun decrypt(keyBase: String, value: ByteArray): ByteArray {
+    fun decrypt(keyBase: String, value: ByteArray): ByteArray {
         val key = createKey(keyBase)
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val ivParameterSpec = IvParameterSpec(ByteArray(16))
         cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec)
         return cipher.doFinal(value)
-
     }
 
     private fun getSymmetricalKey(clientPublic: PointDto): PointDto = ECDH.getSymmetricalKey(clientPublic)
+
+    fun snapshotSession(clientPublic: PointDto): Pair<String, PointDto> = Pair(
+        getSymmetricalKey(clientPublic).createKeyBase(), ECDH.retrievePublics()
+    )
 
     fun encrypt(data: ByteArray, clientPublic: PointDto): ByteArray {
         val symmetricalKey = getSymmetricalKey(clientPublic).createKeyBase()
