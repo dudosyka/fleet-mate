@@ -1,11 +1,11 @@
-package com.fleetmate.lib.dto.check
+package com.fleetmate.lib.data.dto.car
 
-import com.fleetmate.lib.dto.division.DivisionOutputDto
-import com.fleetmate.lib.dto.post.PostOutputDto
+import com.fleetmate.lib.dto.division.DepartmentOutputDto
+import com.fleetmate.lib.dto.post.PositionOutputDto
 import com.fleetmate.lib.dto.user.UserOutputDto
 import com.fleetmate.lib.model.check.CheckModel
-import com.fleetmate.lib.model.division.DivisionModel
-import com.fleetmate.lib.model.post.PostModel
+import com.fleetmate.lib.model.division.DepartmentModel
+import com.fleetmate.lib.model.post.PositionModel
 import com.fleetmate.lib.model.user.UserModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
@@ -15,9 +15,9 @@ import kotlin.toString
 class CheckOutputDto(
     val id: Int?,
     val author: UserOutputDto?,
-    val startTime: String,
-    val finishTime: String? = null,
-    val timeExceeding: Boolean? = null
+    val startTime: Long,
+    val finishTime: Long? = null,
+    val timeExceeded: Boolean? = null
 ){
     constructor(resultRow: ResultRow):
             this(
@@ -27,17 +27,17 @@ class CheckOutputDto(
                     resultRow[UserModel.fullName],
                     resultRow[UserModel.email],
                     resultRow[UserModel.phoneNumber],
-                    PostOutputDto(
-                        resultRow[PostModel.id].value,
-                        resultRow[PostModel.name]
+                    PositionOutputDto(
+                        resultRow[PositionModel.id].value,
+                        resultRow[PositionModel.name]
                     ),
-                    DivisionOutputDto(
-                        resultRow[DivisionModel.id].value,
-                        resultRow[DivisionModel.name]
+                    DepartmentOutputDto(
+                        resultRow[DepartmentModel.id].value,
+                        resultRow[DepartmentModel.name]
                     )
                 ),
-                resultRow[CheckModel.startTime].toString(),
-                resultRow[CheckModel.finishTime].toString(),
-                resultRow[CheckModel.timeExceeding]
+                resultRow[CheckModel.startTime].toString().toLong(),
+                resultRow[CheckModel.finishTime].toString().toLong(),
+                resultRow[CheckModel.timeExceeded]
             )
 }

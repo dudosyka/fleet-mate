@@ -16,7 +16,7 @@ data class TripUpdateDto(
     val speedInfo: List<Float>? = null,
     val avgSpeed: Float? = null,
     val driver: Int? = null,
-    val automobile: Int? = null,
+    val car: Int? = null,
     val questionable: Boolean? = null,
     val needWashing: Boolean? = null,
     val washHappen: Boolean? = null

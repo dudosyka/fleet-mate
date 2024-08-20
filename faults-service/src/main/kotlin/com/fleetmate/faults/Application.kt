@@ -6,13 +6,13 @@ import com.fleetmate.faults.modules.check.service.CheckService
 import com.fleetmate.faults.modules.faults.controller.FaultsController
 import com.fleetmate.faults.modules.faults.data.model.FaultsModel
 import com.fleetmate.faults.modules.faults.service.FaultsService
-import com.fleetmate.faults.modules.photo.service.AutomobilePhotoService
+import com.fleetmate.faults.modules.photo.service.CarPhotoService
 import com.fleetmate.faults.modules.photo.service.PhotoService
-import com.fleetmate.lib.data.model.automobile.AutomobilePartModel
-import com.fleetmate.lib.data.model.automobile.AutomobilePartToAutomobilePartModel
-import com.fleetmate.lib.data.model.automobile.AutomobilePhotoModel
-import com.fleetmate.lib.model.automobile.AutomobileModel
-import com.fleetmate.lib.model.automobile.AutomobileTypeModel
+import com.fleetmate.lib.data.model.car.CarModel
+import com.fleetmate.lib.data.model.car.CarPartModel
+import com.fleetmate.lib.data.model.car.CarPartToCarPartModel
+import com.fleetmate.lib.data.model.car.CarPhotoModel
+import com.fleetmate.lib.data.model.car.CarTypeModel
 import com.fleetmate.lib.model.check.CheckModel
 import com.fleetmate.lib.plugins.*
 import com.fleetmate.lib.utils.database.DatabaseConnector
@@ -42,7 +42,7 @@ fun Application.module() {
         // ----- Services ------
         bindSingleton { FaultsService(it) }
         bindSingleton { CheckService(it) }
-        bindSingleton { AutomobilePhotoService(it) }
+        bindSingleton { CarPhotoService(it) }
         bindSingleton { PhotoService(it) }
 
 
@@ -54,11 +54,11 @@ fun Application.module() {
     DatabaseConnector(
         FaultsModel,
         CheckModel,
-        AutomobileModel,
-        AutomobileTypeModel,
-        AutomobilePartModel,
-        AutomobilePartToAutomobilePartModel,
-        AutomobilePhotoModel,
+        CarModel,
+        CarTypeModel,
+        CarPartModel,
+        CarPartToCarPartModel,
+        CarPhotoModel,
     ) {
 
     }

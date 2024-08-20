@@ -2,10 +2,10 @@ package com.fleetmate.faults.modules.faults.data.model
 
 import com.fleetmate.faults.modules.faults.data.dto.FaultsCreateDto
 import com.fleetmate.faults.modules.faults.data.dto.FaultsUpdateDto
-import com.fleetmate.lib.data.model.automobile.AutomobilePartModel
+import com.fleetmate.lib.data.model.car.CarModel
+import com.fleetmate.lib.data.model.car.CarPartModel
 import com.fleetmate.lib.dto.auth.AuthorizedUser
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.photo.PhotoModel
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.model.user.UserModel
@@ -27,7 +27,7 @@ object FaultsModel: BaseIntIdTable() {
     val status = text("status")
     val trip = reference("trip", TripModel).nullable().default(null)
     val user = reference("user", UserModel)
-    val automobile = reference("automobile", AutomobileModel)
+    val car = reference("car", CarModel)
     val photo = reference("photo", PhotoModel).nullable().default(null)
     val comment = text("comment").nullable().default(null)
     val critical = bool("critical")
@@ -36,7 +36,7 @@ object FaultsModel: BaseIntIdTable() {
     fun getOne(id: Int): ResultRow? = transaction {
 
 
-        (FaultsModel innerJoin AutomobileModel)
+        (FaultsModel innerJoin CarModel)
             .innerJoin(PhotoModel)
             .select(
                 FaultsModel.id,
@@ -44,8 +44,8 @@ object FaultsModel: BaseIntIdTable() {
                 status,
                 trip,
                 user,
-                AutomobileModel.id,
-                AutomobileModel.stateNumber,
+                CarModel.id,
+                CarModel.registrationNumber,
                 PhotoModel.id,
                 PhotoModel.link,
                 PhotoModel.type
@@ -74,7 +74,7 @@ object FaultsModel: BaseIntIdTable() {
                 it[trip] = faultsCreateDto.trip
             }
             it[user] = authorizedUser.id
-            it[automobile] = faultsCreateDto.automobile
+            it[car] = faultsCreateDto.car
             if (faultsCreateDto.comment != null){
                 it[comment] = faultsCreateDto.comment
             }
@@ -84,7 +84,7 @@ object FaultsModel: BaseIntIdTable() {
             }
         }.resultedValues ?: throw InternalServerException("Failed to create fault")).first()
 
-        AutomobilePartModel.addFault(fault[FaultsModel.id].value, faultsCreateDto.automobilePart)
+        CarPartModel.addFault(fault[FaultsModel.id].value, faultsCreateDto.carPart)
 
         return@transaction fault
     }
@@ -97,8 +97,8 @@ object FaultsModel: BaseIntIdTable() {
             if (faultsUpdateDto.trip != null){
                 it[trip] = faultsUpdateDto.trip
             }
-            if (faultsUpdateDto.automobile != null){
-                it[automobile] = faultsUpdateDto.automobile
+            if (faultsUpdateDto.car != null){
+                it[car] = faultsUpdateDto.car
             }
             if (faultsUpdateDto.comment != null){
                 it[comment] = faultsUpdateDto.comment
@@ -112,7 +112,7 @@ object FaultsModel: BaseIntIdTable() {
     fun delete(id: Int): Boolean = transaction {
         FaultsModel.deleteWhere { FaultsModel.id eq id } != 0
     }
-    fun getAllCriticalByAutomobile(automobileId: Int): List<ResultRow> = transaction{
+    fun getAllCriticalByCar(carId: Int): List<ResultRow> = transaction{
         (FaultsModel innerJoin PhotoModel)
             .select(
                 FaultsModel.id,
@@ -127,7 +127,7 @@ object FaultsModel: BaseIntIdTable() {
                 critical
             )
             .where {
-                automobile eq automobileId
+                car eq carId
             }.andWhere {
                 critical eq true
             }.toList()

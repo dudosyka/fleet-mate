@@ -3,7 +3,7 @@ package com.fleetmate.lib.model.photo
 import com.fleetmate.lib.dto.photo.PhotoCreateDto
 import com.fleetmate.lib.dto.photo.PhotoUpdateDto
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.post.PostModel
+import com.fleetmate.lib.model.post.PositionModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -49,7 +49,7 @@ object PhotoModel : BaseIntIdTable() {
     }
 
     fun update(id: Int, photoUpdateDto: PhotoUpdateDto): Boolean = transaction {
-        PostModel.update({ PhotoModel.id eq id })
+        PositionModel.update({ PhotoModel.id eq id })
         {
             if (!photoUpdateDto.link.isNullOrEmpty()){
                 it[link] = photoUpdateDto.link

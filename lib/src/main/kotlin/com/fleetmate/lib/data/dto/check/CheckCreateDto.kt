@@ -1,4 +1,4 @@
-package com.fleetmate.lib.dto.check
+package com.fleetmate.lib.data.dto.car
 
 import kotlinx.serialization.Serializable
 
@@ -7,6 +7,6 @@ data class CheckCreateDto(
     val author: Int,
     val startTime: Long,
     val finishTime: Long? = null,
-    val timeExceeding: Boolean? = null,
-    val automobileId: Int
+    val timeExceeded: Boolean? = null,
+    val carId: Int
 )

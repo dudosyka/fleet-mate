@@ -1,11 +1,11 @@
 package com.fleetmate.lib.model.check
 
-import com.fleetmate.lib.dto.check.CheckCreateDto
+import com.fleetmate.lib.data.dto.car.CheckCreateDto
+import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.dto.check.CheckUpdateDto
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.automobile.AutomobileModel
-import com.fleetmate.lib.model.division.DivisionModel
-import com.fleetmate.lib.model.post.PostModel
+import com.fleetmate.lib.model.division.DepartmentModel
+import com.fleetmate.lib.model.post.PositionModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow
@@ -28,32 +28,28 @@ object CheckModel : BaseIntIdTable() {
     val author = reference("author", UserModel)
     val startTime = timestamp("start")
     val finishTime = timestamp("finish").nullable().default(null)
-    val timeExceeding = bool("time_exceeding").nullable().default(null)
-    val automobileId = reference("automobileId", AutomobileModel)
-    val driver = reference("driver", UserModel).nullable().default(null)
+    val timeExceeded = bool("time_exceeding").nullable().default(null)
+    val carId = reference("carId", CarModel)
 
-    fun getOne(id: Int?): ResultRow? = transaction {
-        if (id == null){
-            return@transaction null
-        }
+    fun getOne(id: Int): ResultRow? = transaction {
 
         (CheckModel innerJoin UserModel)
-            .innerJoin(DivisionModel)
-            .innerJoin(PostModel)
+            .innerJoin(DepartmentModel)
+            .innerJoin(PositionModel)
             .select(
                 CheckModel.id,
                 UserModel.id,
                 UserModel.fullName,
                 UserModel.email,
                 UserModel.phoneNumber,
-                DivisionModel.id,
-                DivisionModel.name,
-                PostModel.id,
-                PostModel.name,
+                DepartmentModel.id,
+                DepartmentModel.name,
+                PositionModel.id,
+                PositionModel.name,
                 startTime,
                 finishTime,
-                timeExceeding,
-                automobileId
+                timeExceeded,
+                carId
             ).where(
                 CheckModel.id eq id
             ).firstOrNull()
@@ -61,22 +57,22 @@ object CheckModel : BaseIntIdTable() {
 
     fun getAll(): List<ResultRow> = transaction {
         (CheckModel innerJoin UserModel)
-            .innerJoin(DivisionModel)
-            .innerJoin(PostModel)
+            .innerJoin(DepartmentModel)
+            .innerJoin(PositionModel)
             .select(
                 CheckModel.id,
                 UserModel.id,
                 UserModel.fullName,
                 UserModel.email,
                 UserModel.phoneNumber,
-                DivisionModel.id,
-                DivisionModel.name,
-                PostModel.id,
-                PostModel.name,
+                DepartmentModel.id,
+                DepartmentModel.name,
+                PositionModel.id,
+                PositionModel.name,
                 startTime,
                 finishTime,
-                timeExceeding,
-                automobileId
+                timeExceeded,
+                carId
             ).toList()
     }
 
@@ -96,10 +92,10 @@ object CheckModel : BaseIntIdTable() {
                         ZoneId.systemDefault()
                     ).toInstant(ZoneOffset.UTC)
             }
-            if (checkCreateDto.timeExceeding != null){
-                it[timeExceeding] = checkCreateDto.timeExceeding
+            if (checkCreateDto.timeExceeded != null){
+                it[timeExceeded] = checkCreateDto.timeExceeded
             }
-            it[automobileId] = checkCreateDto.automobileId
+            it[carId] = checkCreateDto.carId
         }.resultedValues ?: throw InternalServerException("Failed to create check")).first()
     }
 
@@ -123,46 +119,39 @@ object CheckModel : BaseIntIdTable() {
                         ZoneId.systemDefault()
                     ).toInstant(ZoneOffset.UTC)
             }
-            if (checkUpdateDto.timeExceeding != null){
-                it[timeExceeding] = checkUpdateDto.timeExceeding
+            if (checkUpdateDto.timeExceeded != null){
+                it[timeExceeded] = checkUpdateDto.timeExceeded
             }
-            if (checkUpdateDto.automobileId != null){
-                it[automobileId] = checkUpdateDto.automobileId
+            if (checkUpdateDto.carId != null){
+                it[carId] = checkUpdateDto.carId
             }
         } != 0
     }
 
     fun delete(id: Int): Boolean = transaction {
-        DivisionModel.deleteWhere{ DivisionModel.id eq id} != 0
+        DepartmentModel.deleteWhere{ DepartmentModel.id eq id} != 0
     }
-    fun start(authorId: Int, automobile: Int): ResultRow = transaction {
+    fun start(authorId: Int, car: Int): ResultRow = transaction {
         (CheckModel.insert {
             it[author] = authorId
             it[startTime] = LocalDateTime.now().toInstant(ZoneOffset.UTC)
-            it[automobileId] = automobile
+            it[carId] = car
         }.resultedValues ?: throw InternalServerException("Failed to create check")).first()
     }
-    fun finish(checkId: Int): ResultRow = transaction{
-        val finishTime = LocalDateTime.now()
-        var exceed = false
-        val check = selectAll().where{
-            CheckModel.id eq checkId
-        }.first()
-
-        if (check[startTime].epochSecond < finishTime.minusMinutes(15).toEpochSecond(ZoneOffset.UTC)){
-            exceed = true
-        }
+    fun finish(checkId: Int, exceed: Boolean): ResultRow = transaction{
         update(
             checkId,
             CheckUpdateDto(
                 finishTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                timeExceeding = exceed
+                timeExceeded = exceed
             )
         )
-        check
+        selectAll().where{
+            CheckModel.id eq checkId
+        }.first()
     }
 
-    fun getAutomobile(checkId: Int) = transaction{
-        CheckModel.select(automobileId).where(CheckModel.id eq checkId).first()
+    fun getCheckForFinish(checkId: Int) = transaction{
+        CheckModel.select(carId, author, startTime).where(CheckModel.id eq checkId).first()
     }
 }

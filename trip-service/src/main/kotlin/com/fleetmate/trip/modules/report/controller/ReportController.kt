@@ -7,6 +7,7 @@ import com.fleetmate.trip.modules.report.data.dto.ReportFullOutputDto
 import com.fleetmate.trip.modules.report.data.dto.ReportTimeDto
 import com.fleetmate.trip.modules.report.service.ReportService
 import io.ktor.server.application.call
+import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -20,18 +21,20 @@ class ReportController(override val di: DI) : KodeinController() {
     private val reportService: ReportService by instance()
 
     override fun Route.registerRoutes() {
-        route("report"){
-            get("all") {
-                val time = call.receive<ReportTimeDto>()
-                call.respond(reportService.getAll(time.start, time.finish))
-            }
-            get("{reportId}"){
-                val reportId = call.parameters.getInt("reportId", "Report Id must be Int")
-                call.respond<ReportFullOutputDto>(reportService.getOne(reportId) ?: throw NotFoundException(""))
-            }
-            post{
-                val reportCreateDto = call.receive<ReportCreateDto>()
-                call.respond(reportService.create(reportCreateDto))
+        authenticate("driver"){
+            route("report"){
+                get("all") {
+                    val time = call.receive<ReportTimeDto>()
+                    call.respond(reportService.getAll(time.start, time.finish, call.getAuthorized()))
+                }
+                get("{reportId}"){
+                    val reportId = call.parameters.getInt("reportId", "Report Id must be Int")
+                    call.respond<ReportFullOutputDto>(reportService.getOne(reportId) ?: throw NotFoundException(""))
+                }
+                post{
+                    val reportCreateDto = call.receive<ReportCreateDto>()
+                    call.respond(reportService.create(reportCreateDto))
+                }
             }
         }
     }

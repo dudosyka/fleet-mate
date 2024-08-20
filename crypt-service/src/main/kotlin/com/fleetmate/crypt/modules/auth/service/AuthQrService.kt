@@ -1,9 +1,9 @@
 package com.fleetmate.crypt.modules.auth.service
 
 import com.fleetmate.lib.data.dto.auth.QrTokenDto
+import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.dto.auth.AuthorizedUser
 import com.fleetmate.lib.exceptions.ForbiddenException
-import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.utils.kodein.KodeinService
@@ -42,18 +42,17 @@ class AuthQrService(di: DI) : KodeinService(di) {
         }
     }
 
-    fun createAutomobileQr(authorizedUser: AuthorizedUser, automobileId: Int): ByteArray = transaction {
+    fun createCarQr(authorizedUser: AuthorizedUser, carId: Int): ByteArray = transaction {
         try {
             val user = UserModel.getOne(authorizedUser.id)
-            val automobile = AutomobileModel.getOne(automobileId)
-            if (user == null || automobile == null){
+            val car = CarModel.getOne(carId)
+            if (user == null || car == null){
                 Logger.debugException("Exception during QR generation. User or Automobile is null (maybe both).", NullPointerException(), "main")
                 throw ForbiddenException()
             }
             val token = JwtUtil.createMobileAuthToken(
                 QrTokenDto(
-                    userId = user[UserModel.id].value,
-                    automobileId = automobile[AutomobileModel.id].value
+                    carId = car[CarModel.id].value
                 )
             )
             createQr(token)

@@ -20,7 +20,7 @@ class TripOutputDto (
     val speedInfo: List<Float>? = null,
     val avgSpeed: Float? = null,
     val driver: Int?,
-    val automobile: Int?,
+    val car: Int?,
     val questionable: Boolean? = null,
     val needWashing: Boolean? = null,
     val washHappen: Boolean? = null
@@ -39,7 +39,7 @@ class TripOutputDto (
             resultRow?.get(TripModel.speedInfo),
             resultRow?.get(TripModel.avgSpeed),
             resultRow?.get(TripModel.driver)?.value,
-            resultRow?.get(TripModel.automobile)?.value,
+            resultRow?.get(TripModel.car)?.value,
             resultRow?.get(TripModel.questionable),
             resultRow?.get(TripModel.needWashing),
             resultRow?.get(TripModel.washHappen)

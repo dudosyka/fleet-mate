@@ -3,8 +3,8 @@ package com.fleetmate.lib.model.user
 import com.fleetmate.lib.dto.user.UserCreateDto
 import com.fleetmate.lib.dto.user.UserUpdateDto
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.division.DivisionModel
-import com.fleetmate.lib.model.post.PostModel
+import com.fleetmate.lib.model.division.DepartmentModel
+import com.fleetmate.lib.model.post.PositionModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -23,26 +23,25 @@ object UserModel : BaseIntIdTable() {
     val fullName = text("full_name")
     val email = text("email")
     val phoneNumber = text("phone_number")
-    val post = reference("post", PostModel)
-    val division = reference("division", DivisionModel)
+    val position = reference("post", PositionModel)
+    val department = reference("division", DepartmentModel)
+    val dateOfBirth = long("date_of_birth").nullable().default(null)
 
     fun getOne(id: Int?): ResultRow? = transaction {
-        if (id == null){
-            return@transaction null
-        }
-        (UserModel innerJoin PostModel)
+        (UserModel innerJoin PositionModel)
             .innerJoin(
-                DivisionModel
+                DepartmentModel
             )
             .select(
                 UserModel.id,
                 fullName,
                 email,
                 phoneNumber,
-                PostModel.id,
-                PostModel.name,
-                DivisionModel.id,
-                DivisionModel.name
+                dateOfBirth,
+                PositionModel.id,
+                PositionModel.name,
+                DepartmentModel.id,
+                DepartmentModel.name
             )
             .where(
                 UserModel.id eq id
@@ -51,19 +50,20 @@ object UserModel : BaseIntIdTable() {
 
     fun getAll(): List<ResultRow> = transaction {
 
-        (UserModel innerJoin PostModel)
+        (UserModel innerJoin PositionModel)
             .innerJoin(
-                DivisionModel
+                DepartmentModel
             )
             .select(
                 UserModel.id,
                 fullName,
                 email,
                 phoneNumber,
-                PostModel.id,
-                PostModel.name,
-                DivisionModel.id,
-                DivisionModel.name
+                dateOfBirth,
+                PositionModel.id,
+                PositionModel.name,
+                DepartmentModel.id,
+                DepartmentModel.name
             ).toList()
     }
 
@@ -72,8 +72,11 @@ object UserModel : BaseIntIdTable() {
             it[fullName] = userCreateDto.fullName
             it[email] = userCreateDto.email
             it[phoneNumber] = userCreateDto.phoneNumber
-            it[post] = userCreateDto.post
-            it[division] = userCreateDto.division
+            it[position] = userCreateDto.position
+            it[department] = userCreateDto.department
+            if (userCreateDto.dateOfBirth != null){
+                it[dateOfBirth] = userCreateDto.dateOfBirth
+            }
 
         }.resultedValues ?: throw InternalServerException("Failed to create user")).first()
     }
@@ -90,11 +93,14 @@ object UserModel : BaseIntIdTable() {
             if (userUpdateDto.phoneNumber != null){
                 it[phoneNumber] = userUpdateDto.phoneNumber
             }
-            if (userUpdateDto.post != null){
-                it[post] = userUpdateDto.post
+            if (userUpdateDto.position != null){
+                it[position] = userUpdateDto.position
             }
-            if (userUpdateDto.division != null){
-                it[division] = userUpdateDto.division
+            if (userUpdateDto.department != null){
+                it[department] = userUpdateDto.department
+            }
+            if (userUpdateDto.dateOfBirth != null){
+                it[dateOfBirth] = userUpdateDto.dateOfBirth
             }
         } != 0
     }

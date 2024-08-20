@@ -10,7 +10,7 @@ class ReportOutputDto (
     val mileage: Float?,
     val avgSpeed: Float?,
     val trip: Int?,
-    val automobile: Int?,
+    val car: Int?,
     val driver: Int?
 ){
     constructor(resultRow: ResultRow):
@@ -19,7 +19,7 @@ class ReportOutputDto (
                 resultRow[ReportModel.mileage],
                 resultRow[ReportModel.avgSpeed],
                 resultRow[ReportModel.trip].value,
-                resultRow[ReportModel.automobile].value,
+                resultRow[ReportModel.car].value,
                 resultRow[ReportModel.driver].value
             )
 }

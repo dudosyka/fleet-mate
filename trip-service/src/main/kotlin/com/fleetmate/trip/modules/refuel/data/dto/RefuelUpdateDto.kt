@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class RefuelUpdateDto(
     val date: Long? = null,
     val volume: Float? = null,
-    val automobile: Int? = null,
+    val car: Int? = null,
     val trip: Int? = null,
     val driver: Int? = null,
     val billPhoto: Int? = null

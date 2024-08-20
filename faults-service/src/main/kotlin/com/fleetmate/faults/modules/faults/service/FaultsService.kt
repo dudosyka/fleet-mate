@@ -26,8 +26,8 @@ class FaultsService(di: DI) : KodeinService(di) {
     fun delete(id: Int): Boolean =
         FaultsModel.delete(id)
 
-    fun getAllCriticalByAutomobile(automobileId: Int): List<FaultDto> {
-        val rows = FaultsModel.getAllCriticalByAutomobile(automobileId)
+    fun getAllCriticalByCar(carId: Int): List<FaultDto> {
+        val rows = FaultsModel.getAllCriticalByCar(carId)
         val returnList = mutableListOf<FaultDto>()
         rows.forEach{
             returnList.add(

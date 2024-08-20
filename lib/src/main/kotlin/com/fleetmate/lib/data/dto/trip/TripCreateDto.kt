@@ -16,7 +16,7 @@ data class TripCreateDto(
     val speedInfo: List<Float>? = null,
     val avgSpeed: Float? = null,
     val driver: Int,
-    val automobile: Int,
+    val car: Int,
     val questionable: Boolean? = null,
     val needWashing: Boolean? = null,
     val washHappen: Boolean? = null

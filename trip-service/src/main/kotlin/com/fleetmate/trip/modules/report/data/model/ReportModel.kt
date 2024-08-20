@@ -1,7 +1,7 @@
 package com.fleetmate.trip.modules.report.data.model
 
+import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
@@ -25,7 +25,7 @@ object ReportModel : BaseIntIdTable(){
     val mileage = float("mileage")
     val avgSpeed = float("avgSpeed")
     val trip = reference("trip", TripModel)
-    val automobile = reference("automobile", AutomobileModel)
+    val car = reference("car", CarModel)
     val driver = reference("driver", UserModel)
 
 
@@ -36,25 +36,27 @@ object ReportModel : BaseIntIdTable(){
                 mileage,
                 avgSpeed,
                 trip,
-                automobile,
+                car,
                 driver
             ).where(
                 ReportModel.id eq id
             ).firstOrNull()
     }
 
-    fun getAll(start: Long, finish: Long): List<ResultRow> = transaction {
+    fun getAll(start: Long, finish: Long, userId: Int): List<ResultRow> = transaction {
         val startTime = LocalDateTime.ofEpochSecond(start, 0, ZoneOffset.UTC)
         val finishTime = LocalDateTime.ofEpochSecond(finish, 0, ZoneOffset.UTC)
-        ReportModel.join(
+        join(
             TripModel, JoinType.INNER, trip, TripModel.id
         ).select(
             ReportModel.id,
-            automobile,
+            car,
             TripModel.id,
             TripModel.route,
             TripModel.keyReturn
         ).where{
+            driver eq userId
+        }.andWhere{
             createdAt less finishTime
         }.andWhere {
             createdAt greater startTime
@@ -66,7 +68,7 @@ object ReportModel : BaseIntIdTable(){
             it[mileage] = reportCreateDto.mileage
             it[avgSpeed] = reportCreateDto.avgSpeed
             it[trip] = reportCreateDto.trip
-            it[automobile] = reportCreateDto.automobile
+            it[car] = reportCreateDto.car
             it[driver] = reportCreateDto.driver
 
         }.resultedValues ?: throw InternalServerException("Failed to create report")).first()
@@ -84,8 +86,8 @@ object ReportModel : BaseIntIdTable(){
             if (reportUpdateDto.trip != null){
                 it[trip] = reportUpdateDto.trip
             }
-            if (reportUpdateDto.automobile != null){
-                it[automobile] = reportUpdateDto.automobile
+            if (reportUpdateDto.car != null){
+                it[car] = reportUpdateDto.car
             }
             if (reportUpdateDto.driver != null){
                 it[driver] = reportUpdateDto.driver

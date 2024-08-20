@@ -16,7 +16,7 @@ class ViolationOutputDto(
     val hidden: Boolean?,
     val driver: Int?,
     val trip: Int?,
-    val automobile: Int?,
+    val car: Int?,
     val comment: String?
 ) {
     constructor(resultRow: ResultRow):
@@ -28,7 +28,7 @@ class ViolationOutputDto(
                 resultRow[ViolationModel.hidden],
                 resultRow[ViolationModel.driver].value,
                 resultRow[ViolationModel.trip].value,
-                resultRow[ViolationModel.automobile].value,
+                resultRow[ViolationModel.car].value,
                 resultRow[ViolationModel.comment]
             )
 }

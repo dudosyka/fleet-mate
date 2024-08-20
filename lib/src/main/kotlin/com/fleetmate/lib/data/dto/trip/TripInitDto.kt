@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TripInitDto(
-    val driverId: Int,
-    val automobileId: Int
+    val carId: Int
 ) {
 }

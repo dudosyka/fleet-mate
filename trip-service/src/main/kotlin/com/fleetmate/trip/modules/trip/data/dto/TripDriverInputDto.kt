@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TripDriverInputDto(
-    val driverId: Int,
     val day: Int
 ) {
 }

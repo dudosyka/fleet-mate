@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class QrTokenDto(
-    val userId: Int,
-    val automobileId: Int? = null
+    val userId: Int? = null,
+    val carId: Int? = null
 ) {
 }

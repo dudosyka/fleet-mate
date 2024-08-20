@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 data class FaultsCreateDto(
     val status: AppConf.Status,
     val trip: Int?,
-    val automobile: Int,
+    val car: Int,
     val photo: PhotoCreateDto?,
     val comment: String?,
-    val automobilePart: Int
+    val carPart: Int
 )

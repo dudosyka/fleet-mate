@@ -7,6 +7,6 @@ data class CheckUpdateDto(
     val author: Int? = null,
     val startTime: Long? = null,
     val finishTime: Long? = null,
-    val timeExceeding: Boolean? = null,
-    val automobileId: Int? = null
+    val timeExceeded: Boolean? = null,
+    val carId: Int? = null
 )

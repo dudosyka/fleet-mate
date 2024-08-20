@@ -7,6 +7,6 @@ data class ReportCreateDto (
     val mileage: Float,
     val avgSpeed: Float,
     val trip: Int,
-    val automobile: Int,
+    val car: Int,
     val driver: Int
 )

@@ -10,6 +10,6 @@ data class ViolationCreateDto(
     val hidden: Boolean?,
     val driver: Int,
     val trip: Int,
-    val automobile: Int,
+    val car: Int,
     val comment: String?
 )

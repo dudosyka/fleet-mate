@@ -1,10 +1,11 @@
 package com.fleetmate.trip.modules.trip.service.trip
 
+import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.data.dto.car.CarUpdateDto
 import com.fleetmate.lib.data.dto.trip.TripInitDto
 import com.fleetmate.lib.data.dto.trip.TripWashInputDto
 import com.fleetmate.lib.data.dto.violation.ViolationCreateDto
 import com.fleetmate.lib.dto.auth.AuthorizedUser
-import com.fleetmate.lib.dto.automobile.AutomobileUpdateDto
 import com.fleetmate.lib.dto.trip.TripCreateDto
 import com.fleetmate.lib.dto.trip.TripFullOutputDto
 import com.fleetmate.lib.dto.trip.TripOutputDto
@@ -12,7 +13,7 @@ import com.fleetmate.lib.dto.trip.TripUpdateDto
 import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
-import com.fleetmate.trip.modules.automobile.service.AutomobileService
+import com.fleetmate.trip.modules.car.service.CarService
 import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
 import com.fleetmate.trip.modules.report.service.ReportService
 import com.fleetmate.trip.modules.trip.data.dto.TripDriverInputDto
@@ -29,16 +30,16 @@ import kotlin.collections.map
 class TripService(di: DI) : KodeinService(di) {
 
     private val violationService: ViolationService by instance()
-    private val automobileService: AutomobileService by instance()
+    private val carService: CarService by instance()
     private val reportService: ReportService by instance()
 
-    fun getOne(id: Int?): TripFullOutputDto? {
+    fun getOne(id: Int): TripFullOutputDto? {
         return TripFullOutputDto(TripModel.getOne(id) ?: return null)
     }
 
-    fun getActiveTrip(automobileId: Int): ResultRow {
-        val trip = TripModel.getActiveTrip(automobileId)
-        trip?: throw NotFoundException("Active Trip with this automobile is not found")
+    fun getActiveTrip(carId: Int): ResultRow {
+        val trip = TripModel.getActiveTrip(carId)
+        trip?: throw NotFoundException("Active Trip with this car is not found")
         return trip
     }
 
@@ -57,12 +58,12 @@ class TripService(di: DI) : KodeinService(di) {
     fun delete(id: Int): Boolean =
         TripModel.delete(id)
 
-    fun getTripInfo(tripDriverInputDto: TripDriverInputDto) =
-        TripModel.getAllDriverTrip(tripDriverInputDto.driverId, tripDriverInputDto.day)
+    fun getTripInfo(tripDriverInputDto: TripDriverInputDto, authorizedUser: AuthorizedUser) =
+        TripModel.getAllDriverTrip(authorizedUser.id, tripDriverInputDto.day)
 
-    fun initTrip(tripInitDto: TripInitDto): TripInitOutputDto {
-        val refuel = automobileService.checkFuel(tripInitDto.automobileId)
-        val trip = TripOutputDto(TripModel.initTrip(tripInitDto.driverId, tripInitDto.automobileId))
+    fun initTrip(tripInitDto: TripInitDto, authorizedUser: AuthorizedUser): TripInitOutputDto {
+        val refuel = carService.checkFuel(tripInitDto.carId)
+        val trip = TripOutputDto(TripModel.initTrip(authorizedUser.id, tripInitDto.carId))
         return TripInitOutputDto(
             refuel,
             trip
@@ -70,47 +71,41 @@ class TripService(di: DI) : KodeinService(di) {
     }
 
     fun finishTrip(tripFinishDto: TripFinishDto, authorizedUser: AuthorizedUser) {
-        val trip = getActiveTrip(tripFinishDto.automobileId)
+        val trip = getActiveTrip(tripFinishDto.carId)
 
-        val auto = automobileService.getOne(tripFinishDto.automobileId) ?: throw NotFoundException("Automobile is not found")
-        val tripMileage = tripFinishDto.mileage - auto.mileage!!
-        val fuel = auto.fuelLevel!! - (tripMileage / auto.type?.avgFuelConsumption!!)
-        automobileService.update(
-            tripFinishDto.automobileId,
-            AutomobileUpdateDto(
+        val car = carService.getOne(tripFinishDto.carId) ?: throw NotFoundException("Car is not found")
+        val tripMileage = tripFinishDto.mileage - car.mileage!!
+        val fuel = car.fuelLevel!! - ((tripMileage / 100) / car.type?.avgFuelConsumption!!)
+        carService.update(
+            tripFinishDto.carId,
+            CarUpdateDto(
                 mileage = tripFinishDto.mileage,
                 fuelLevel = fuel
             )
         )
-        update(
-            trip[TripModel.id].value,
-            TripUpdateDto(
-                keyReturn = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-            )
-        )
         reportService.create(
             ReportCreateDto(
-                mileage = tripMileage, //FIXME какой пробег ставить? пробег только за эту поездку или общий пробег авто
+                mileage = tripMileage,
                 avgSpeed = trip[TripModel.avgSpeed]!!,
                 trip = trip[TripModel.id].value,
-                automobile = tripFinishDto.automobileId,
+                car = tripFinishDto.carId,
                 driver = authorizedUser.id
             )
         )
     }
 
     fun setNeedWash(washInputDto: TripWashInputDto) {
-        val trip = getActiveTrip(washInputDto.automobileId)
+        val trip = getActiveTrip(washInputDto.carId)
         TripModel.update(
             trip[TripModel.id].value,
             TripUpdateDto(
-                washHappen = washInputDto.wash
+                needWashing = washInputDto.wash
             )
         )
     }
 
     fun setWash(washInitDto: TripWashInputDto) {
-        val trip = getActiveTrip(washInitDto.automobileId)
+        val trip = getActiveTrip(washInitDto.carId)
         TripModel.update(
             trip[TripModel.id].value,
             TripUpdateDto(
@@ -118,22 +113,32 @@ class TripService(di: DI) : KodeinService(di) {
             )
         )
     }
-    fun checkWash(automobileId: Int) {
-        val trip = getActiveTrip(automobileId)
+    fun checkWash(carId: Int) {
+        val trip = getActiveTrip(carId)
 
         if (trip[TripModel.washHappen] == false){
             violationService.create(
                 ViolationCreateDto(
                     date = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                    type = 1, //FIXME
+                    type = AppConf.ViolationType.DEFAULT.id,
                     duration = (0).toFloat(),
                     hidden = false,
                     driver = trip[TripModel.driver].value,
-                    automobile = automobileId,
-                    comment = "There was no automobile wash",
+                    car = carId,
+                    comment = "There was no car wash",
                     trip = trip[TripModel.id].value
                 )
             )
         }
+    }
+    fun keyReturn(carId: Int){
+        val trip = getActiveTrip(carId)
+
+        update(
+            trip[TripModel.id].value,
+            TripUpdateDto(
+                keyReturn = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+            )
+        )
     }
 }

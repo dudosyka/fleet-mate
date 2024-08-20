@@ -10,7 +10,7 @@ class RefuelOutputDto (
     val id: Int?,
     val date: Long?,
     val volume: Float?,
-    val automobile: Int?,
+    val car: Int?,
     val trip: Int?,
     val driver: Int?,
     val billPhoto: Int?
@@ -20,7 +20,7 @@ class RefuelOutputDto (
                 resultRow[RefuelModel.id].value,
                 resultRow[RefuelModel.date].toString().toLong(),
                 resultRow[RefuelModel.volume],
-                resultRow[RefuelModel.automobile].value,
+                resultRow[RefuelModel.car].value,
                 resultRow[RefuelModel.trip].value,
                 resultRow[RefuelModel.driver].value,
                 resultRow[RefuelModel.billPhoto].value

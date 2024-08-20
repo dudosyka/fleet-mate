@@ -114,8 +114,10 @@ object JwtUtil {
             )
             .apply {
                 withClaim("id", qrTokenDto.userId)
-                val roles = RbacModel.userToRoleLinks(qrTokenDto.userId, expanded = true)
-                withClaim("roles", Json.encodeToString(encodeRoles(roles)))
+                if (qrTokenDto.userId != null){
+                    val roles = RbacModel.userToRoleLinks(qrTokenDto.userId, expanded = true)
+                    withClaim("roles", Json.encodeToString(encodeRoles(roles)))
+                }
             }.sign(Algorithm.HMAC256(AppConf.jwt.secret))
     }
 

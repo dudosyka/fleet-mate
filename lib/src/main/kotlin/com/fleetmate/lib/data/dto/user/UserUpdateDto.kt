@@ -7,6 +7,7 @@ data class UserUpdateDto(
     val fullName: String?,
     val email: String?,
     val phoneNumber: String?,
-    val post: Int?,
-    val division: Int?
+    val position: Int?,
+    val department: Int?,
+    val dateOfBirth: Long?
 )

@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CheckStartInputDto(
-    val author: Int,
-    val automobileId: Int
+    val carId: Int
 ) {
 }

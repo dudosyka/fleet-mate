@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TripWashInputDto(
-    val automobileId: Int,
+    val carId: Int,
     val wash: Boolean
 ) {
 }

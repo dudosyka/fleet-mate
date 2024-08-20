@@ -42,4 +42,11 @@ object AppConf {
         FIRST(1),
         SECOND(2)
     }
+    enum class ViolationType(val id: Int){
+        DEFAULT(1)
+    }
+
+    enum class Category(val id: Int){
+        DEFAULT(1)
+    }
 }

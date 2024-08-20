@@ -3,12 +3,12 @@ package com.fleetmate.lib.model.trip
 import com.fleetmate.faults.modules.faults.data.model.FaultsModel
 import com.fleetmate.lib.data.dto.violation.TripViolationOutputDto
 import com.fleetmate.lib.data.dto.violation.ViolationOutputDto
+import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.dto.trip.TripCreateDto
 import com.fleetmate.lib.dto.trip.TripUpdateDto
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.model.check.CheckModel
-import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import com.fleetmate.trip.modules.violation.data.model.ViolationModel
@@ -40,36 +40,52 @@ object TripModel: BaseIntIdTable() {
     val speedInfo = array<Float>("speed_info").nullable().default(null)
     val avgSpeed = float("avg_speed").nullable().default(null)
     val driver = reference("driver", UserModel)
-    val automobile = reference("automobile", AutomobileModel)
+    val car = reference("car", CarModel)
     val questionable = bool("questionable").nullable().default(null)
     val needWashing = bool("need_washing").nullable().default(null)
     val washHappen = bool("wash_happen").nullable().default(null)
 
 
-    fun getOne(id: Int?): List<ResultRow?>? = transaction {
-        if (id == null){
-            return@transaction null
-        }
+    fun getOne(id: Int): List<ResultRow?>? = transaction {
+
+        var mechanicBefore: ResultRow? = null
+        var driverBefore: ResultRow? = null
+        var mechanicAfter: ResultRow? = null
+        var driverAfter: ResultRow? = null
+        var driverInfo: ResultRow? = null
+        var carInfo: ResultRow? = null
+
         val checksInfo = TripModel.select(
             mechanicCheckBeforeTrip,
             driverCheckBeforeTrip,
             mechanicCheckAfterTrip,
             driverCheckAfterTrip,
             driver,
-            automobile
+            car
         ).where(
             TripModel.id eq id
         ).firstOrNull()
 
+        if (checksInfo != null){
+            if (checksInfo[mechanicCheckBeforeTrip] != null){
+                mechanicBefore = CheckModel.getOne(checksInfo[mechanicCheckBeforeTrip]!!.value)
+            }
+            if (checksInfo[driverCheckBeforeTrip] != null){
+                driverBefore = CheckModel.getOne(checksInfo[driverCheckBeforeTrip]!!.value)
+            }
+            if (checksInfo[mechanicCheckAfterTrip] != null){
+                mechanicAfter = CheckModel.getOne(checksInfo[mechanicCheckAfterTrip]!!.value)
+            }
+            if (checksInfo[driverCheckAfterTrip] != null){
+                driverAfter = CheckModel.getOne(checksInfo[driverCheckAfterTrip]!!.value)
+            }
 
-        val mechanicBefore = CheckModel.getOne(checksInfo?.get(mechanicCheckAfterTrip)?.value)
-        val driverBefore = CheckModel.getOne(checksInfo?.get(driverCheckBeforeTrip)?.value)
-        val mechanicAfter = CheckModel.getOne(checksInfo?.get(mechanicCheckAfterTrip)?.value)
-        val driverAfter = CheckModel.getOne(checksInfo?.get(driverCheckAfterTrip)?.value)
+            driverInfo = UserModel.getOne(checksInfo[driver].value)
+            carInfo = CarModel.getOne(checksInfo[car].value)
+        }else{
+            return@transaction emptyList()
+        }
 
-        val driverInfo : ResultRow? = UserModel.getOne(checksInfo?.get(driver)?.value)
-
-        val automobileInfo = AutomobileModel.getOne(checksInfo?.get(automobile)?.value)
 
         val trip = TripModel.select(
                 TripModel.id,
@@ -92,7 +108,7 @@ object TripModel: BaseIntIdTable() {
             mechanicAfter,
             driverAfter,
             driverInfo,
-            automobileInfo,
+            carInfo,
             trip
         )
     }
@@ -126,7 +142,7 @@ object TripModel: BaseIntIdTable() {
             it[speedInfo] = tripCreateDto.speedInfo
             it[avgSpeed] = tripCreateDto.avgSpeed
             it[driver] = tripCreateDto.driver
-            it[automobile] = tripCreateDto.automobile
+            it[car] = tripCreateDto.car
             it[questionable] = tripCreateDto.questionable
             it[needWashing] = tripCreateDto.needWashing
             it[washHappen] = tripCreateDto.washHappen
@@ -176,8 +192,8 @@ object TripModel: BaseIntIdTable() {
             if (tripUpdateDto.driver != null){
                 it[driver] = tripUpdateDto.driver
             }
-            if (tripUpdateDto.automobile != null){
-                it[automobile] = tripUpdateDto.automobile
+            if (tripUpdateDto.car != null){
+                it[car] = tripUpdateDto.car
             }
             if (tripUpdateDto.questionable != null){
                 it[questionable] = tripUpdateDto.questionable
@@ -200,17 +216,17 @@ object TripModel: BaseIntIdTable() {
 
         if (currentDay >= day) {
             val time = LocalDateTime.now().withDayOfMonth(day)
-            val trips = innerJoin(AutomobileModel)
+            val trips = innerJoin(CarModel)
                 .select(
                     TripModel.id,
                     keyAcceptance,
                     keyReturn,
                     route,
                     avgSpeed,
-                    AutomobileModel.id,
-                    AutomobileModel.mileage,
-                    AutomobileModel.stateNumber,
-                    AutomobileModel.fuelLevel
+                    CarModel.id,
+                    CarModel.mileage,
+                    CarModel.registrationNumber,
+                    CarModel.fuelLevel
                 ).where(
                     driver eq driverId
                 ).andWhere {
@@ -242,22 +258,22 @@ object TripModel: BaseIntIdTable() {
             return@transaction list
         }
     }
-    fun initTrip(driverId: Int, automobileId: Int): ResultRow = transaction{
+    fun initTrip(driverId: Int, carId: Int): ResultRow = transaction{
         val time = LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC)
         val check = CheckModel.select(
-            CheckModel.driver,
+            CheckModel.carId,
             CheckModel.finishTime
         ).where{
-            CheckModel.driver eq driverId
+            CheckModel.carId eq carId
         }.andWhere {
             CheckModel.finishTime greater time
         }.firstOrNull()
 
         val faults = FaultsModel.select(
-            FaultsModel.automobile,
+            FaultsModel.car,
             FaultsModel.critical
         ).where{
-            FaultsModel.automobile eq automobileId
+            FaultsModel.car eq carId
         }.adjustWhere {
             FaultsModel.critical eq true
         }.firstOrNull()
@@ -270,18 +286,18 @@ object TripModel: BaseIntIdTable() {
                     TripModel.insert {
                         it[keyAcceptance] = time
                         it[driver] = driverId
-                        it[automobile] = automobileId
+                        it[car] = carId
                     }.resultedValues ?: throw InternalServerException("Failed to create trip")
             ).first()
         }
     }
-    fun getActiveTrip(automobileId: Int): ResultRow? = transaction{
+    fun getActiveTrip(carId: Int): ResultRow? = transaction{
         TripModel.select(
             TripModel.id,
             washHappen,
             driver
         ).where(
-            automobile eq automobileId
+            car eq carId
         ).andWhere {
             keyReturn eq null
         }.firstOrNull()

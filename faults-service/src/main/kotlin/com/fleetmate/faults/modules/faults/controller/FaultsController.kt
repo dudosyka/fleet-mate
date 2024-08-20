@@ -1,7 +1,7 @@
 package com.fleetmate.faults.modules.faults.controller
 
 import com.fleetmate.faults.modules.faults.service.FaultsService
-import com.fleetmate.lib.data.dto.automobile.AutomobileIdDto
+import com.fleetmate.lib.data.dto.car.CarIdDto
 import com.fleetmate.lib.data.dto.faults.FaultDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import io.ktor.server.application.*
@@ -17,8 +17,8 @@ class FaultsController(override val di: DI) : KodeinController() {
     override fun Route.registerRoutes() {
         route("automobile"){
             get{
-                val automobileId = call.receive<AutomobileIdDto>()
-                call.respond<List<FaultDto>>(faultsService.getAllCriticalByAutomobile(automobileId.id))
+                val carId = call.receive<CarIdDto>()
+                call.respond<List<FaultDto>>(faultsService.getAllCriticalByCar(carId.id))
             }
         }
     }

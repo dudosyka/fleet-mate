@@ -1,6 +1,8 @@
 package com.fleetmate.trip.modules.report.service
 
 import com.fleetmate.faults.modules.faults.data.model.FaultsModel
+import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.report.data.dto.ReportBaseOutputDto
@@ -20,6 +22,9 @@ class ReportService(di: DI) : KodeinService(di) {
 
     fun getOne(id: Int): ReportFullOutputDto? {
         val report =  ReportOutputDto(ReportModel.getOne(id) ?: return null)
+        if (report.trip == null){
+            throw NotFoundException("Trip is Not Found")
+        }
         val trip = tripService.getOne(report.trip)
         return ReportFullOutputDto(
             id = report.id,
@@ -29,13 +34,13 @@ class ReportService(di: DI) : KodeinService(di) {
         )
     }
 
-    fun getAll(start: Long, finish: Long): List<ReportBaseOutputDto> {
-        return ReportModel.getAll(start, finish).map {
+    fun getAll(start: Long, finish: Long, authorizedUser: AuthorizedUser): List<ReportBaseOutputDto> {
+        return ReportModel.getAll(start, finish, authorizedUser.id).map {
             ReportBaseOutputDto(
                 id = it[ReportModel.id].value,
                 date = it[TripModel.keyReturn]?.epochSecond,
                 faults = FaultsModel.getAllByTrip(it[TripModel.id].value).size,
-                automobile = it[ReportModel.automobile].value,
+                car = it[ReportModel.car].value,
                 route = it[TripModel.route]
             )
         }

@@ -8,7 +8,7 @@ data class FaultsUpdateDto(
     val id: Int,
     val status: AppConf.Status?,
     val trip: Int?,
-    val automobile: Int?,
+    val car: Int?,
     val photo: String?,
     val comment: String?,
     val critical: Boolean?

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TripFinishDto(
     val tripId: Int,
-    val automobileId: Int,
+    val carId: Int,
     val mileage: Float
 ) {
 }

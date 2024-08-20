@@ -1,6 +1,6 @@
 package com.fleetmate.lib.data.dto.violation
 
-import com.fleetmate.lib.model.automobile.AutomobileModel
+import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.model.trip.TripModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
@@ -13,10 +13,10 @@ class TripViolationOutputDto(
     val route: String?,
     val avgSpeed: Float?,
     val keyReturn: String?,
-    val automobileId: Int,
-    val automobileMileage: Float,
-    val automobileStateNumber: String,
-    val automobileFuelLevel: Float,
+    val carId: Int,
+    val carMileage: Float,
+    val carRegistrationNumber: String,
+    val carFuelLevel: Float,
     val violations: List<ViolationOutputDto?>
 ) {
     constructor(
@@ -28,10 +28,10 @@ class TripViolationOutputDto(
         trip[TripModel.route],
         trip[TripModel.avgSpeed],
         trip[TripModel.keyReturn].toString(),
-        trip[AutomobileModel.id].value,
-        trip[AutomobileModel.mileage],
-        trip[AutomobileModel.stateNumber],
-        trip[AutomobileModel.fuelLevel],
+        trip[CarModel.id].value,
+        trip[CarModel.mileage],
+        trip[CarModel.registrationNumber],
+        trip[CarModel.fuelLevel],
         violations
     )
 }

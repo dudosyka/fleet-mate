@@ -1,9 +1,9 @@
 package com.fleetmate.faults.modules.faults.data.dto
 
 import com.fleetmate.faults.modules.faults.data.model.FaultsModel
-import com.fleetmate.lib.dto.automobile.AutomobileOutputDto
+import com.fleetmate.lib.data.model.car.CarModel
+import com.fleetmate.lib.dto.car.CarOutputDto
 import com.fleetmate.lib.dto.photo.PhotoOutputDto
-import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.photo.PhotoModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
@@ -15,7 +15,7 @@ class FaultsFullOutputDto (
     val status: String?,
     val trip: Int?,
     val user: Int,
-    val automobile: AutomobileOutputDto?,
+    val car: CarOutputDto?,
     val photo: PhotoOutputDto?,
     val comment: String?,
     val critical: Boolean
@@ -27,9 +27,9 @@ class FaultsFullOutputDto (
                 resultRow[FaultsModel.status],
                 resultRow[FaultsModel.trip]?.value,
                 resultRow[FaultsModel.user].value,
-                AutomobileOutputDto(
-                    id = resultRow[AutomobileModel.id].value,
-                    stateNumber = resultRow[AutomobileModel.stateNumber],
+                CarOutputDto(
+                    id = resultRow[CarModel.id].value,
+                    registrationNumber = resultRow[CarModel.registrationNumber],
                     null,
                     null,
                     null,

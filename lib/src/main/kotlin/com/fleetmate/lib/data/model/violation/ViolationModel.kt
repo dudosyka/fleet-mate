@@ -2,8 +2,8 @@ package com.fleetmate.trip.modules.violation.data.model
 
 import com.fleetmate.lib.data.dto.violation.ViolationCreateDto
 import com.fleetmate.lib.data.dto.violation.ViolationUpdateDto
+import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.automobile.AutomobileModel
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
@@ -29,7 +29,7 @@ object ViolationModel : BaseIntIdTable() {
     val hidden = bool("hidden").default(true)
     val driver = reference("driver", UserModel)
     val trip = reference("trip", TripModel)
-    val automobile = reference("automobile", AutomobileModel)
+    val car = reference("car", CarModel)
     val comment = text("comment").nullable().default(null)
 
     fun getOne(id: Int): ResultRow? = transaction {
@@ -43,7 +43,7 @@ object ViolationModel : BaseIntIdTable() {
                 hidden,
                 driver,
                 trip,
-                automobile,
+                car,
                 comment
             )
             .where {
@@ -52,7 +52,7 @@ object ViolationModel : BaseIntIdTable() {
     }
 
     fun getAll(): List<ResultRow> = transaction {
-        select(ViolationModel.id, type, date, ViolationModel.duration, hidden, driver, trip, automobile, comment).toList()
+        select(ViolationModel.id, type, date, ViolationModel.duration, hidden, driver, trip, car, comment).toList()
     }
 
     fun create(violationCreateDto: ViolationCreateDto) : ResultRow = transaction{
@@ -67,7 +67,7 @@ object ViolationModel : BaseIntIdTable() {
             it[hidden] = violationCreateDto.hidden != false
             it[driver] = violationCreateDto.driver
             it[trip] = violationCreateDto.trip
-            it[automobile] = violationCreateDto.automobile
+            it[car] = violationCreateDto.car
             it[comment] = violationCreateDto.comment
 
         }.resultedValues ?: throw InternalServerException("Failed to create violation")).first()
@@ -98,8 +98,8 @@ object ViolationModel : BaseIntIdTable() {
             if (violationUpdateDto.trip != null){
                 it[trip] = violationUpdateDto.trip
             }
-            if (violationUpdateDto.automobile != null){
-                it[automobile] = violationUpdateDto.automobile
+            if (violationUpdateDto.car != null){
+                it[car] = violationUpdateDto.car
             }
             if (violationUpdateDto.comment != null){
                 it[comment] = violationUpdateDto.comment

@@ -7,7 +7,7 @@ data class ReportBaseOutputDto(
     val id: Int,
     val date: Long?,
     val faults: Int,
-    val automobile: Int,
+    val car: Int,
     val route: String?
 ) {
 }
