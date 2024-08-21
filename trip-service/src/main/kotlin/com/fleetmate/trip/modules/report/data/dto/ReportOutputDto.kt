@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 
 @Serializable
-class ReportOutputDto (
+data class ReportOutputDto (
     val id: Int?,
-    val mileage: Float?,
-    val avgSpeed: Float?,
+    val mileage: Double?,
+    val avgSpeed: Double?,
     val trip: Int?,
     val car: Int?,
     val driver: Int?

@@ -1,18 +1,18 @@
 package com.fleetmate.lib.data.dto.violation
 
-import com.fleetmate.trip.modules.violation.data.model.ViolationModel
+import com.fleetmate.lib.data.model.violation.ViolationModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
-import kotlin.text.toFloat
+import kotlin.text.toDouble
 import kotlin.text.toInt
 import kotlin.toString
 
 @Serializable
-class ViolationOutputDto(
+data class ViolationOutputDto(
     val id: Int?,
     val date: String?,
     val type: Int?,
-    val duration: Float?,
+    val duration: Double?,
     val hidden: Boolean?,
     val driver: Int?,
     val trip: Int?,
@@ -24,7 +24,7 @@ class ViolationOutputDto(
                 resultRow[ViolationModel.id].value,
                 resultRow[ViolationModel.date].toString(),
                 resultRow[ViolationModel.type].toString().toInt(),
-                resultRow[ViolationModel.duration].toString().toFloat(),
+                resultRow[ViolationModel.duration].toString().toDouble(),
                 resultRow[ViolationModel.hidden],
                 resultRow[ViolationModel.driver].value,
                 resultRow[ViolationModel.trip].value,

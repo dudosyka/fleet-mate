@@ -1,13 +1,13 @@
-package com.fleetmate.lib.dto.post
+package com.fleetmate.lib.data.dto.position
 
-import com.fleetmate.lib.model.post.PositionModel
+import com.fleetmate.lib.data.model.position.PositionModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 
 @Serializable
 class PositionOutputDto(
-    val id: Int?,
-    val name : String?
+    val id: Int,
+    val name : String
 ) {
     constructor(resultRow: ResultRow):
             this(

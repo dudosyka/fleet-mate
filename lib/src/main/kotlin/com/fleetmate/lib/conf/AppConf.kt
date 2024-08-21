@@ -2,6 +2,7 @@ package com.fleetmate.lib.conf
 
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.config.*
+import java.time.ZoneOffset
 
 object AppConf {
     private val mainConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load().getConfig("application"))
@@ -11,6 +12,8 @@ object AppConf {
 
     val isDebug: Boolean = mainConfig.getString("debug") == "true"
     val needCrypt: Boolean = mainConfig.getString("crypt") == "true"
+
+    val defaultZoneOffset: ZoneOffset = ZoneOffset.ofHours(3)
 
     private fun ApplicationConfig.getString(name: String): String = this.property(name).getString()
     private fun ApplicationConfig.getInt(name: String): Int = this.getString(name).toInt()
@@ -38,10 +41,12 @@ object AppConf {
         admin = rolesConfig.getInt("admin")
     )
 
-    enum class Status(val id: Int) {
-        FIRST(1),
-        SECOND(2)
+    enum class TripStatus(val id: Int) {
+        CLOSED_DUE_TO_FAULTS(1),
+        FIRST(2),
+        SECOND(3),
     }
+
     enum class ViolationType(val id: Int){
         DEFAULT(1)
     }
@@ -49,4 +54,13 @@ object AppConf {
     enum class Category(val id: Int){
         DEFAULT(1)
     }
+
+    enum class PhotoType(val id: Int) {
+        REFUEL(1);
+        companion object {
+            fun fromId(id: Int): PhotoType? =
+                entries.firstOrNull { it.id == id }
+        }
+    }
+
 }

@@ -1,47 +1,47 @@
-package com.fleetmate.lib.dto.trip
+package com.fleetmate.lib.data.dto.trip
 
-import com.fleetmate.lib.model.trip.TripModel
+import com.fleetmate.lib.data.model.trip.TripModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 import kotlin.toString
 
 
 @Serializable
-class TripOutputDto (
-    val id: Int?,
-    val keyAcceptance: String?,
-    val status: String?,
-    val mechanicCheckBeforeTrip: Int?,
-    val driverCheckBeforeTrip: Int?,
+data class TripOutputDto(
+    val id: Int,
+    val keyAcceptance: String,
+    val status: String,
+    val mechanicCheckBeforeTrip: Int? = null,
+    val driverCheckBeforeTrip: Int? = null,
     val mechanicCheckAfterTrip: Int? = null,
     val driverCheckAfterTrip: Int? = null,
     val keyReturn: String? = null,
     val route: String? = null,
-    val speedInfo: List<Float>? = null,
-    val avgSpeed: Float? = null,
-    val driver: Int?,
-    val car: Int?,
+    val speedInfo: List<Double>,
+    val avgSpeed: Double? = null,
+    val driver: Int,
+    val car: Int,
     val questionable: Boolean? = null,
     val needWashing: Boolean? = null,
     val washHappen: Boolean? = null
 ) {
-    constructor(resultRow: ResultRow?):
+    constructor(resultRow: ResultRow):
         this(
-            resultRow?.get(TripModel.id)?.value,
-            resultRow?.get(TripModel.keyAcceptance).toString(),
-            resultRow?.get(TripModel.status),
-            resultRow?.get(TripModel.mechanicCheckBeforeTrip)?.value,
-            resultRow?.get(TripModel.driverCheckBeforeTrip)?.value,
-            resultRow?.get(TripModel.mechanicCheckAfterTrip)?.value,
-            resultRow?.get(TripModel.driverCheckAfterTrip)?.value,
-            resultRow?.get(TripModel.keyReturn).toString(),
-            resultRow?.get(TripModel.route),
-            resultRow?.get(TripModel.speedInfo),
-            resultRow?.get(TripModel.avgSpeed),
-            resultRow?.get(TripModel.driver)?.value,
-            resultRow?.get(TripModel.car)?.value,
-            resultRow?.get(TripModel.questionable),
-            resultRow?.get(TripModel.needWashing),
-            resultRow?.get(TripModel.washHappen)
+            resultRow[TripModel.id].value,
+            resultRow[TripModel.keyAcceptance].toString(),
+            resultRow[TripModel.status],
+            resultRow[TripModel.mechanicCheckBeforeTrip]?.value,
+            resultRow[TripModel.driverCheckBeforeTrip]?.value,
+            resultRow[TripModel.mechanicCheckAfterTrip]?.value,
+            resultRow[TripModel.driverCheckAfterTrip]?.value,
+            resultRow[TripModel.keyReturn].toString(),
+            resultRow[TripModel.route],
+            resultRow[TripModel.speedInfo],
+            resultRow[TripModel.avgSpeed],
+            resultRow[TripModel.driver].value,
+            resultRow[TripModel.car].value,
+            resultRow[TripModel.questionable],
+            resultRow[TripModel.needWashing],
+            resultRow[TripModel.washHappen]
         )
 }

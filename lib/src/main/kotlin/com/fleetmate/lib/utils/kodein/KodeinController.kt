@@ -9,7 +9,7 @@ import org.kodein.di.DIAware
 import org.kodein.di.instance
 import com.fleetmate.lib.exceptions.BadRequestException
 import com.fleetmate.lib.dto.auth.RefreshTokenDto
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.data.dto.auth.AuthorizedUser
 import com.fleetmate.lib.utils.security.jwt.JwtUtil
 
 /**

@@ -3,7 +3,7 @@ package com.fleetmate.crypt.modules.rbac.service
 import com.fleetmate.lib.data.dto.role.RoleInputDto
 import com.fleetmate.lib.data.dto.role.RoleOutputDto
 import com.fleetmate.lib.data.model.role.RoleModel
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.data.dto.auth.AuthorizedUser
 import com.fleetmate.lib.utils.kodein.KodeinService
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction

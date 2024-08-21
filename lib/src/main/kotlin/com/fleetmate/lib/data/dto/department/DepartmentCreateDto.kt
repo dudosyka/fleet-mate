@@ -1,4 +1,4 @@
-package com.fleetmate.lib.dto.division
+package com.fleetmate.lib.data.dto.department
 
 import kotlinx.serialization.Serializable
 

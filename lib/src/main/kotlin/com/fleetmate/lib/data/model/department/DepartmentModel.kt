@@ -1,6 +1,6 @@
-package com.fleetmate.lib.model.division
+package com.fleetmate.lib.data.model.department
 
-import com.fleetmate.lib.dto.division.DepartmentCreateDto
+import com.fleetmate.lib.data.dto.department.DepartmentCreateDto
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow

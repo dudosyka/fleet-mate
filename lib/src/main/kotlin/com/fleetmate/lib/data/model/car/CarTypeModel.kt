@@ -1,7 +1,7 @@
 package com.fleetmate.lib.data.model.car
 
-import com.fleetmate.lib.data.dto.car.CarTypeCreateDto
-import com.fleetmate.lib.data.dto.car.CarTypeUpdateDto
+import com.fleetmate.lib.data.dto.car.type.CarTypeCreateDto
+import com.fleetmate.lib.data.dto.car.type.CarTypeUpdateDto
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow
@@ -19,9 +19,9 @@ import kotlin.text.isNullOrEmpty
 object CarTypeModel : BaseIntIdTable() {
     val name = text("name")
     val category = text("category_of_rights")
-    val speedLimit = float("speed_limit")
-    val speedError = float("speed_error")
-    val avgFuelConsumption = float("avg_fuel_consumption")
+    val speedLimit = double("speed_limit")
+    val speedError = double("speed_error")
+    val avgFuelConsumption = double("avg_fuel_consumption")
 
     fun getOne(id: Int): ResultRow? = transaction {
         selectAll().where {

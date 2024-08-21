@@ -4,10 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RefuelCreateDto(
-    val date: Long,
-    val volume: Float,
-    val car: Int,
-    val trip: Int,
-    val driver: Int,
+    val volume: Double,
+    val carId: Int,
+    val tripId: Int,
+    val driverId: Int,
     val billPhoto: Int
 )

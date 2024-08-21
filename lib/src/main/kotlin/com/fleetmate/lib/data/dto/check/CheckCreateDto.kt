@@ -1,4 +1,4 @@
-package com.fleetmate.lib.data.dto.car
+package com.fleetmate.lib.data.dto.check
 
 import kotlinx.serialization.Serializable
 

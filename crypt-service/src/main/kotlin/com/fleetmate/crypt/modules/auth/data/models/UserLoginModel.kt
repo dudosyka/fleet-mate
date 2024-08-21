@@ -1,6 +1,6 @@
 package com.fleetmate.crypt.modules.auth.data.models
 
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert

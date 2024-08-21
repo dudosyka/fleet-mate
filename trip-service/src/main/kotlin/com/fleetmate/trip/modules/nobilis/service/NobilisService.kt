@@ -1,4 +1,4 @@
-package com.fleetmate.trip.modules.nobilis
+package com.fleetmate.trip.modules.nobilis.service
 
 import com.fleetmate.lib.utils.client.KtorClient
 import com.fleetmate.trip.conf.ServerConf
@@ -7,10 +7,11 @@ import com.fleetmate.trip.modules.nobilis.dto.NobilisPersonResponse
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import org.kodein.di.DI
 import java.time.OffsetDateTime
 import java.time.ZoneId
 
-class NobilisService: KtorClient() {
+class NobilisService(di: DI) : KtorClient(di) {
     override val baseUrl: String = "https://app.touchmed.ru"
     private var token: String = ""
 

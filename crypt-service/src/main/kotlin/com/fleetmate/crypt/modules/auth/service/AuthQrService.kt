@@ -2,9 +2,9 @@ package com.fleetmate.crypt.modules.auth.service
 
 import com.fleetmate.lib.data.dto.auth.QrTokenDto
 import com.fleetmate.lib.data.model.car.CarModel
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.data.dto.auth.AuthorizedUser
 import com.fleetmate.lib.exceptions.ForbiddenException
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.model.user.UserModel
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.lib.utils.security.jwt.JwtUtil

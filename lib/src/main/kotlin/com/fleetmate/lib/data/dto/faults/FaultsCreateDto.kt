@@ -1,15 +1,15 @@
-package com.fleetmate.faults.modules.faults.data.dto
+package com.fleetmate.lib.data.dto.faults
 
 import com.fleetmate.lib.conf.AppConf
-import com.fleetmate.lib.dto.photo.PhotoCreateDto
+import com.fleetmate.lib.data.dto.photo.PhotoCreateDto
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class FaultsCreateDto(
-    val status: AppConf.Status,
-    val trip: Int?,
+    val tripStatus: AppConf.TripStatus,
+    val trip: Int? = null,
     val car: Int,
-    val photo: PhotoCreateDto?,
-    val comment: String?,
+    val photos: List<PhotoCreateDto> = listOf(),
+    val comment: String? = null,
     val carPart: Int
 )

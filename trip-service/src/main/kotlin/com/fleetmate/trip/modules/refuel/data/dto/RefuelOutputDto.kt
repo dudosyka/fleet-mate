@@ -1,24 +1,24 @@
 package com.fleetmate.trip.modules.refuel.data.dto
 
+import com.fleetmate.lib.conf.AppConf
 import com.fleetmate.trip.modules.refuel.data.model.RefuelModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
-import kotlin.text.toLong
 
 @Serializable
-class RefuelOutputDto (
-    val id: Int?,
-    val date: Long?,
-    val volume: Float?,
-    val car: Int?,
-    val trip: Int?,
-    val driver: Int?,
-    val billPhoto: Int?
+data class RefuelOutputDto (
+    val id: Int,
+    val createdAt: Long,
+    val volume: Double,
+    val carId: Int,
+    val tripId: Int,
+    val driverId: Int,
+    val billPhoto: Int
 ){
     constructor(resultRow: ResultRow):
             this(
                 resultRow[RefuelModel.id].value,
-                resultRow[RefuelModel.date].toString().toLong(),
+                resultRow[RefuelModel.createdAt].toEpochSecond(AppConf.defaultZoneOffset),
                 resultRow[RefuelModel.volume],
                 resultRow[RefuelModel.car].value,
                 resultRow[RefuelModel.trip].value,

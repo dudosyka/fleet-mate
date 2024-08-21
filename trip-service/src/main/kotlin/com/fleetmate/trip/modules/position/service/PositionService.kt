@@ -1,8 +1,8 @@
 package com.fleetmate.trip.modules.position.service
 
-import com.fleetmate.lib.dto.post.PositionCreateDto
-import com.fleetmate.lib.dto.post.PositionOutputDto
-import com.fleetmate.lib.model.post.PositionModel
+import com.fleetmate.lib.data.dto.position.PositionCreateDto
+import com.fleetmate.lib.data.dto.position.PositionOutputDto
+import com.fleetmate.lib.data.model.position.PositionModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import org.kodein.di.DI
 import kotlin.collections.map
@@ -20,10 +20,4 @@ class PositionService(di: DI) : KodeinService(di) {
 
     fun create(positionCreateDto: PositionCreateDto): PositionOutputDto =
         PositionOutputDto(PositionModel.create(positionCreateDto))
-
-    fun update(id: Int, postUpdateDto: PositionCreateDto): Boolean =
-        PositionModel.update(id, postUpdateDto)
-
-    fun delete(id: Int): Boolean =
-        PositionModel.delete(id)
 }

@@ -21,14 +21,6 @@ class CarController(override val di: DI) : KodeinController() {
                 val carId = call.receive<CarIdDto>()
                 call.respond(carService.getFullInfo(carId.id))
             }
-            route("fuel"){
-                route("check"){
-                    get{
-                        val carId = call.receive<CarIdDto>()
-                        call.respond(carService.checkFuel(carId.id))
-                    }
-                }
-            }
         }
     }
 }

@@ -18,7 +18,7 @@ class FaultsController(override val di: DI) : KodeinController() {
         route("automobile"){
             get{
                 val carId = call.receive<CarIdDto>()
-                call.respond<List<FaultDto>>(faultsService.getAllCriticalByCar(carId.id))
+                call.respond<List<FaultDto>>(faultsService.getCriticalByCar(carId.id))
             }
         }
     }

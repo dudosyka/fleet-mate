@@ -1,10 +1,10 @@
-package com.fleetmate.lib.model.user
+package com.fleetmate.lib.data.model.user
 
-import com.fleetmate.lib.dto.user.UserCreateDto
-import com.fleetmate.lib.dto.user.UserUpdateDto
+import com.fleetmate.lib.data.dto.user.UserCreateDto
+import com.fleetmate.lib.data.dto.user.UserUpdateDto
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.division.DepartmentModel
-import com.fleetmate.lib.model.post.PositionModel
+import com.fleetmate.lib.data.model.department.DepartmentModel
+import com.fleetmate.lib.data.model.position.PositionModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -25,7 +25,7 @@ object UserModel : BaseIntIdTable() {
     val phoneNumber = text("phone_number")
     val position = reference("post", PositionModel)
     val department = reference("division", DepartmentModel)
-    val dateOfBirth = long("date_of_birth").nullable().default(null)
+    val birthday = long("birthday")
 
     fun getOne(id: Int?): ResultRow? = transaction {
         (UserModel innerJoin PositionModel)
@@ -37,7 +37,7 @@ object UserModel : BaseIntIdTable() {
                 fullName,
                 email,
                 phoneNumber,
-                dateOfBirth,
+                birthday,
                 PositionModel.id,
                 PositionModel.name,
                 DepartmentModel.id,
@@ -59,7 +59,7 @@ object UserModel : BaseIntIdTable() {
                 fullName,
                 email,
                 phoneNumber,
-                dateOfBirth,
+                birthday,
                 PositionModel.id,
                 PositionModel.name,
                 DepartmentModel.id,
@@ -74,10 +74,7 @@ object UserModel : BaseIntIdTable() {
             it[phoneNumber] = userCreateDto.phoneNumber
             it[position] = userCreateDto.position
             it[department] = userCreateDto.department
-            if (userCreateDto.dateOfBirth != null){
-                it[dateOfBirth] = userCreateDto.dateOfBirth
-            }
-
+            it[birthday] = userCreateDto.birthday
         }.resultedValues ?: throw InternalServerException("Failed to create user")).first()
     }
 
@@ -99,8 +96,8 @@ object UserModel : BaseIntIdTable() {
             if (userUpdateDto.department != null){
                 it[department] = userUpdateDto.department
             }
-            if (userUpdateDto.dateOfBirth != null){
-                it[dateOfBirth] = userUpdateDto.dateOfBirth
+            if (userUpdateDto.birthday != null){
+                it[birthday] = userUpdateDto.birthday
             }
         } != 0
     }

@@ -1,22 +1,22 @@
 package com.fleetmate.lib.data.dto.violation
 
 import com.fleetmate.lib.data.model.car.CarModel
-import com.fleetmate.lib.model.trip.TripModel
+import com.fleetmate.lib.data.model.trip.TripModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 import kotlin.toString
 
 @Serializable
-class TripViolationOutputDto(
+data class TripViolationOutputDto(
     val id: Int,
     val keyAcceptance: String,
     val route: String?,
-    val avgSpeed: Float?,
+    val avgSpeed: Double?,
     val keyReturn: String?,
     val carId: Int,
-    val carMileage: Float,
+    val carMileage: Double,
     val carRegistrationNumber: String,
-    val carFuelLevel: Float,
+    val carFuelLevel: Double,
     val violations: List<ViolationOutputDto?>
 ) {
     constructor(

@@ -10,7 +10,7 @@ import com.fleetmate.lib.data.dto.role.LinkedRoleOutputDto
 import com.fleetmate.lib.data.model.role.RbacModel
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.dto.auth.RefreshTokenDto
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.data.dto.auth.AuthorizedUser
 import com.fleetmate.lib.plugins.Logger
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString

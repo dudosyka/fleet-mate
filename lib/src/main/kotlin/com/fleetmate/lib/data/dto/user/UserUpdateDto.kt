@@ -1,4 +1,4 @@
-package com.fleetmate.lib.dto.user
+package com.fleetmate.lib.data.dto.user
 
 import kotlinx.serialization.Serializable
 
@@ -9,5 +9,5 @@ data class UserUpdateDto(
     val phoneNumber: String?,
     val position: Int?,
     val department: Int?,
-    val dateOfBirth: Long?
+    val birthday: Long?
 )

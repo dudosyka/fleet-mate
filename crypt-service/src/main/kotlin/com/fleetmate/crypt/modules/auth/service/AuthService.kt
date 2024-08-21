@@ -4,16 +4,16 @@ import com.fleetmate.crypt.modules.auth.data.dto.AuthInputDto
 import com.fleetmate.crypt.modules.auth.data.dto.TokenOutputDto
 import com.fleetmate.crypt.modules.auth.data.models.UserLoginModel
 import com.fleetmate.crypt.modules.user.service.UserService
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.data.dto.auth.AuthorizedUser
 import com.fleetmate.lib.dto.auth.RefreshTokenDto
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.exceptions.UnauthorizedException
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.model.user.UserModel
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.lib.utils.security.bcrypt.CryptoUtil
 import com.fleetmate.lib.utils.security.jwt.JwtUtil
-import com.fleetmate.lib.dto.user.UserOutputDto
+import com.fleetmate.lib.data.dto.user.UserOutputDto
 
 
 import io.ktor.util.date.getTimeMillis
@@ -101,11 +101,6 @@ class AuthService(override val di: DI) : KodeinService(di) {
         tokenPair
     }
 
-    fun getAuthorized(authorizedUser: AuthorizedUser): UserOutputDto {
-        val userDto = userService.getOne(authorizedUser.id)
-        if (userDto == null){
-            return UserOutputDto()
-        }
-        return userDto
-    }
+    fun getAuthorized(authorizedUser: AuthorizedUser): UserOutputDto =
+        userService.getOne(authorizedUser.id) ?: throw ForbiddenException()
 }

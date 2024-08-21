@@ -28,24 +28,24 @@ class CheckController(override val di: DI) : KodeinController() {
                         post("start"){
                             val checkStartDto = call.receive<CheckStartInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond<CheckStartOutputDto>(checkService.mechanicBeforeStart(checkStartDto, userId))
+                            call.respond<CheckStartOutputDto>(checkService.start(checkStartDto, userId))
                         }
                         patch("finish") {
                             val checkFinishDto = call.receive<CheckFinishInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond(checkService.mechanicBeforeFinish(checkFinishDto, userId))
+                            call.respond(checkService.completeMechanicBeforeTrip(checkFinishDto, userId))
                         }
                     }
                     route("after"){
                         post("start"){
                             val checkStartDto = call.receive<CheckStartInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond<CheckStartOutputDto>(checkService.mechanicAfterStart(checkStartDto, userId))
+                            call.respond<CheckStartOutputDto>(checkService.start(checkStartDto, userId))
                         }
                         patch("finish") {
                             val checkFinishDto = call.receive<CheckFinishInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond(checkService.mechanicAfterFinish(checkFinishDto, userId))
+                            call.respond(checkService.completeMechanicAfterTrip(checkFinishDto, userId))
                         }
                     }
                 }
@@ -56,24 +56,24 @@ class CheckController(override val di: DI) : KodeinController() {
                         post("start"){
                             val checkStartDto = call.receive<CheckStartInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond<CheckStartOutputDto>(checkService.driverBeforeStart(checkStartDto, userId))
+                            call.respond<CheckStartOutputDto>(checkService.start(checkStartDto, userId))
                         }
                         patch("finish") {
                             val checkFinishDto = call.receive<CheckFinishInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond(checkService.driverBeforeFinish(checkFinishDto, userId))
+                            call.respond(checkService.completeDriverBeforeTrip(checkFinishDto, userId))
                         }
                     }
                     route("after"){
                         post("start"){
                             val checkStartDto = call.receive<CheckStartInputDto>()
                             val userId = call.getAuthorized().id
-                            call.respond<CheckStartOutputDto>(checkService.driverAfterStart(checkStartDto, userId))
+                            call.respond<CheckStartOutputDto>(checkService.start(checkStartDto, userId))
                         }
                         patch("finish") {
                             val checkDriverFinishDto = call.receive<CheckDriverFinishDto>()
                             val userId = call.getAuthorized().id
-                            call.respond(checkService.driverAfterFinish(checkDriverFinishDto, userId))
+                            call.respond(checkService.completeDriverAfterTrip(checkDriverFinishDto, userId))
                         }
                     }
                 }

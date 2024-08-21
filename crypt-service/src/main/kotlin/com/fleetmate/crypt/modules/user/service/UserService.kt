@@ -1,9 +1,7 @@
 package com.fleetmate.crypt.modules.user.service
 
-import com.fleetmate.lib.dto.user.UserCreateDto
-import com.fleetmate.lib.dto.user.UserOutputDto
-import com.fleetmate.lib.dto.user.UserUpdateDto
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.dto.user.UserOutputDto
+import com.fleetmate.lib.data.model.user.UserModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import org.kodein.di.DI
 import kotlin.collections.map
@@ -18,13 +16,4 @@ class UserService(di: DI) : KodeinService(di) {
             UserOutputDto(it)
         }
     }
-
-    fun create(userCreateDto: UserCreateDto): UserOutputDto =
-        UserOutputDto(UserModel.create(userCreateDto))
-
-    fun update(id: Int, userUpdateDto: UserUpdateDto): Boolean =
-        UserModel.update(id, userUpdateDto)
-
-    fun delete(id: Int): Boolean =
-        UserModel.delete(id)
 }

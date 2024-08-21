@@ -11,7 +11,7 @@ import com.fleetmate.crypt.modules.rbac.service.RbacService
 import com.fleetmate.crypt.modules.user.service.UserService
 import com.fleetmate.lib.data.model.role.RbacModel
 import com.fleetmate.lib.data.model.role.RoleModel
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.model.user.UserModel
 import com.fleetmate.lib.plugins.*
 import com.fleetmate.lib.utils.database.DatabaseConnector
 import com.fleetmate.lib.utils.kodein.bindSingleton

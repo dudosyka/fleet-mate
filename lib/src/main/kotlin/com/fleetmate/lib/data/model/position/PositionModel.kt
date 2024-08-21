@@ -1,6 +1,6 @@
-package com.fleetmate.lib.model.post
+package com.fleetmate.lib.data.model.position
 
-import com.fleetmate.lib.dto.post.PositionCreateDto
+import com.fleetmate.lib.data.dto.position.PositionCreateDto
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ResultRow

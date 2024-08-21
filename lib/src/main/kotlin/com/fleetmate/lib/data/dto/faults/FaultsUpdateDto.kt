@@ -1,11 +1,11 @@
-package com.fleetmate.faults.modules.faults.data.dto
+package com.fleetmate.lib.data.dto.faults
 
 import com.fleetmate.lib.conf.AppConf
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class FaultsUpdateDto(
-    val status: AppConf.Status? = null,
+    val tripStatus: AppConf.TripStatus? = null,
     val trip: Int? = null,
     val car: Int? = null,
     val photo: String? = null,

@@ -4,17 +4,12 @@ import com.fleetmate.lib.data.dto.report.ReportCreateDto
 import com.fleetmate.lib.data.dto.report.ReportUpdateDto
 import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.exceptions.InternalServerException
-import com.fleetmate.lib.model.trip.TripModel
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.model.trip.TripModel
+import com.fleetmate.lib.data.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
-import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import kotlin.collections.first
@@ -22,25 +17,15 @@ import kotlin.collections.firstOrNull
 import kotlin.collections.toList
 
 object ReportModel : BaseIntIdTable(){
-    val mileage = float("mileage")
-    val avgSpeed = float("avgSpeed")
+    val mileage = double("mileage")
+    val avgSpeed = double("avgSpeed")
     val trip = reference("trip", TripModel)
     val car = reference("car", CarModel)
     val driver = reference("driver", UserModel)
 
 
     fun getOne(id: Int): ResultRow? = transaction {
-
-        ReportModel.select(
-                ReportModel.id,
-                mileage,
-                avgSpeed,
-                trip,
-                car,
-                driver
-            ).where(
-                ReportModel.id eq id
-            ).firstOrNull()
+        selectAll().where(ReportModel.id eq id).firstOrNull()
     }
 
     fun getAll(start: Long, finish: Long, userId: Int): List<ResultRow> = transaction {

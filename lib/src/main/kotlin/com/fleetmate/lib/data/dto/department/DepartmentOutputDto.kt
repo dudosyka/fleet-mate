@@ -1,13 +1,13 @@
-package com.fleetmate.lib.dto.division
+package com.fleetmate.lib.data.dto.department
 
-import com.fleetmate.lib.model.division.DepartmentModel
+import com.fleetmate.lib.data.model.department.DepartmentModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 
 @Serializable
-class DepartmentOutputDto (
-    val id: Int?,
-    val name: String?
+data class DepartmentOutputDto (
+    val id: Int,
+    val name: String
 ){
     constructor(resultRow: ResultRow):
             this(

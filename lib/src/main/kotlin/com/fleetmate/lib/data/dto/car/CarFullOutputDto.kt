@@ -1,13 +1,12 @@
 package com.fleetmate.lib.data.dto.car
 
-import com.fleetmate.lib.dto.car.CarOutputDto
+import com.fleetmate.lib.data.dto.car.part.CarPartOutputDto
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CarFullOutputDto(
+data class CarFullOutputDto(
     val carOutputDto: CarOutputDto,
     val carParts: List<CarPartOutputDto>
-
 ) {
 
 }

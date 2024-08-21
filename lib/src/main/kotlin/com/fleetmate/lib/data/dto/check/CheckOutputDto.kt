@@ -1,20 +1,15 @@
-package com.fleetmate.lib.data.dto.car
+package com.fleetmate.lib.data.dto.check
 
-import com.fleetmate.lib.dto.division.DepartmentOutputDto
-import com.fleetmate.lib.dto.post.PositionOutputDto
-import com.fleetmate.lib.dto.user.UserOutputDto
-import com.fleetmate.lib.model.check.CheckModel
-import com.fleetmate.lib.model.division.DepartmentModel
-import com.fleetmate.lib.model.post.PositionModel
-import com.fleetmate.lib.model.user.UserModel
+import com.fleetmate.lib.data.dto.user.UserOutputDto
+import com.fleetmate.lib.data.model.check.CheckModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 import kotlin.toString
 
 @Serializable
-class CheckOutputDto(
-    val id: Int?,
-    val author: UserOutputDto?,
+data class CheckOutputDto(
+    val id: Int,
+    val author: UserOutputDto,
     val startTime: Long,
     val finishTime: Long? = null,
     val timeExceeded: Boolean? = null
@@ -23,21 +18,15 @@ class CheckOutputDto(
             this(
                 resultRow[CheckModel.id].value,
                 UserOutputDto(
-                    resultRow[UserModel.id].value,
-                    resultRow[UserModel.fullName],
-                    resultRow[UserModel.email],
-                    resultRow[UserModel.phoneNumber],
-                    PositionOutputDto(
-                        resultRow[PositionModel.id].value,
-                        resultRow[PositionModel.name]
-                    ),
-                    DepartmentOutputDto(
-                        resultRow[DepartmentModel.id].value,
-                        resultRow[DepartmentModel.name]
-                    )
+                    resultRow
                 ),
                 resultRow[CheckModel.startTime].toString().toLong(),
                 resultRow[CheckModel.finishTime].toString().toLong(),
                 resultRow[CheckModel.timeExceeded]
             )
+
+    companion object {
+        fun constructFromNull(resultRow: ResultRow?): CheckOutputDto? =
+            if (resultRow == null) null else CheckOutputDto(resultRow)
+    }
 }

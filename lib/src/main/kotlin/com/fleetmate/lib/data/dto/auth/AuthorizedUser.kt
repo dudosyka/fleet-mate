@@ -1,4 +1,4 @@
-package com.fleetmate.lib.dto.auth
+package com.fleetmate.lib.data.dto.auth
 
 import com.fleetmate.lib.data.dto.role.LinkedRoleOutputDto
 import kotlinx.serialization.Serializable

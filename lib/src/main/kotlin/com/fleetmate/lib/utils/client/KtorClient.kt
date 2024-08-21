@@ -1,5 +1,6 @@
 package com.fleetmate.lib.utils.client
 
+import com.fleetmate.lib.utils.kodein.KodeinService
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -12,8 +13,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
 import kotlinx.serialization.json.Json
+import org.kodein.di.DI
 
-abstract class KtorClient {
+abstract class KtorClient(di: DI) : KodeinService(di) {
     protected abstract val baseUrl: String
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {

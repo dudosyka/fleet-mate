@@ -1,8 +1,8 @@
 package com.fleetmate.trip.modules.department.service
 
-import com.fleetmate.lib.dto.division.DepartmentCreateDto
-import com.fleetmate.lib.dto.division.DepartmentOutputDto
-import com.fleetmate.lib.model.division.DepartmentModel
+import com.fleetmate.lib.data.dto.department.DepartmentCreateDto
+import com.fleetmate.lib.data.dto.department.DepartmentOutputDto
+import com.fleetmate.lib.data.model.department.DepartmentModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import org.kodein.di.DI
 import kotlin.collections.map
@@ -20,10 +20,4 @@ class DepartmentService(di: DI) : KodeinService(di) {
 
     fun create(departmentCreateDto: DepartmentCreateDto): DepartmentOutputDto =
         DepartmentOutputDto(DepartmentModel.create(departmentCreateDto))
-
-    fun update(id: Int, divisionUpdateDto: DepartmentCreateDto): Boolean =
-        DepartmentModel.update(id, divisionUpdateDto)
-
-    fun delete(id: Int): Boolean =
-        DepartmentModel.delete(id)
 }

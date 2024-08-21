@@ -1,4 +1,4 @@
-package com.fleetmate.trip.modules.bumerang
+package com.fleetmate.trip.modules.bumerang.service
 
 import com.fleetmate.lib.utils.client.KtorClient
 import com.fleetmate.trip.conf.ServerConf
@@ -10,8 +10,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.CompletableDeferred
+import org.kodein.di.DI
 
-class BumerangService : KtorClient() {
+class BumerangService(di: DI) : KtorClient(di) {
     override val baseUrl: String = "https://bumerang-sat.ru"
     private var token: String = "Basic "
 
