@@ -14,12 +14,16 @@ class ConnectionsRegister (
         return connections.filterKeys { users.contains(it) }
     }
 
-    operator fun set(userId: Int, socketSession: DefaultWebSocketSession) {
+    operator fun set(userId: Int, socketSession: WebSocketSession) {
         val connectionsByUser = connections[userId]
         if (connectionsByUser != null)
-            connectionsByUser.add(WebSocketSession(socketSession))
+            connectionsByUser.add(socketSession)
         else
-            this.connections[userId] = mutableListOf(WebSocketSession(socketSession))
+            this.connections[userId] = mutableListOf(socketSession)
+    }
+
+    operator fun set(userId: Int, socketSession: DefaultWebSocketSession) {
+        set(userId, WebSocketSession(socketSession))
     }
 
     operator fun set(userId: Int, connections: MutableList<WebSocketSession>) {

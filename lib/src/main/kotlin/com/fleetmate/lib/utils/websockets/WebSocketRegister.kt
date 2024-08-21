@@ -12,6 +12,8 @@ import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.dto.auth.AuthorizedUser
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.utils.kodein.KodeinController
+import com.fleetmate.lib.utils.security.ecdh.AesUtil
+import com.fleetmate.lib.utils.security.ecdh.PointDto
 import com.fleetmate.lib.utils.security.jwt.JwtUtil
 import com.fleetmate.lib.utils.websockets.dto.RequestHandlerInput
 import com.fleetmate.lib.utils.websockets.dto.WebSocketRequestDto
@@ -19,7 +21,7 @@ import com.fleetmate.lib.utils.websockets.dto.WebSocketResponseDto
 
 typealias WebSocketEmitter = suspend (connectionsRegister: ConnectionsRegister) -> Unit
 
-typealias WebSocketRequestHandler = WebSocketRegister.(
+typealias WebSocketRequestHandler = suspend WebSocketRegister.(
     requestHandlerInput: RequestHandlerInput
 ) -> Unit
 
@@ -32,9 +34,15 @@ class WebSocketRegister(override val di: DI) : KodeinController() {
     init {
         registerRoutes("connect") {
             input ->
-                connections[input.authorizedUser.id] = input.socketSession
+                val publicX = input.request.headers.bridgeX
+                val publicY = input.request.headers.bridgeY
+                val session = WebSocketSession(input.socketSession)
+                val cryptSession = AesUtil.snapshotSession(PointDto(publicX, publicY))
+                session.ecdhSecret = cryptSession.first
+                connections[input.authorizedUser.id] = session
                 //After every new connection check for inactive ones
                 connections clearInactiveBy input.authorizedUser.id
+                input.socketSession.send(json.encodeToString(PointDto.serializer(), cryptSession.second))
         }
         registerRoutes("connect-to-room") {
             input ->
@@ -136,6 +144,7 @@ class WebSocketRegister(override val di: DI) : KodeinController() {
                 Logger.debug(frame, "websocket")
                 if (frame is Frame.Text) {
                     val message = frame.readText()
+
                     val request = json.decodeFromString<WebSocketRequestDto>(message)
                     try {
                         websocketRoutesProcessor(request, this)

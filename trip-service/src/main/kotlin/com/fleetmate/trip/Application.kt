@@ -37,6 +37,7 @@ import com.fleetmate.trip.modules.user.service.UserService
 import com.fleetmate.trip.modules.violation.data.model.ViolationModel
 import com.fleetmate.trip.modules.violation.data.model.ViolationTypeModel
 import com.fleetmate.trip.modules.violation.service.ViolationService
+import com.fleetmate.trip.modules.watchdog.WatchDogService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -73,6 +74,7 @@ fun Application.module() {
         bindSingleton { ViolationService(it) }
         bindSingleton { CarPartService(it) }
         bindSingleton { RefuelController(it) }
+        bindSingleton { WatchDogService(it) }
 
         // ---- Controllers ----
         bindSingleton { TripController(it) }
