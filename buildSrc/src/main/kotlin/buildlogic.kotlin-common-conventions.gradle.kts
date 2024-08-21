@@ -79,6 +79,16 @@ dependencies {
     implementation("org.mindrot:jbcrypt:$jbcryptVersion")
 
     implementation("org.reflections:reflections:0.9.12")
+
+    //GraphQL
+    implementation("com.expediagroup", "graphql-kotlin-ktor-server", "7.1.4")
+
+    //QR-generation
+    implementation("io.github.g0dkar:qrcode-kotlin:4.1.1")
+
+    //Ktor-client
+    implementation("io.ktor:ktor-client-core:2.3.3")
+    implementation("io.ktor:ktor-client-cio:2.3.3")
 }
 
 

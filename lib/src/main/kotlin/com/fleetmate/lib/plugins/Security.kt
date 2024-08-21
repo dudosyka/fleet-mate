@@ -7,28 +7,29 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import com.fleetmate.lib.conf.AppConf.jwt
+import com.fleetmate.lib.conf.AppConf.roles
+import com.fleetmate.lib.utils.security.jwt.JwtUtil
 
 val jwtVerifier: JWTVerifier = JWT
     .require(Algorithm.HMAC256(jwt.secret))
     .withIssuer(jwt.domain)
     .build()
 
-// NEED RULES IMPLEMENTATION
-// fun AuthenticationConfig.loadRule(ruleName: String, ruleValue: Int) {
-//     jwt(ruleName) {
-//         verifier(jwtVerifier)
-//         validate { jwtCredential ->
-//             val principal = JWTPrincipal(jwtCredential.payload)
-//
-//             val authorizedUser = JwtUtil.decodeAccessToken(principal)
-//
-//             if (authorizedUser.rules.any { it.ruleId == ruleValue})
-//                 principal
-//             else
-//                 null
-//         }
-//     }
-// }
+ fun AuthenticationConfig.loadRole(roleName: String, roleValue: Int) {
+     jwt(roleName) {
+         verifier(jwtVerifier)
+         validate { jwtCredential ->
+             val principal = JWTPrincipal(jwtCredential.payload)
+
+             val authorizedUser = JwtUtil.decodeAccessToken(principal)
+
+             if (authorizedUser.roles.any { it.roleId == roleValue})
+                 principal
+             else
+                 null
+         }
+     }
+ }
 
 fun Application.configureSecurity() {
     authentication {
@@ -50,5 +51,9 @@ fun Application.configureSecurity() {
                     JWTPrincipal(it.payload)
             }
         }
+
+        loadRole("driver", roles.driver)
+        loadRole("mechanic", roles.mechanic)
+        loadRole("admin", roles.admin)
     }
 }
