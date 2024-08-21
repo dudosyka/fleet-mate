@@ -3,9 +3,10 @@ package com.fleetmate.faults.modules.check.data.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CheckFinishInputDto(
+data class CheckDriverFinishDto(
     val checkId: Int,
     val photos: List<String>,
-    val needWash: Boolean? = null
+    val needWash: Boolean? = null,
+    val mileage: Float
 ) {
 }

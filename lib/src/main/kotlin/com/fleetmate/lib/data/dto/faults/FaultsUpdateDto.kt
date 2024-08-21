@@ -5,11 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FaultsUpdateDto(
-    val id: Int,
-    val status: AppConf.Status?,
-    val trip: Int?,
-    val car: Int?,
-    val photo: String?,
-    val comment: String?,
-    val critical: Boolean?
+    val status: AppConf.Status? = null,
+    val trip: Int? = null,
+    val car: Int? = null,
+    val photo: String? = null,
+    val comment: String? = null,
+    val critical: Boolean? = null
 )

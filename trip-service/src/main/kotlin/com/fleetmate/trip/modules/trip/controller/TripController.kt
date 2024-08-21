@@ -7,7 +7,6 @@ import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.lib.dto.trip.TripCreateDto
 import com.fleetmate.lib.dto.trip.TripUpdateDto
 import com.fleetmate.trip.modules.trip.data.dto.TripDriverInputDto
-import com.fleetmate.trip.modules.trip.data.dto.TripFinishDto
 import com.fleetmate.trip.modules.trip.service.trip.TripService
 import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
@@ -55,8 +54,8 @@ class TripController(override val di: DI) : KodeinController() {
             }
             route("finish"){
                 post {
-                    val tripFinishDto = call.receive<TripFinishDto>()
-                    call.respond(tripService.finishTrip(tripFinishDto, call.getAuthorized()))
+                    val carIdDto = call.receive<CarIdDto>()
+                    call.respond(tripService.finishTrip(carIdDto))
                 }
             }
             route("wash"){

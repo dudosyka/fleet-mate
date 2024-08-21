@@ -295,7 +295,12 @@ object TripModel: BaseIntIdTable() {
         TripModel.select(
             TripModel.id,
             washHappen,
-            driver
+            driver,
+            car,
+            mechanicCheckBeforeTrip,
+            mechanicCheckAfterTrip,
+            driverCheckBeforeTrip,
+            driverCheckAfterTrip
         ).where(
             car eq carId
         ).andWhere {

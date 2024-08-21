@@ -1,7 +1,7 @@
 package com.fleetmate.trip.modules.trip.service.trip
 
 import com.fleetmate.lib.conf.AppConf
-import com.fleetmate.lib.data.dto.car.CarUpdateDto
+import com.fleetmate.lib.data.dto.car.CarIdDto
 import com.fleetmate.lib.data.dto.trip.TripInitDto
 import com.fleetmate.lib.data.dto.trip.TripWashInputDto
 import com.fleetmate.lib.data.dto.violation.ViolationCreateDto
@@ -14,10 +14,9 @@ import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.car.service.CarService
-import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
 import com.fleetmate.trip.modules.report.service.ReportService
 import com.fleetmate.trip.modules.trip.data.dto.TripDriverInputDto
-import com.fleetmate.trip.modules.trip.data.dto.TripFinishDto
+import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.trip.modules.trip.data.dto.TripInitOutputDto
 import com.fleetmate.trip.modules.violation.service.ViolationService
 import org.jetbrains.exposed.sql.ResultRow
@@ -70,28 +69,17 @@ class TripService(di: DI) : KodeinService(di) {
         )
     }
 
-    fun finishTrip(tripFinishDto: TripFinishDto, authorizedUser: AuthorizedUser) {
-        val trip = getActiveTrip(tripFinishDto.carId)
+    fun finishTrip(carIdDto: CarIdDto) {
+        val trip = getActiveTrip(carIdDto.id)
+        val driverBefore = trip[TripModel.driverCheckBeforeTrip]
+        val mechanicBefore = trip[TripModel.mechanicCheckBeforeTrip]
+        val driverAfter = trip[TripModel.driverCheckAfterTrip]
+        val mechanicAfter = trip[TripModel.mechanicCheckAfterTrip]
 
-        val car = carService.getOne(tripFinishDto.carId) ?: throw NotFoundException("Car is not found")
-        val tripMileage = tripFinishDto.mileage - car.mileage!!
-        val fuel = car.fuelLevel!! - ((tripMileage / 100) / car.type?.avgFuelConsumption!!)
-        carService.update(
-            tripFinishDto.carId,
-            CarUpdateDto(
-                mileage = tripFinishDto.mileage,
-                fuelLevel = fuel
-            )
-        )
-        reportService.create(
-            ReportCreateDto(
-                mileage = tripMileage,
-                avgSpeed = trip[TripModel.avgSpeed]!!,
-                trip = trip[TripModel.id].value,
-                car = tripFinishDto.carId,
-                driver = authorizedUser.id
-            )
-        )
+        if (driverBefore == null || mechanicBefore == null || driverAfter == null || mechanicAfter == null){
+            throw ForbiddenException()
+        }
+        keyReturn(carIdDto.id)
     }
 
     fun setNeedWash(washInputDto: TripWashInputDto) {

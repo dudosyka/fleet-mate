@@ -1,12 +1,12 @@
-package com.fleetmate.trip.modules.report.data.model
+package com.fleetmate.lib.data.model.report
 
+import com.fleetmate.lib.data.dto.report.ReportCreateDto
+import com.fleetmate.lib.data.dto.report.ReportUpdateDto
 import com.fleetmate.lib.data.model.car.CarModel
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.model.user.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
-import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
-import com.fleetmate.trip.modules.report.data.dto.ReportUpdateDto
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

@@ -2,7 +2,7 @@ package com.fleetmate.trip.modules.report.controller
 
 import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.utils.kodein.KodeinController
-import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
+import com.fleetmate.lib.data.dto.report.ReportCreateDto
 import com.fleetmate.trip.modules.report.data.dto.ReportFullOutputDto
 import com.fleetmate.trip.modules.report.data.dto.ReportTimeDto
 import com.fleetmate.trip.modules.report.service.ReportService

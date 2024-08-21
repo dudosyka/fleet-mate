@@ -1,5 +1,6 @@
 package com.fleetmate.faults.modules.check.controller
 
+import com.fleetmate.faults.modules.check.data.dto.CheckDriverFinishDto
 import com.fleetmate.faults.modules.check.data.dto.CheckFinishInputDto
 import com.fleetmate.faults.modules.check.data.dto.CheckStartInputDto
 import com.fleetmate.faults.modules.check.data.dto.CheckStartOutputDto
@@ -23,29 +24,57 @@ class CheckController(override val di: DI) : KodeinController() {
         route("check"){
             authenticate("mechanic"){
                 route("mechanic"){
-                    post("start"){
-                        val checkStartDto = call.receive<CheckStartInputDto>()
-                        val userId = call.getAuthorized().id
-                        call.respond<CheckStartOutputDto>(checkService.mechanicStart(checkStartDto, userId))
+                    route("before"){
+                        post("start"){
+                            val checkStartDto = call.receive<CheckStartInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond<CheckStartOutputDto>(checkService.mechanicBeforeStart(checkStartDto, userId))
+                        }
+                        patch("finish") {
+                            val checkFinishDto = call.receive<CheckFinishInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond(checkService.mechanicBeforeFinish(checkFinishDto, userId))
+                        }
                     }
-                    patch("finish") {
-                        val checkFinishDto = call.receive<CheckFinishInputDto>()
-                        val userId = call.getAuthorized().id
-                        call.respond(checkService.mechanicFinish(checkFinishDto, userId))
+                    route("after"){
+                        post("start"){
+                            val checkStartDto = call.receive<CheckStartInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond<CheckStartOutputDto>(checkService.mechanicAfterStart(checkStartDto, userId))
+                        }
+                        patch("finish") {
+                            val checkFinishDto = call.receive<CheckFinishInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond(checkService.mechanicAfterFinish(checkFinishDto, userId))
+                        }
                     }
                 }
             }
             authenticate("driver"){
                 route("driver"){
-                    post("start"){
-                        val checkStartDto = call.receive<CheckStartInputDto>()
-                        val userId = call.getAuthorized().id
-                        call.respond<CheckStartOutputDto>(checkService.driverStart(checkStartDto, userId))
+                    route("before"){
+                        post("start"){
+                            val checkStartDto = call.receive<CheckStartInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond<CheckStartOutputDto>(checkService.driverBeforeStart(checkStartDto, userId))
+                        }
+                        patch("finish") {
+                            val checkFinishDto = call.receive<CheckFinishInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond(checkService.driverBeforeFinish(checkFinishDto, userId))
+                        }
                     }
-                    patch("finish") {
-                        val checkFinishDto = call.receive<CheckFinishInputDto>()
-                        val userId = call.getAuthorized().id
-                        call.respond(checkService.driverFinish(checkFinishDto, userId))
+                    route("after"){
+                        post("start"){
+                            val checkStartDto = call.receive<CheckStartInputDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond<CheckStartOutputDto>(checkService.driverAfterStart(checkStartDto, userId))
+                        }
+                        patch("finish") {
+                            val checkDriverFinishDto = call.receive<CheckDriverFinishDto>()
+                            val userId = call.getAuthorized().id
+                            call.respond(checkService.driverAfterFinish(checkDriverFinishDto, userId))
+                        }
                     }
                 }
             }

@@ -1,6 +1,6 @@
 package com.fleetmate.trip.modules.report.data.dto
 
-import com.fleetmate.trip.modules.report.data.model.ReportModel
+import com.fleetmate.lib.data.model.report.ReportModel
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 

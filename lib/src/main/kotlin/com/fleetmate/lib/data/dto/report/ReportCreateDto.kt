@@ -1,4 +1,4 @@
-package com.fleetmate.trip.modules.report.data.dto
+package com.fleetmate.lib.data.dto.report
 
 import kotlinx.serialization.Serializable
 

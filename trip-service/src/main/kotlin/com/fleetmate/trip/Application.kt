@@ -29,7 +29,7 @@ import com.fleetmate.trip.modules.refuel.controller.RefuelController
 import com.fleetmate.trip.modules.refuel.data.model.RefuelModel
 import com.fleetmate.trip.modules.refuel.service.RefuelService
 import com.fleetmate.trip.modules.report.controller.ReportController
-import com.fleetmate.trip.modules.report.data.model.ReportModel
+import com.fleetmate.lib.data.model.report.ReportModel
 import com.fleetmate.trip.modules.report.service.ReportService
 import com.fleetmate.trip.modules.trip.controller.TripController
 import com.fleetmate.trip.modules.trip.service.trip.TripService

@@ -6,11 +6,11 @@ import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.model.trip.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.report.data.dto.ReportBaseOutputDto
-import com.fleetmate.trip.modules.report.data.dto.ReportCreateDto
+import com.fleetmate.lib.data.dto.report.ReportCreateDto
 import com.fleetmate.trip.modules.report.data.dto.ReportFullOutputDto
 import com.fleetmate.trip.modules.report.data.dto.ReportOutputDto
-import com.fleetmate.trip.modules.report.data.dto.ReportUpdateDto
-import com.fleetmate.trip.modules.report.data.model.ReportModel
+import com.fleetmate.lib.data.dto.report.ReportUpdateDto
+import com.fleetmate.lib.data.model.report.ReportModel
 import com.fleetmate.trip.modules.trip.service.trip.TripService
 import org.kodein.di.DI
 import org.kodein.di.instance
