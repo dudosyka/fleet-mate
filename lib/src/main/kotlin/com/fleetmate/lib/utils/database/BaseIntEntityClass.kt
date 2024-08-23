@@ -90,20 +90,20 @@ abstract class BaseIntEntityClass<Output : SerializableAny, E : BaseIntEntity<Ou
         else {
             val leftBound = range.first.let {
                 if (it == null)
-                    LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.ofHours(AppConf.zoneOffset))
+                    LocalDateTime.ofEpochSecond(0, 0, AppConf.zoneOffset)
                 else {
                     val seconds: Long = it / 1000
                     val nanos: Int = (it % 1000).toInt()
-                    LocalDateTime.ofEpochSecond(seconds, nanos, ZoneOffset.ofHours(AppConf.zoneOffset))
+                    LocalDateTime.ofEpochSecond(seconds, nanos, AppConf.zoneOffset)
                 }
             }
             val rightBound = range.second.let {
                 if (it == null) //Use INT.MAX * 2 (2106 year) because Long.MAX_VALUE is too big for timestamp
-                    LocalDateTime.ofEpochSecond(Int.MAX_VALUE.toLong() * 2, 0, ZoneOffset.ofHours(AppConf.zoneOffset))
+                    LocalDateTime.ofEpochSecond(Int.MAX_VALUE.toLong() * 2, 0, AppConf.zoneOffset)
                 else {
                     val seconds: Long = it / 1000
                     val nanos: Int = (it % 1000).toInt()
-                    LocalDateTime.ofEpochSecond(seconds, nanos, ZoneOffset.ofHours(AppConf.zoneOffset))
+                    LocalDateTime.ofEpochSecond(seconds, nanos, AppConf.zoneOffset)
                 }
             }
             (createdAt lessEq rightBound) and

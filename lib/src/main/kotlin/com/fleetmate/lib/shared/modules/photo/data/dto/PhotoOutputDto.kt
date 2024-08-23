@@ -1,6 +1,5 @@
 package com.fleetmate.lib.shared.modules.photo.data.dto
 
-import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import kotlinx.serialization.Serializable

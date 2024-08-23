@@ -2,7 +2,6 @@ package com.fleetmate.faults.modules.fault.data.dao
 
 
 import com.fleetmate.faults.modules.fault.data.dto.FaultDto
-import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass

@@ -30,10 +30,9 @@ class FaultController(override val di: DI) : KodeinController() {
         }
 
         post("car") {
-            val authorizedUser = call.getAuthorized()
             val carId = call.receive<IdInputDto>().id
 
-            call.respond(faultService.getByCar(authorizedUser, carId))
+            call.respond(faultService.getByCar(carId))
         }
     }
 

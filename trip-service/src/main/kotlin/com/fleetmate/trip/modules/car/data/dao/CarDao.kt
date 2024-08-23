@@ -1,7 +1,6 @@
 package com.fleetmate.trip.modules.car.data.dao
 
 import com.fleetmate.lib.shared.modules.car.model.CarModel
-import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartToCarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
@@ -10,7 +9,6 @@ import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.trip.modules.car.data.dto.CarDto
 import com.fleetmate.trip.modules.car.data.dto.CarFullDto
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.JoinType
 
 class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     companion object : BaseIntEntityClass<CarDto, CarDao>(CarModel)

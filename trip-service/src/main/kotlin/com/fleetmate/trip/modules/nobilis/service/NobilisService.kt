@@ -1,15 +1,11 @@
 package com.fleetmate.trip.modules.nobilis.service
 
-import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.utils.client.KtorClient
 import com.fleetmate.trip.conf.ServerConf
 import com.fleetmate.trip.modules.nobilis.dto.NobilisAuthResponse
-import com.fleetmate.trip.modules.nobilis.dto.NobilisPersonResponse
-import com.fleetmate.trip.modules.nobilis.dto.NobilisResponse
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.utils.io.*
 import org.kodein.di.DI
 import java.time.OffsetDateTime
 import java.time.ZoneId

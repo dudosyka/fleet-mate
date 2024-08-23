@@ -6,7 +6,6 @@ import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.car.model.CarPhotoModelModel
 import com.fleetmate.lib.shared.modules.photo.data.dto.PhotoOutputDto
-import com.fleetmate.lib.shared.modules.photo.data.dto.PhotoUploadDto
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass

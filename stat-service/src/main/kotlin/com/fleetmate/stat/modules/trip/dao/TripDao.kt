@@ -2,7 +2,6 @@ package com.fleetmate.stat.modules.trip.dao
 
 
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
-import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue

@@ -1,6 +1,5 @@
 package com.fleetmate.trip.modules.refuel.controller
 
-import com.fleetmate.lib.shared.modules.photo.data.dto.PhotoUploadDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.trip.modules.refuel.dto.RefuelInputDto
 import com.fleetmate.trip.modules.refuel.service.RefuelService

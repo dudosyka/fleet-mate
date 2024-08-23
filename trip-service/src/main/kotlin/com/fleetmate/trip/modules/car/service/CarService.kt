@@ -1,12 +1,10 @@
 package com.fleetmate.trip.modules.car.service
 
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
-import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.car.data.dao.CarDao
-import com.fleetmate.trip.modules.car.data.dto.CarDto
 import com.fleetmate.trip.modules.car.data.dto.CarFullDto
 import com.fleetmate.trip.modules.trip.data.dao.TripDao
 import org.jetbrains.exposed.sql.transactions.transaction
