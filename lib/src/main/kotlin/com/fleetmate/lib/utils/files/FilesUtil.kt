@@ -1,7 +1,7 @@
 package com.fleetmate.lib.utils.files
 
 import io.ktor.util.date.*
-import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.exceptions.BadRequestException
 import java.io.*
 import java.util.*

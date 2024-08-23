@@ -7,7 +7,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.toEntity
 import org.jetbrains.exposed.sql.*
-import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.shared.conf.AppConf
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

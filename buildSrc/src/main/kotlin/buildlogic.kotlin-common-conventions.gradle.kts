@@ -26,6 +26,7 @@ dependencies {
     fun kotlin(module: String) = jetBrains("kotlin:kotlin-$module", kotlinVersion)
     fun ktor(part: String, module: String) = "io.ktor:ktor-$part-$module-jvm:$ktorVersion"
     fun ktorServer(module: String) = ktor(part = "server", module = module)
+    fun ktorClient(module: String) = ktor(part = "client", module = module)
 
     //Ktor server
     implementation(ktorServer("host-common"))
@@ -43,6 +44,12 @@ dependencies {
     implementation(ktorServer("auth-jwt"))
     implementation(ktorServer("websockets"))
     testImplementation(ktorServer("tests"))
+
+    //Ktor client
+    implementation(ktorClient("core"))
+    implementation(ktorClient("cio"))
+    implementation(ktorClient("content-negotiation"))
+
 
     //Database
     api(jetBrains("exposed:exposed-core", exposedVersion))

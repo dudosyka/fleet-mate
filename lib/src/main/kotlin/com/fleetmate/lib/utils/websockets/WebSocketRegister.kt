@@ -9,7 +9,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.serialization.json.Json
 import org.kodein.di.DI
 import com.fleetmate.lib.exceptions.ForbiddenException
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.lib.utils.security.jwt.JwtUtil

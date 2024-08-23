@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.TransactionManager
-import com.fleetmate.lib.conf.AppConf.database
+import com.fleetmate.lib.shared.conf.AppConf.database
 
 class DatabaseConnector(vararg tables: Table, initializer: Transaction.() -> Unit) {
 

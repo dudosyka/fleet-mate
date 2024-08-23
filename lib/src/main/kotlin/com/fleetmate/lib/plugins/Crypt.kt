@@ -1,6 +1,6 @@
 package com.fleetmate.lib.plugins
 
-import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.exceptions.BadRequestException
 import com.fleetmate.lib.utils.security.ecdh.AesUtil
 import com.fleetmate.lib.utils.security.ecdh.PointDto

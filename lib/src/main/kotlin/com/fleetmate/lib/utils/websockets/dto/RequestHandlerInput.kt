@@ -1,6 +1,6 @@
 package com.fleetmate.lib.utils.websockets.dto
 
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.utils.websockets.ConnectionsRegister
 import com.fleetmate.lib.utils.websockets.RoomsRegister
 import io.ktor.websocket.*

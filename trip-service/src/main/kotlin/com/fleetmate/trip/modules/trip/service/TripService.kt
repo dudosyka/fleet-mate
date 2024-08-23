@@ -1,26 +1,65 @@
 package com.fleetmate.trip.modules.trip.service
 
+import com.fleetmate.lib.exceptions.BadRequestException
+import com.fleetmate.lib.exceptions.ForbiddenException
+import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.utils.kodein.KodeinService
-import com.fleetmate.trip.modules.trip.data.dto.TripCreateDto
+import com.fleetmate.trip.modules.car.data.dao.CarDao
+import com.fleetmate.trip.modules.car.service.CarService
+import com.fleetmate.trip.modules.trip.data.dao.TripDao
 import com.fleetmate.trip.modules.trip.data.dto.TripDto
-import com.fleetmate.trip.modules.trip.data.dto.TripUpdateDto
-import com.fleetmate.trip.modules.trip.data.model.TripModel
+import com.fleetmate.trip.modules.user.service.UserService
+import com.fleetmate.trip.modules.violation.service.ViolationService
+import io.ktor.util.date.*
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
+import org.kodein.di.instance
 
 class TripService(di: DI) : KodeinService(di) {
-    fun getOne(id: Int): TripDto? {
-        return TripDto(TripModel.getOne(id) ?: return null)
+    private val carService: CarService by instance()
+    private val userService: UserService by instance()
+    private val violationService: ViolationService by instance()
+
+    suspend fun initTrip(carId: Int, authorizedUser: AuthorizedUser): TripDto = newSuspendedTransaction {
+        if (!carService.isAvailableForTrip(carId))
+            throw ForbiddenException()
+
+        if (!userService.isAvailableForTrip(authorizedUser.id, CarDao[carId].toOutputDto()))
+            throw ForbiddenException()
+
+        val trip = TripDao.init(carId, authorizedUser.id, needRefuel = carService.isNeedRefuel(carId))
+
+        trip.toOutputDto()
     }
 
-    fun getAll(): List<TripDto> =
-        TripModel.getAll().map { TripDto(it) }
+    fun finishTrip(driverId: Int): TripDto = transaction {
+        val trip = TripDao.getUserActiveTrip(driverId)
 
-    fun create(tripCreateDto: TripCreateDto): TripDto =
-        TripDto(TripModel.create(tripCreateDto))
+        if (trip.status == AppConf.TripStatus.CLOSED_DUE_TO_FAULT.name) {
+            trip.keyReturn = getTimeMillis()
+            return@transaction trip.toOutputDto()
+        }
 
-    fun update(id: Int, tripUpdateDto: TripUpdateDto): Boolean =
-        TripModel.update(id, tripUpdateDto)
+        if (!trip.canBeClosed)
+            throw BadRequestException("Bad trip provided")
 
-    fun delete(id: Int): Boolean =
-        TripModel.delete(id)
+        trip.keyReturn = getTimeMillis()
+        trip.status = AppConf.TripStatus.CLOSED.name
+
+        if (trip.needRefuel && !trip.isRefueled)
+            violationService.registerRefuelViolation(trip)
+
+        if (trip.needWashing && !trip.isWashed)
+            violationService.registerWashViolation(trip)
+
+        trip.car.mileage += trip.mileage
+        trip.car.fuelLevel -= (trip.mileage / 100) * trip.car.avgFuelConsumption
+
+        trip.car.flush()
+        trip.flush()
+        trip.toOutputDto()
+    }
+
 }

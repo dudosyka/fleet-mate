@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import com.fleetmate.lib.conf.AppConf.jwt
+import com.fleetmate.lib.shared.conf.AppConf.jwt
 
 val jwtVerifier: JWTVerifier = JWT
     .require(Algorithm.HMAC256(jwt.secret))

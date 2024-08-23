@@ -8,7 +8,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import org.jetbrains.exposed.dao.exceptions.EntityNotFoundException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
-import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.exceptions.BaseException
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.exceptions.NotFoundException

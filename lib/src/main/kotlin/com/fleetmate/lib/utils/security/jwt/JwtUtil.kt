@@ -4,10 +4,10 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.auth.jwt.*
 import io.ktor.util.date.*
-import com.fleetmate.lib.conf.AppConf
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.exceptions.ForbiddenException
-import com.fleetmate.lib.dto.auth.RefreshTokenDto
-import com.fleetmate.lib.dto.auth.AuthorizedUser
+import com.fleetmate.lib.shared.modules.auth.dto.RefreshTokenDto
+import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.plugins.Logger
 import java.util.*
 

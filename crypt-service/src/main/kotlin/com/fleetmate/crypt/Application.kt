@@ -3,6 +3,8 @@ package com.fleetmate.crypt
 import com.fleetmate.crypt.conf.ServerConf
 import com.fleetmate.crypt.modules.access.AccessController
 import com.fleetmate.crypt.modules.access.AccessService
+import com.fleetmate.crypt.modules.auth.controller.AuthController
+import com.fleetmate.crypt.modules.auth.service.AuthService
 import com.fleetmate.lib.plugins.*
 import com.fleetmate.lib.utils.database.DatabaseConnector
 import com.fleetmate.lib.utils.kodein.bindSingleton
@@ -28,7 +30,11 @@ fun Application.module() {
 
     kodeinApplication("/bridge") {
         bindSingleton { AccessService(it) }
+        bindSingleton { AuthService(it) }
+
+
         bindSingleton { AccessController(it) }
+        bindSingleton { AuthController(it) }
     }
 
     DatabaseConnector(ECDH) {}
