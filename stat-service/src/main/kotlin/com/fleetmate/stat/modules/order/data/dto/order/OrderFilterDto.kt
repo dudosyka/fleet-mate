@@ -21,8 +21,8 @@ data class OrderFilterDto (
     val status: List<Int>? = null,
     val startDateRange: FieldFilterWrapper<Long>? = null,
     val endDateRange: FieldFilterWrapper<Long>? = null,
-    val mechanicFilter: StaffFilterDto,
-    val juniorMechanicFilter: StaffFilterDto,
+    val mechanicFilter: StaffFilterDto? = null,
+    val juniorMechanicFilter: StaffFilterDto? = null,
 ) {
 
     private fun SqlExpressionBuilder.createStatusFilterCond(statuses: List<Int>?): Op<Boolean> =
@@ -36,6 +36,6 @@ data class OrderFilterDto (
         createStatusFilterCond(status) and
         rangeCond(startDateRange, OrderModel.id neq 0, OrderModel.startedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
         nullableRangeCond(endDateRange, OrderModel.id neq 0, OrderModel.closedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
-        with(mechanicFilter) { expressionBuilder } and
-        with(juniorMechanicFilter) { expressionBuilder }
+        with(mechanicFilter ?: StaffFilterDto()) { expressionBuilder } and
+        with(juniorMechanicFilter ?: StaffFilterDto()) { expressionBuilder }
 }

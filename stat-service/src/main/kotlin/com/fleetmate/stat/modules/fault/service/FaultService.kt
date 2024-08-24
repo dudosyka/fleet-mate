@@ -4,6 +4,7 @@ package com.fleetmate.stat.modules.fault.service
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.utils.kodein.KodeinService
+import com.fleetmate.stat.modules.fault.dao.FaultDao
 import com.fleetmate.stat.modules.fault.dto.FaultDto
 import com.fleetmate.stat.modules.fault.dto.FaultFilterDto
 import com.fleetmate.stat.modules.fault.dto.FaultListItemDto
@@ -15,11 +16,11 @@ class FaultService(di: DI) : KodeinService(di) {
             StatusDto(it.id, it.name)
         }
 
-    fun getAllFiltered(faultFilterFto: FaultFilterDto): List<FaultListItemDto> {
-        TODO("Not yet implemented")
-    }
+    fun getAllFiltered(faultFilterFto: FaultFilterDto): List<FaultListItemDto> =
+        FaultDao.find {
+            with(faultFilterFto) { expressionBuilder }
+        }.map { it.listItemDto }
 
-    fun getOne(faultId: Int): FaultDto {
-        TODO("Not yet implemented")
-    }
+    fun getOne(faultId: Int): FaultDto =
+        FaultDao[faultId].toOutputDto()
 }

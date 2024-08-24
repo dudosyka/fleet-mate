@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FaultListItemDto (
     val id: Int,
-    val orderNumber: String,
+    val orderNumber: String?,
     val status: String,
     val createdAt: String,
     val car: CarSimpleDto,

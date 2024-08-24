@@ -8,6 +8,9 @@ import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.car.dao.CarPartDao
 import com.fleetmate.stat.modules.fault.dto.FaultDto
+import com.fleetmate.stat.modules.fault.dto.FaultListItemDto
+import com.fleetmate.stat.modules.order.data.dao.OrderDao
+import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.trip.dao.TripDao
 import com.fleetmate.stat.modules.user.dao.UserDao
 import org.jetbrains.exposed.dao.id.EntityID
@@ -26,11 +29,20 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
     val comment by FaultModel.comment
     var critical by FaultModel.critical
     var status by FaultModel.status
+    private val orderList by OrderDao referrersOn OrderModel.fault
+
+    val order: OrderDao? get() = orderList.firstOrNull()
 
     override fun toOutputDto(): FaultDto =
         FaultDto(
             idValue, carId.value, carPartId.value,
             tripId?.value, authorId.value, comment, critical
+        )
+
+    val listItemDto: FaultListItemDto get() =
+        FaultListItemDto(
+            idValue, order?.number, status,
+            createdAt.toString(), car.simpleDto
         )
 
 }
