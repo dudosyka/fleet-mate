@@ -18,6 +18,7 @@ import com.fleetmate.stat.modules.user.model.UserHoursModel
 import io.ktor.util.date.*
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import org.kodein.di.DI
 
 class OrderService(di: DI) : KodeinService(di) {
@@ -76,6 +77,7 @@ class OrderService(di: DI) : KodeinService(di) {
         WorkActorsModel.batchInsert(createWorkDto.actors) {
             this[WorkActorsModel.work] = work.idValue
             this[WorkActorsModel.actor] = it
+            this[WorkActorsModel.order] = order.idValue
         }
 
         work.orderWorkDto
@@ -97,6 +99,10 @@ class OrderService(di: DI) : KodeinService(di) {
         UserHoursModel.batchInsert(actors) {
             this[UserHoursModel.hours] = dividedHours
             this[UserHoursModel.user] = it
+        }
+
+        WorkActorsModel.update({ WorkActorsModel.order eq orderId }) {
+            it[closed] = true
         }
 
         order.toOutputDto()

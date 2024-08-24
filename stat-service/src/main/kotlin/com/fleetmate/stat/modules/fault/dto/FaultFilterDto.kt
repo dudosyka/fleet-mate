@@ -7,7 +7,7 @@ import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.listCond
 import com.fleetmate.stat.modules.car.dto.CarFilterDto
 import com.fleetmate.stat.modules.order.data.dto.order.OrderFilterDto
-import com.fleetmate.stat.modules.user.dto.StaffFilterDto
+import com.fleetmate.stat.modules.user.dto.filter.StaffFilterDto
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SqlExpressionBuilder

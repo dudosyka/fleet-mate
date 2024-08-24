@@ -9,7 +9,7 @@ import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.listCond
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.nullableRangeCond
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.rangeCond
 import com.fleetmate.stat.modules.order.data.model.OrderModel
-import com.fleetmate.stat.modules.user.dto.StaffFilterDto
+import com.fleetmate.stat.modules.user.dto.filter.StaffFilterDto
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SqlExpressionBuilder

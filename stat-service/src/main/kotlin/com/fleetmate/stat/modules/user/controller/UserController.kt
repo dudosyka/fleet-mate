@@ -2,13 +2,32 @@ package com.fleetmate.stat.modules.user.controller
 
 
 import com.fleetmate.lib.utils.kodein.KodeinController
+import com.fleetmate.stat.modules.user.dto.UserFilterDto
+import com.fleetmate.stat.modules.user.service.UserService
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.kodein.di.DI
+import org.kodein.di.instance
 
 class UserController(override val di: DI) : KodeinController() {
-
+    private val userService: UserService by instance()
     override fun Route.registerRoutes() {
-        TODO("Not yet implemented")
+        route("staff") {
+            post("all") {
+                val userFilterDto = call.receive<UserFilterDto>()
+
+                call.respond(userService.getStaffFiltered(userFilterDto))
+            }
+        }
+        route("drivers") {
+            post("all") {
+                val userFilterDto = call.receive<UserFilterDto>()
+
+                call.respond(userService.getDriversFiltered(userFilterDto))
+            }
+        }
     }
 
 }

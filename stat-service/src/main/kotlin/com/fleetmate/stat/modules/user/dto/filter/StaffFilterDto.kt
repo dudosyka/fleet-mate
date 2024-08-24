@@ -1,4 +1,4 @@
-package com.fleetmate.stat.modules.user.dto
+package com.fleetmate.stat.modules.user.dto.filter
 
 
 import com.fleetmate.lib.shared.modules.user.model.UserModel

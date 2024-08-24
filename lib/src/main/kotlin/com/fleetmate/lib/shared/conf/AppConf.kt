@@ -61,4 +61,10 @@ object AppConf {
         UNDER_WORK(2),
         FIXED(3)
     }
+
+    val mechanicPositionId = mainConfig.config("positions").getInt("mechanic")
+    val washerPositionId = mainConfig.config("positions").getInt("washer")
+    val driverPositionId = mainConfig.config("positions").getInt("driver")
+
+    val washHoursNormalized = 0.5
 }

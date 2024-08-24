@@ -8,4 +8,6 @@ import org.jetbrains.exposed.sql.ReferenceOption
 object WorkActorsModel : BaseIntIdTable() {
     val actor = reference("actor", UserModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
     val work = reference("work", WorkModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
+    val order = reference("order", OrderModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
+    val closed = bool("closed").default(false)
 }
