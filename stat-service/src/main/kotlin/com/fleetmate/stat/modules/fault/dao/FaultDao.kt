@@ -24,7 +24,8 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
     val authorId by FaultModel.author
     val author by UserDao referencedOn FaultModel.author
     val comment by FaultModel.comment
-    val critical by FaultModel.critical
+    var critical by FaultModel.critical
+    var status by FaultModel.status
 
     override fun toOutputDto(): FaultDto =
         FaultDto(

@@ -6,6 +6,7 @@ import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.user.dto.UserDto
+import com.fleetmate.stat.modules.user.dto.UserSimpleDto
 import org.jetbrains.exposed.dao.id.EntityID
 
 class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
@@ -30,4 +31,6 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
             positionId.value, departmentId.value
         )
 
+    val simpleDto: UserSimpleDto get() =
+        UserSimpleDto(idValue, fullName)
 }

@@ -6,6 +6,7 @@ import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.car.dto.CarDto
+import com.fleetmate.stat.modules.car.dto.CarSimpleDto
 import org.jetbrains.exposed.dao.id.EntityID
 
 class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
@@ -14,9 +15,13 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     val name by CarModel.name
     val registrationNumber by CarModel.registrationNumber
     val typeId by CarModel.type
+    val type by CarTypeDao referencedOn CarModel.type
     val fuelLevel by CarModel.fuelLevel
     val mileage by CarModel.mileage
 
     override fun toOutputDto(): CarDto =
         CarDto(idValue, name, registrationNumber, typeId.value, fuelLevel, mileage)
+
+    val simpleDto: CarSimpleDto get() =
+        CarSimpleDto(idValue, name, type.name, registrationNumber)
 }

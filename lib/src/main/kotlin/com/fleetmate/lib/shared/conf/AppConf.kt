@@ -50,4 +50,15 @@ object AppConf {
         REFUEL,
         WASHING
     }
+
+    enum class OrderStatus(val id: Int) {
+        CREATED(1),
+        CLOSED(2)
+    }
+
+    enum class FaultStatus(val id: Int) {
+        CREATED(1),
+        UNDER_WORK(2),
+        FIXED(3)
+    }
 }

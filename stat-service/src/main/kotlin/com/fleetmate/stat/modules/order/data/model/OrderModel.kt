@@ -14,4 +14,5 @@ object OrderModel : BaseIntIdTable() {
     val fault = reference("fault", FaultModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val startedAt = long("started_at").default(getTimeMillis())
     val closedAt = long("closed_at").nullable().default(null)
+    val _juniorMechanicFilterSimplifier = text("_junior_mechanic_filter_simplifier")
 }

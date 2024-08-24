@@ -15,5 +15,5 @@ object FaultModel : BaseIntIdTable() {
     val author = reference("author", UserModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val comment = text("comment")
     val critical = bool("critical").default(true)
-
+    val status = text("status")
 }

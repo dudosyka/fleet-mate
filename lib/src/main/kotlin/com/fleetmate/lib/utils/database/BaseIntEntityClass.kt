@@ -9,7 +9,6 @@ import org.jetbrains.exposed.dao.toEntity
 import org.jetbrains.exposed.sql.*
 import com.fleetmate.lib.shared.conf.AppConf
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 abstract class BaseIntEntityClass<Output : SerializableAny, E : BaseIntEntity<Output>>(table: BaseIntIdTable) : IntEntityClass<E>(table) {
 
@@ -63,6 +62,13 @@ abstract class BaseIntEntityClass<Output : SerializableAny, E : BaseIntEntity<Ou
 
 
     fun SqlExpressionBuilder.listCond(filter: List<Int>?, defaultCond: Op<Boolean>, field: Column<EntityID<Int>>): Op<Boolean> =
+        if (filter == null)
+            defaultCond
+        else
+            field inList filter
+
+
+    fun SqlExpressionBuilder.listCond(filter: List<String>?, defaultCond: Op<Boolean>, field: Column<String>): Op<Boolean> =
         if (filter == null)
             defaultCond
         else

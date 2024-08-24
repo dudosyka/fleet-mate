@@ -7,6 +7,7 @@ import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.trip.dto.TripDto
+import com.fleetmate.stat.modules.trip.dto.TripSimpleDto
 import com.fleetmate.stat.modules.user.dao.UserDao
 import org.jetbrains.exposed.dao.id.EntityID
 
@@ -37,4 +38,7 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
             driverCheckAfterTripId?.value, mechanicCheckBeforeTripId?.value,
             mechanicCheckAfterTripId?.value, keyReturn, needWashing, needRefuel
         )
+
+    val simpleDto: TripSimpleDto get() =
+        TripSimpleDto(idValue, route, keyAcceptance, keyReturn ?: 0L)
 }
