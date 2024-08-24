@@ -2,13 +2,26 @@ package com.fleetmate.stat.modules.trip.controller
 
 
 import com.fleetmate.lib.utils.kodein.KodeinController
+import com.fleetmate.stat.modules.trip.dto.TripFilterDto
+import com.fleetmate.stat.modules.trip.service.TripService
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import org.kodein.di.DI
+import org.kodein.di.instance
 
 class TripController(override val di: DI) : KodeinController() {
 
+    private val tripService: TripService by instance()
+
     override fun Route.registerRoutes() {
-        TODO("Not yet implemented")
+        route("trip") {
+            post("all") {
+                val tripFilterDto = call.receive<TripFilterDto>()
+                call.respond(tripService.getAllFiltered(tripFilterDto))
+            }
+        }
     }
 
 }

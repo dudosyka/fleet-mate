@@ -2,17 +2,28 @@ package com.fleetmate.stat.modules.trip.dao
 
 
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
+import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.trip.dto.TripDto
+import com.fleetmate.stat.modules.trip.dto.TripListItemDto
 import com.fleetmate.stat.modules.trip.dto.TripSimpleDto
 import com.fleetmate.stat.modules.user.dao.UserDao
+import com.fleetmate.stat.modules.violation.dao.ViolationDao
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.SizedIterable
 
 class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
-    companion object : BaseIntEntityClass<TripDto, TripDao>(TripModel)
+    companion object : BaseIntEntityClass<TripDto, TripDao>(TripModel){
+        fun violations(
+            idValue: Int,
+        ): SizedIterable<ViolationDao> =
+            ViolationDao.find {
+                (ViolationModel.trip eq idValue)
+            }
+    }
 
     val carId by TripModel.car
     val car by CarDao referencedOn TripModel.car
@@ -41,4 +52,7 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
 
     val simpleDto: TripSimpleDto get() =
         TripSimpleDto(idValue, route, keyAcceptance, keyReturn ?: 0L)
+
+    val listItemDto: TripListItemDto get() =
+        TripListItemDto(idValue, status, keyAcceptance, keyReturn, driver.simpleDto, car.simpleDto)
 }
