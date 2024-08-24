@@ -8,7 +8,7 @@ import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.batchInsert
 
-object CarPhotoModelModel: BaseIntIdTable() {
+object CarPhotoModel: BaseIntIdTable() {
     val car = reference("car", CarModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
     val check = reference("check", CheckModel, ReferenceOption.SET_NULL, ReferenceOption.CASCADE).nullable().default(null)
     val photo = reference("photo", PhotoModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)

@@ -49,5 +49,4 @@ class UserService(di: DI) : KodeinService(di) {
             }
         }
     }
-
 }

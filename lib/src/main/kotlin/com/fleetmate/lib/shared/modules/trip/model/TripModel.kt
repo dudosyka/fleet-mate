@@ -7,6 +7,7 @@ import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.selectAll
 
 object TripModel : BaseIntIdTable() {
@@ -28,12 +29,14 @@ object TripModel : BaseIntIdTable() {
     fun getCarActiveTrip(carId: Int): ResultRow? =
         selectAll()
             .where {
-                car eq carId
+                (car eq carId) and
+                (keyReturn eq null)
             }.firstOrNull()
 
     fun getUserActiveTrip(driverId: Int): ResultRow? =
         selectAll()
             .where {
-                driver eq driverId
+                (driver eq driverId) and
+                (keyReturn eq null)
             }.firstOrNull()
 }

@@ -4,7 +4,7 @@ package com.fleetmate.faults.modules.trip
 import com.fleetmate.faults.modules.check.dao.CheckDao
 import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.shared.conf.AppConf
-import com.fleetmate.lib.shared.modules.car.model.CarPhotoModelModel
+import com.fleetmate.lib.shared.modules.car.model.CarPhotoModel
 import com.fleetmate.lib.shared.modules.photo.data.dto.PhotoOutputDto
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
@@ -76,7 +76,7 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
         ).all { it == null }
 
     fun appendCarPhotos(checkId: Int?, photos: List<PhotoOutputDto>): Unit =
-        CarPhotoModelModel.append(carId.value, checkId, photos)
+        CarPhotoModel.append(carId.value, checkId, photos)
 
     override fun toOutputDto(): TripDto =
         TripDto(

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class CarListItemDto(
     val car: CarSimpleDto,
     val fuelLevel: Double,
-    var violations: Long = 0L
+    var violations: Int = 0
 )
