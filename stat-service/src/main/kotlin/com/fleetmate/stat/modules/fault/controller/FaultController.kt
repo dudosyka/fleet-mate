@@ -20,10 +20,17 @@ class FaultController(override val di: DI) : KodeinController() {
             get("status") {
                 call.respond(faultService.getAllStatuses())
             }
-            post("all") {
-                val faultFilterDto = call.receive<FaultFilterDto>()
 
-                call.respond(faultService.getAllFiltered(faultFilterDto))
+            route("all") {
+                post {
+                    val faultFilterDto = call.receive<FaultFilterDto>()
+
+                    call.respond(faultService.getAllFiltered(faultFilterDto))
+                }
+                post("driver") {
+                    val driverId = call.receive<IdInputDto>().id
+                    call.respond(faultService.getByDriver(driverId))
+                }
             }
             post {
                 val faultId = call.receive<IdInputDto>().id
