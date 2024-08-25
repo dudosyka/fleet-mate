@@ -8,7 +8,7 @@ import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.fault.dao.FaultDao
 import com.fleetmate.stat.modules.fault.dto.FaultDto
 import com.fleetmate.stat.modules.fault.dto.FaultFilterDto
-import com.fleetmate.stat.modules.fault.dto.FaultListDriverDto
+import com.fleetmate.stat.modules.user.dto.DriverFaultListItemDto
 import com.fleetmate.stat.modules.fault.dto.FaultListItemDto
 import org.kodein.di.DI
 
@@ -26,7 +26,7 @@ class FaultService(di: DI) : KodeinService(di) {
     fun getOne(faultId: Int): FaultDto =
         FaultDao[faultId].toOutputDto()
 
-    fun getByDriver(driverId: Int): List<FaultListDriverDto> =
+    fun getByDriver(driverId: Int): List<DriverFaultListItemDto> =
         FaultDao.find {
             FaultModel.author eq driverId
         }.map { it.listDriverDto }

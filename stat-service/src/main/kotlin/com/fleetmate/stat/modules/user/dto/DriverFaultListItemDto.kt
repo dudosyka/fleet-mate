@@ -1,9 +1,9 @@
-package com.fleetmate.stat.modules.fault.dto
+package com.fleetmate.stat.modules.user.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FaultListDriverDto(
+data class DriverFaultListItemDto(
     val id: Int,
     val orderNumber: String?,
     val status: String,

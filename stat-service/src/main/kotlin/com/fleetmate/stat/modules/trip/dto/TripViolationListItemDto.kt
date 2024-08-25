@@ -1,9 +1,9 @@
-package com.fleetmate.stat.modules.violation.dto
+package com.fleetmate.stat.modules.trip.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ViolationListTripDto(
+data class TripViolationListItemDto(
     val id: Int,
     val type: String,
     val registeredAt: Long,

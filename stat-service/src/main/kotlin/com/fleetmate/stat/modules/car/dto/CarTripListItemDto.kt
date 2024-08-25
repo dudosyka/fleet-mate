@@ -1,15 +1,13 @@
-package com.fleetmate.stat.modules.trip.dto
+package com.fleetmate.stat.modules.car.dto
 
-import com.fleetmate.stat.modules.car.dto.CarSimpleDto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TripListDriverDto(
+data class CarTripListItemDto(
     val id: Int,
     val startedAt: Long,
     val finishedAt: Long? = null,
-    val car: CarSimpleDto,
-    val carTypeId: Int,
+    val driverFullName: String,
     val mileage: Double,
     var violations: Long = 0L
 )

@@ -5,8 +5,8 @@ import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.trip.dao.TripDao
 import com.fleetmate.stat.modules.trip.dto.TripFilterDto
-import com.fleetmate.stat.modules.trip.dto.TripListCarDto
-import com.fleetmate.stat.modules.trip.dto.TripListDriverDto
+import com.fleetmate.stat.modules.car.dto.CarTripListItemDto
+import com.fleetmate.stat.modules.user.dto.DriverTripListItemDto
 import com.fleetmate.stat.modules.trip.dto.TripListItemDto
 import org.kodein.di.DI
 
@@ -20,7 +20,7 @@ class TripService(di: DI) : KodeinService(di) {
             output
         }
 
-    fun getByDriver(driverId: Int): List<TripListDriverDto> =
+    fun getByDriver(driverId: Int): List<DriverTripListItemDto> =
         TripDao.find {
             TripModel.driver eq driverId
         }.map {
@@ -29,7 +29,7 @@ class TripService(di: DI) : KodeinService(di) {
             output
         }
 
-    fun getByCar(carId: Int): List<TripListCarDto> =
+    fun getByCar(carId: Int): List<CarTripListItemDto> =
         TripDao.find {
             TripModel.car eq carId
         }.map {

@@ -9,7 +9,7 @@ import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.trip.dao.TripDao
 import com.fleetmate.stat.modules.user.dao.UserDao
 import com.fleetmate.stat.modules.violation.dto.ViolationDto
-import com.fleetmate.stat.modules.violation.dto.ViolationListTripDto
+import com.fleetmate.stat.modules.trip.dto.TripViolationListItemDto
 import org.jetbrains.exposed.dao.id.EntityID
 
 class ViolationDao(id: EntityID<Int>) : BaseIntEntity<ViolationDto>(id, ViolationModel) {
@@ -33,6 +33,6 @@ class ViolationDao(id: EntityID<Int>) : BaseIntEntity<ViolationDto>(id, Violatio
             tripId.value, carId?.value, comment
         )
 
-    val listTripDto: ViolationListTripDto get() =
-        ViolationListTripDto(idValue, type, registeredAt, duration)
+    val listTripDto: TripViolationListItemDto get() =
+        TripViolationListItemDto(idValue, type, registeredAt, duration)
 }
