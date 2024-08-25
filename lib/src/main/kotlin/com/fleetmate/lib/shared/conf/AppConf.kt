@@ -62,6 +62,12 @@ object AppConf {
         FIXED(3)
     }
 
+    enum class FuelType(val  id: Int) {
+        PETROL_92(1),
+        PETROL_95(2),
+        DIESEL(3)
+    }
+
     val mechanicPositionId = mainConfig.config("positions").getInt("mechanic")
     val washerPositionId = mainConfig.config("positions").getInt("washer")
     val driverPositionId = mainConfig.config("positions").getInt("driver")
