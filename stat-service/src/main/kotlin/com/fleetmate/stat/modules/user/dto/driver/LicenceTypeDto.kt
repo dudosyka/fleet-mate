@@ -1,10 +1,10 @@
-package com.fleetmate.stat.modules.user.dto
+package com.fleetmate.stat.modules.user.dto.driver
 
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DepartmentDto(
+data class LicenceTypeDto (
     val id: Int,
     val name: String
 )

@@ -4,16 +4,20 @@ package com.fleetmate.stat.modules.order.service
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.dto.StatusDto
+import com.fleetmate.lib.shared.modules.wash.model.WashModel
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.fault.dao.FaultDao
 import com.fleetmate.stat.modules.order.data.dao.OrderDao
+import com.fleetmate.stat.modules.order.data.dao.WashDao
 import com.fleetmate.stat.modules.order.data.dao.WorkDao
 import com.fleetmate.stat.modules.order.data.dao.WorkTypeDao
+import com.fleetmate.stat.modules.order.data.dto.WashDto
 import com.fleetmate.stat.modules.order.data.dto.order.*
 import com.fleetmate.stat.modules.order.data.dto.work.CreateWorkDto
 import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.user.dao.UserDao
+import com.fleetmate.stat.modules.user.dto.MechanicWorkListItemDto
 import com.fleetmate.stat.modules.user.model.UserHoursModel
 import io.ktor.util.date.*
 import org.jetbrains.exposed.sql.batchInsert
@@ -106,6 +110,14 @@ class OrderService(di: DI) : KodeinService(di) {
         }
 
         order.toOutputDto()
+    }
+
+    fun getWorkListByJuniorMechanic(juniorMechanicId: Int): List<MechanicWorkListItemDto> = transaction {
+        WorkDao.getByJuniorMechanic(juniorMechanicId)
+    }
+
+    fun getWashListByWasher(washerId: Int): List<WashDto> = transaction {
+        WashDao.find { WashModel.author eq washerId }.map { it.toOutputDto() }
     }
 
 }

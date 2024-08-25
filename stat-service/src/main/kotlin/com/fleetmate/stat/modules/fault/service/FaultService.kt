@@ -8,7 +8,7 @@ import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.fault.dao.FaultDao
 import com.fleetmate.stat.modules.fault.dto.FaultDto
 import com.fleetmate.stat.modules.fault.dto.FaultFilterDto
-import com.fleetmate.stat.modules.user.dto.DriverFaultListItemDto
+import com.fleetmate.stat.modules.user.dto.driver.DriverFaultListItemDto
 import com.fleetmate.stat.modules.fault.dto.FaultListItemDto
 import org.kodein.di.DI
 

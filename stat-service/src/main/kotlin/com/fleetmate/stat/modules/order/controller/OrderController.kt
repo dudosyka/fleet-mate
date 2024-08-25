@@ -43,6 +43,11 @@ class OrderController(override val di: DI) : KodeinController() {
 
                     call.respond(orderService.getOrderWorkList(orderId))
                 }
+                post("actor") {
+                    val juniorMechanicId = call.receive<IdInputDto>().id
+
+                    call.respond(orderService.getWorkListByJuniorMechanic(juniorMechanicId))
+                }
                 patch {
                     val createWorkDto = call.receive<CreateWorkDto>()
 
@@ -54,6 +59,15 @@ class OrderController(override val di: DI) : KodeinController() {
 
                 call.respond(orderService.close(orderId))
             }
+
+            route("wash") {
+                post("washer") {
+                    val washerId = call.receive<IdInputDto>().id
+
+                    call.respond(orderService.getWashListByWasher(washerId))
+                }
+            }
+
         }
     }
 

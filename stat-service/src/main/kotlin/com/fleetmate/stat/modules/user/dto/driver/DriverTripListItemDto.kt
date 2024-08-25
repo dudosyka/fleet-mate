@@ -1,4 +1,4 @@
-package com.fleetmate.stat.modules.user.dto
+package com.fleetmate.stat.modules.user.dto.driver
 
 import com.fleetmate.stat.modules.car.dto.CarSimpleDto
 import kotlinx.serialization.Serializable

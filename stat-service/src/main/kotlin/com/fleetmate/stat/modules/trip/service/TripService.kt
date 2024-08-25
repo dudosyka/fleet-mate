@@ -6,7 +6,7 @@ import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.trip.dao.TripDao
 import com.fleetmate.stat.modules.trip.dto.TripFilterDto
 import com.fleetmate.stat.modules.car.dto.CarTripListItemDto
-import com.fleetmate.stat.modules.user.dto.DriverTripListItemDto
+import com.fleetmate.stat.modules.user.dto.driver.DriverTripListItemDto
 import com.fleetmate.stat.modules.trip.dto.TripListItemDto
 import org.kodein.di.DI
 

@@ -5,7 +5,7 @@ import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
-import com.fleetmate.stat.modules.user.dto.DepartmentDto
+import com.fleetmate.stat.modules.user.dto.department.DepartmentDto
 import org.jetbrains.exposed.dao.id.EntityID
 
 class DepartmentDao(id: EntityID<Int>) : BaseIntEntity<DepartmentDto>(id, DepartmentModel) {
