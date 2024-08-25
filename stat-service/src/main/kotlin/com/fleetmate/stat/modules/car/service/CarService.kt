@@ -45,5 +45,5 @@ class CarService(di: DI) : KodeinService(di) {
     }
 
     fun getOne(carId: Int): CarOutputDto =
-        CarDao[carId].toFullOutputDto()
+        CarDao[carId].fullOutputDto
 }

@@ -50,7 +50,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     override fun toOutputDto(): CarDto =
         CarDto(idValue, name, registrationNumber, typeId.value, fuelLevel, mileage)
 
-    fun toFullOutputDto(): CarOutputDto =
+    val fullOutputDto: CarOutputDto get() =
         CarOutputDto(
             idValue,
             brand,

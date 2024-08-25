@@ -10,7 +10,6 @@ import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import org.kodein.di.DI
@@ -31,7 +30,7 @@ class CarController(override val di: DI) : KodeinController() {
                 val carCreateDto = call.receive<CarCreateDto>()
                 call.respond(carService.create(carCreateDto))
             }
-            get {
+            post {
                val carIdDto = call.receive<IdInputDto>()
                call.respond<CarOutputDto>(carService.getOne(carIdDto.id))
             }
