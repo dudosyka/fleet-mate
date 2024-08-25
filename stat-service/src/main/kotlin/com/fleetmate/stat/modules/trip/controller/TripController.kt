@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.trip.controller
 
 
+import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.trip.dto.TripFilterDto
 import com.fleetmate.stat.modules.trip.service.TripService
@@ -17,9 +18,19 @@ class TripController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("trip") {
-            post("all") {
-                val tripFilterDto = call.receive<TripFilterDto>()
-                call.respond(tripService.getAllFiltered(tripFilterDto))
+            route("all") {
+                post {
+                    val tripFilterDto = call.receive<TripFilterDto>()
+                    call.respond(tripService.getAllFiltered(tripFilterDto))
+                }
+                post("driver") {
+                    val driverId = call.receive<IdInputDto>().id
+                    call.respond(tripService.getByDriver(driverId))
+                }
+                post("car") {
+                    val carId = call.receive<IdInputDto>().id
+                    call.respond(tripService.getByCar(carId))
+                }
             }
         }
     }

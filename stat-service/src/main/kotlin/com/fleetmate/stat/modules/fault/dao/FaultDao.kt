@@ -8,6 +8,7 @@ import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.car.dao.CarPartDao
 import com.fleetmate.stat.modules.fault.dto.FaultDto
+import com.fleetmate.stat.modules.fault.dto.FaultListDriverDto
 import com.fleetmate.stat.modules.fault.dto.FaultListItemDto
 import com.fleetmate.stat.modules.order.data.dao.OrderDao
 import com.fleetmate.stat.modules.order.data.model.OrderModel
@@ -45,4 +46,8 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
             createdAt.toString(), car.simpleDto
         )
 
+    val listDriverDto: FaultListDriverDto get() =
+        FaultListDriverDto(
+            idValue, order?.number, status, carPart.name
+        )
 }

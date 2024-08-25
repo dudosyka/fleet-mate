@@ -8,6 +8,8 @@ import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.trip.dto.TripDto
+import com.fleetmate.stat.modules.trip.dto.TripListCarDto
+import com.fleetmate.stat.modules.trip.dto.TripListDriverDto
 import com.fleetmate.stat.modules.trip.dto.TripListItemDto
 import com.fleetmate.stat.modules.trip.dto.TripSimpleDto
 import com.fleetmate.stat.modules.user.dao.UserDao
@@ -55,4 +57,10 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
 
     val listItemDto: TripListItemDto get() =
         TripListItemDto(idValue, status, keyAcceptance, keyReturn, driver.simpleDto, car.simpleDto)
+
+    val listDriverDto: TripListDriverDto get() =
+        TripListDriverDto(idValue, keyAcceptance, keyReturn, car.simpleDto, car.typeId.value, mileage)
+
+    val listCarDto: TripListCarDto get() =
+        TripListCarDto(idValue, keyAcceptance, keyReturn, driver.fullName, mileage)
 }
