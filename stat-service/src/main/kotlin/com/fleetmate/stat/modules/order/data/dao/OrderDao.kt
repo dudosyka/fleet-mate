@@ -7,6 +7,8 @@ import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.fault.dao.FaultDao
 import com.fleetmate.stat.modules.order.data.dto.order.OrderDto
 import com.fleetmate.stat.modules.order.data.dto.order.OrderListItemDto
+import com.fleetmate.stat.modules.order.data.dto.order.OrderOutputDto
+import com.fleetmate.stat.modules.order.data.dto.work.WorkListItemDto
 import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.stat.modules.order.data.model.WorkTypeModel
@@ -36,4 +38,20 @@ class OrderDao(id: EntityID<Int>) : BaseIntEntity<OrderDto>(id, OrderModel) {
 
     val listItemDto: OrderListItemDto get() =
         OrderListItemDto(idValue, number, startedAt, closedAt, mechanic.simpleDto, hours, fault.car.simpleDto)
+
+    val fullOutputDto: OrderOutputDto get() =
+        OrderOutputDto(idValue, number, mechanic.staffDto, workList)
+
+    val workList: List<WorkListItemDto> get() =
+        works.map {
+            WorkListItemDto(
+                it.idValue,
+                it.type.name,
+                it.actors.map {
+                    it.fullName
+                },
+                it.type.hours
+            )
+        }.toList()
+
 }

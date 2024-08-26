@@ -2,6 +2,8 @@ package com.fleetmate.stat.modules.fault.dao
 
 
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
+import com.fleetmate.lib.shared.modules.fault.model.FaultPhotoModel
+import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
@@ -10,6 +12,7 @@ import com.fleetmate.stat.modules.car.dao.CarPartDao
 import com.fleetmate.stat.modules.fault.dto.FaultDto
 import com.fleetmate.stat.modules.user.dto.driver.DriverFaultListItemDto
 import com.fleetmate.stat.modules.fault.dto.FaultListItemDto
+import com.fleetmate.stat.modules.fault.dto.FaultOutputDto
 import com.fleetmate.stat.modules.order.data.dao.OrderDao
 import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.trip.dao.TripDao
@@ -30,6 +33,7 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
     val comment by FaultModel.comment
     var critical by FaultModel.critical
     var status by FaultModel.status
+
     private val orderList by OrderDao referrersOn OrderModel.fault
 
     val order: OrderDao? get() = orderList.firstOrNull()
@@ -51,4 +55,20 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
         DriverFaultListItemDto(
             idValue, order?.number, status, carPart.name
         )
+
+    val fullOutputDto: FaultOutputDto get() =
+        FaultOutputDto(
+            idValue, createdAt.toString(), author.fullName, carPart.name, status, comment, photos
+        )
+
+    val photos: List<String> get() {
+        return (FaultPhotoModel innerJoin PhotoModel)
+            .select(PhotoModel.link)
+            .where {
+                FaultModel.id eq idValue
+            }
+            .map {
+            it[PhotoModel.link]
+        }
+    }
 }

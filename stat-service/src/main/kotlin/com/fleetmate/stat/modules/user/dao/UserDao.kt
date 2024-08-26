@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.user.dao
 
 
+import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
@@ -15,9 +16,12 @@ import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.trip.dao.TripDao
 import com.fleetmate.stat.modules.user.dto.UserDto
 import com.fleetmate.stat.modules.user.dto.UserSimpleDto
+import com.fleetmate.stat.modules.user.dto.output.DriverDto
 import com.fleetmate.stat.modules.user.dto.output.DriverOutputDto
+import com.fleetmate.stat.modules.user.dto.output.StaffDto
 import com.fleetmate.stat.modules.user.dto.output.StaffOutputDto
 import com.fleetmate.stat.modules.user.model.UserHoursModel
+import com.fleetmate.stat.modules.user.model.UserPhotoModel
 import com.fleetmate.stat.modules.violation.dao.ViolationDao
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SizedIterable
@@ -78,6 +82,9 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val position by PositionDao referencedOn UserModel.position
     val departmentId by UserModel.department
     val department by DepartmentDao referencedOn UserModel.department
+    val snils by UserModel.snils
+    val sectorBossId by UserModel.sectorBossId
+    val sectorBoss by UserDao referencedOn UserModel.sectorBossId
 
     val lastTrip: TripDao? get() =
         TripDao.find {
@@ -106,4 +113,21 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
             orderInProgress, orderCompleted,
             hoursCompleted
         )
+    val staffDto: StaffDto get() =
+        StaffDto(idValue, fullName, phoneNumber, department.name, position.name, photos)
+
+    val driverDto: DriverDto get() =
+        DriverDto(idValue, fullName, department.name, snils, phoneNumber,
+            licenceType.name, sectorBoss.staffDto, position.name, photos)
+
+    val photos: List<String> get() {
+        return (UserPhotoModel innerJoin PhotoModel)
+            .select(PhotoModel.link)
+            .where {
+                UserModel.id eq idValue
+            }
+            .map {
+                it[PhotoModel.link]
+            }
+    }
 }

@@ -4,7 +4,7 @@ package com.fleetmate.faults.modules.fault.service
 import com.fleetmate.faults.modules.fault.data.dao.FaultDao
 import com.fleetmate.faults.modules.fault.data.dto.FaultDto
 import com.fleetmate.faults.modules.fault.data.dto.FaultInputDto
-import com.fleetmate.faults.modules.fault.data.model.FaultPhotoModel
+import com.fleetmate.lib.shared.modules.fault.model.FaultPhotoModel
 import com.fleetmate.faults.modules.trip.TripDao
 import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.shared.conf.AppConf

@@ -12,4 +12,5 @@ class ViolationService(di: DI) : KodeinService(di) {
         ViolationDao.find {
             ViolationModel.trip eq  tripId
         }.map { it.listTripDto }
+
 }
