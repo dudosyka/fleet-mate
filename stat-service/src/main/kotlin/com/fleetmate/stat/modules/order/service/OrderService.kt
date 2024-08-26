@@ -42,8 +42,8 @@ class OrderService(di: DI) : KodeinService(di) {
       Механик, Часы, ТС (Название, Название типа, госномер)
      */
 
-    fun getOne(orderId: Int): OrderDto =
-        OrderDao[orderId].toOutputDto()
+    fun getOne(orderId: Int): OrderOutputDto =
+        OrderDao[orderId].fullOutputDto
 
     fun getOrderWorkList(orderId: Int): List<OrderWorkDto> =
         OrderDao[orderId].works.map { it.orderWorkDto }

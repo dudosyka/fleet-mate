@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.user.controller
 
 
+import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.user.dto.UserFilterDto
 import com.fleetmate.stat.modules.user.service.UserService
@@ -20,12 +21,24 @@ class UserController(override val di: DI) : KodeinController() {
 
                 call.respond(userService.getStaffFiltered(userFilterDto))
             }
+
+            post {
+                val staffId = call.receive<IdInputDto>().id
+
+                call.respond(userService.getOneStaff(staffId))
+            }
         }
         route("drivers") {
             post("all") {
                 val userFilterDto = call.receive<UserFilterDto>()
 
                 call.respond(userService.getDriversFiltered(userFilterDto))
+            }
+
+            post {
+                val driverId = call.receive<IdInputDto>().id
+
+                call.respond(userService.getOneDriver(driverId))
             }
         }
     }

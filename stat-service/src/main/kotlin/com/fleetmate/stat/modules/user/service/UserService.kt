@@ -7,7 +7,9 @@ import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.user.dao.UserDao
 import com.fleetmate.stat.modules.user.dto.UserFilterDto
+import com.fleetmate.stat.modules.user.dto.output.DriverDto
 import com.fleetmate.stat.modules.user.dto.output.DriverOutputDto
+import com.fleetmate.stat.modules.user.dto.output.StaffDto
 import com.fleetmate.stat.modules.user.dto.output.StaffOutputDto
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
@@ -49,4 +51,10 @@ class UserService(di: DI) : KodeinService(di) {
             }
         }
     }
+
+    fun getOneStaff(staffID: Int): StaffDto =
+        UserDao[staffID].staffDto
+
+    fun getOneDriver(driverId: Int): DriverDto =
+        UserDao[driverId].driverDto
 }

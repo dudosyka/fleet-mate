@@ -1,8 +1,7 @@
-package com.fleetmate.faults.modules.fault.data.model
+package com.fleetmate.lib.shared.modules.fault.model
 
 
 import com.fleetmate.lib.shared.modules.photo.data.dto.PhotoOutputDto
-import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
