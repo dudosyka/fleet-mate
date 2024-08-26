@@ -9,5 +9,5 @@ data class StaffDto (
     val phoneNumber: String,
     val department: String,
     val position: String,
-    val photo: List<String>? = null
+    override val photo: List<String>? = null
 ): UserBaseOutput()

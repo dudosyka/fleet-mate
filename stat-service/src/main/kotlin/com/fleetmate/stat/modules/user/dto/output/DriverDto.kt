@@ -1,5 +1,8 @@
 package com.fleetmate.stat.modules.user.dto.output
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DriverDto(
     override val id: Int,
     override val fullName: String,
@@ -9,6 +12,5 @@ data class DriverDto(
     val licenceType: String,
     val sectorBossId: StaffDto,
     val position: String,
-    val photos: List<String>? = null
-): UserBaseOutput() {
-}
+    override val photo: List<String>? = null
+): UserBaseOutput()

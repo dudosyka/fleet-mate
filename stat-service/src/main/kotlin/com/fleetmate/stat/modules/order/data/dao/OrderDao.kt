@@ -42,18 +42,16 @@ class OrderDao(id: EntityID<Int>) : BaseIntEntity<OrderDto>(id, OrderModel) {
     val fullOutputDto: OrderOutputDto get() =
         OrderOutputDto(idValue, number, mechanic.staffDto, workList)
 
-    val workList: List<WorkListItemDto> get() {
-        val currentHours = hours
-        return works.map {
+    val workList: List<WorkListItemDto> get() =
+        works.map {
             WorkListItemDto(
                 it.idValue,
                 it.type.name,
                 it.actors.map {
                     it.fullName
                 },
-                currentHours
+                it.type.hours
             )
         }.toList()
-    }
 
 }
