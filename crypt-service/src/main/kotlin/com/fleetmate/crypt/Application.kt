@@ -1,11 +1,12 @@
 package com.fleetmate.crypt
 
 import com.fleetmate.crypt.conf.ServerConf
-import com.fleetmate.crypt.modules.access.AccessController
-import com.fleetmate.crypt.modules.access.AccessService
 import com.fleetmate.crypt.modules.auth.controller.AuthController
+import com.fleetmate.crypt.modules.auth.data.model.UserLoginModel
 import com.fleetmate.crypt.modules.auth.service.AuthService
+import com.fleetmate.crypt.modules.user.service.UserService
 import com.fleetmate.lib.plugins.*
+import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.DatabaseConnector
 import com.fleetmate.lib.utils.kodein.bindSingleton
 import com.fleetmate.lib.utils.kodein.kodeinApplication
@@ -29,13 +30,15 @@ fun Application.module() {
     configureExceptionFilter()
 
     kodeinApplication("/bridge") {
-        bindSingleton { AccessService(it) }
+        // ----- Services ------
         bindSingleton { AuthService(it) }
+        bindSingleton { UserService(it) }
 
-
-        bindSingleton { AccessController(it) }
+        // ----- Controllers ------
         bindSingleton { AuthController(it) }
     }
 
-    DatabaseConnector(ECDH) {}
+    DatabaseConnector(
+        ECDH, UserModel, UserLoginModel
+    ) {}
 }
