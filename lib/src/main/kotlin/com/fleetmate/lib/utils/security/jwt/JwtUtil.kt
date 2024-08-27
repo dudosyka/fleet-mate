@@ -53,7 +53,7 @@ object JwtUtil {
             )
             .apply {
                 withClaim("id", userId)
-                val roles = UserRoleModel.userToRoleLinks(userId, expanded = true)
+                val roles = UserRoleModel.userToRoleLinks(userId)
                 if (lastLogin != null)
                     withClaim("lastLogin", lastLogin)
                 else{
@@ -116,7 +116,7 @@ object JwtUtil {
             .apply {
                 withClaim("id", qrTokenDto.userId)
                 if (qrTokenDto.userId != null){
-                    val roles = UserRoleModel.userToRoleLinks(qrTokenDto.userId, expanded = true)
+                    val roles = UserRoleModel.userToRoleLinks(qrTokenDto.userId)
                     withClaim("roles", Json.encodeToString(encodeRoles(roles)))
                 }
             }.sign(Algorithm.HMAC256(AppConf.jwt.secret))
