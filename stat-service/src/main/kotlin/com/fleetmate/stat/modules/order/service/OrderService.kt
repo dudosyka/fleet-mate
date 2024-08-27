@@ -31,6 +31,7 @@ class OrderService(di: DI) : KodeinService(di) {
             StatusDto(it.id, it.name)
         }
 
+    //FIXME: Dao couldn`t handle nested where clauses (should be rewrote via Model API)
     fun getAllFiltered(orderFilterDto: OrderFilterDto): List<OrderListItemDto> = transaction {
         OrderDao.find {
             with(orderFilterDto) { expressionBuilder }
@@ -42,13 +43,16 @@ class OrderService(di: DI) : KodeinService(di) {
       Механик, Часы, ТС (Название, Название типа, госномер)
      */
 
-    fun getOne(orderId: Int): OrderOutputDto =
+    fun getOne(orderId: Int): OrderOutputDto = transaction {
         OrderDao[orderId].fullOutputDto
+    }
 
-    fun getOrderWorkList(orderId: Int): List<OrderWorkDto> =
+    fun getOrderWorkList(orderId: Int): List<OrderWorkDto> = transaction {
         OrderDao[orderId].works.map { it.orderWorkDto }
+    }
 
 
+    //FIXME: Check that mechanicId user has mechanic role
     fun create(createOrderDto: CreateOrderDto): OrderDto = transaction {
         var fault = FaultDao[createOrderDto.faultId]
 
@@ -112,6 +116,11 @@ class OrderService(di: DI) : KodeinService(di) {
         order.toOutputDto()
     }
 
+    //FIXME:
+    // Cannot join with com.fleetmate.stat.modules.order.data.model.OrderModel@a2e7c09b as there is multiple primary key <-> foreign key references.
+    // com.fleetmate.stat.modules.order.data.model.OrderModel.id -> com.fleetmate.stat.modules.order.data.model.WorkActorsModel.order, com.fleetmate.stat.modules.order.data.model.WorkModel.order
+    // 22:02:18.324 [eventLoopGroupProxy-4-2] DEBUG com.fleetmate.ExceptionFilter -- Stacktrace => java.lang.IllegalStateException: Cannot join with com.fleetmate.stat.modules.order.data.model.OrderModel@a2e7c09b as there is multiple primary key <-> foreign key references.
+    // com.fleetmate.stat.modules.order.data.model.OrderModel.id -> com.fleetmate.stat.modules.order.data.model.WorkActorsModel.order, com.fleetmate.stat.modules.order.data.model.WorkModel.order
     fun getWorkListByJuniorMechanic(juniorMechanicId: Int): List<MechanicWorkListItemDto> = transaction {
         WorkDao.getByJuniorMechanic(juniorMechanicId)
     }

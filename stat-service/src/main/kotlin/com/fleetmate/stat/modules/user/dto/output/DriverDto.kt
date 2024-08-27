@@ -10,7 +10,7 @@ data class DriverDto(
     val snils: String,
     val phoneNumber: String,
     val licenceType: String,
-    val sectorBossId: StaffDto,
+    val sectorBossId: StaffDto?,
     val position: String,
     override val photo: List<String>? = null
 ): UserBaseOutput()

@@ -8,6 +8,7 @@ import com.fleetmate.stat.modules.order.data.dto.order.OrderFilterDto
 import com.fleetmate.stat.modules.order.data.dto.work.CreateWorkDto
 import com.fleetmate.stat.modules.order.service.OrderService
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -18,46 +19,51 @@ class OrderController(override val di: DI) : KodeinController() {
     private val orderService: OrderService by instance()
 
     override fun Route.registerRoutes() {
-        route("order") {
-            get("status") {
-                call.respond(orderService.getAllStatuses())
-            }
-            post("all") {
-                val orderFilterDto = call.receive<OrderFilterDto>()
 
-                call.respond(orderService.getAllFiltered(orderFilterDto))
-            }
-            post {
-                val orderId = call.receive<IdInputDto>().id
+        //TODO: admin + mechanic roles
+        authenticate("default") {
 
-                call.respond(orderService.getOne(orderId))
-            }
-            post("create") {
-                val createOrderDto = call.receive<CreateOrderDto>()
+            route("order") {
+                get("status") {
+                    call.respond(orderService.getAllStatuses())
+                }
+                post("all") {
+                    val orderFilterDto = call.receive<OrderFilterDto>()
 
-                call.respond(orderService.create(createOrderDto))
-            }
-            route("work") {
+                    call.respond(orderService.getAllFiltered(orderFilterDto))
+                }
                 post {
                     val orderId = call.receive<IdInputDto>().id
 
-                    call.respond(orderService.getOrderWorkList(orderId))
+                    call.respond(orderService.getOne(orderId))
                 }
-                post("actor") {
-                    val juniorMechanicId = call.receive<IdInputDto>().id
+                post("create") {
+                    val createOrderDto = call.receive<CreateOrderDto>()
 
-                    call.respond(orderService.getWorkListByJuniorMechanic(juniorMechanicId))
+                    call.respond(orderService.create(createOrderDto))
                 }
-                patch {
-                    val createWorkDto = call.receive<CreateWorkDto>()
+                route("work") {
+                    post {
+                        val orderId = call.receive<IdInputDto>().id
 
-                    call.respond(orderService.appendWork(createWorkDto))
+                        call.respond(orderService.getOrderWorkList(orderId))
+                    }
+                    post("actor") {
+                        val juniorMechanicId = call.receive<IdInputDto>().id
+
+                        call.respond(orderService.getWorkListByJuniorMechanic(juniorMechanicId))
+                    }
+                    patch {
+                        val createWorkDto = call.receive<CreateWorkDto>()
+
+                        call.respond(orderService.appendWork(createWorkDto))
+                    }
                 }
-            }
-            patch("close") {
-                val orderId = call.receive<IdInputDto>().id
+                patch("close") {
+                    val orderId = call.receive<IdInputDto>().id
 
-                call.respond(orderService.close(orderId))
+                    call.respond(orderService.close(orderId))
+                }
             }
 
             route("wash") {
@@ -67,7 +73,6 @@ class OrderController(override val di: DI) : KodeinController() {
                     call.respond(orderService.getWashListByWasher(washerId))
                 }
             }
-
         }
     }
 

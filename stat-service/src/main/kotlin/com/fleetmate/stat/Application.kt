@@ -1,7 +1,9 @@
 package com.fleetmate.stat
 
 import com.fleetmate.lib.plugins.*
+import com.fleetmate.lib.shared.conf.DatabaseInitializer
 import com.fleetmate.lib.shared.modules.car.model.CarModel
+import com.fleetmate.lib.shared.modules.car.model.CarPhotoModel
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
@@ -81,11 +83,12 @@ fun Application.module() {
     }
 
     DatabaseConnector(
-        CarModel, CarPartModel, FaultModel, PhotoModel,
+        CarModel, CarPartModel, CarPhotoModel, FaultModel, PhotoModel,
         TripModel, ViolationModel, CarTypeModel, LicenceTypeModel,
         OrderModel, WorkActorsModel, WorkModel, WorkTypeModel,
         WashModel, UserModel, UserHoursModel, ViolationModel,
         DepartmentModel, PositionModel, UserPhotoModel,
     ) {
+        DatabaseInitializer.initCarSubTables()
     }
 }

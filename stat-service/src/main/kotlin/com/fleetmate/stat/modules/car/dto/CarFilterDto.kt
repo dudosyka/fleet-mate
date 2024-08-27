@@ -18,4 +18,5 @@ data class CarFilterDto(
     val SqlExpressionBuilder.expressionBuilder: Op<Boolean> get() =
         likeCond(registrationNumber, CarModel.id neq 0, CarModel.registrationNumber) and
         listCond(carType, CarModel.id neq 0, CarModel.type)
+
 }

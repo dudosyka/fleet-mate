@@ -2,6 +2,7 @@ package com.fleetmate.trip.modules.trip.controller
 
 import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
+import com.fleetmate.trip.modules.trip.data.dto.TripInitDto
 import com.fleetmate.trip.modules.trip.service.TripService
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -15,12 +16,12 @@ class TripController(override val di: DI) : KodeinController() {
     private val tripService: TripService by instance()
 
     override fun Route.registerRoutes() {
-        authenticate {
+        //TODO: mechanic role
+        authenticate("default") {
             post("init") {
-                val authorizedUser = call.getAuthorized()
-                val carId = call.receive<IdInputDto>().id
+                val tripInitDto = call.receive<TripInitDto>()
 
-                call.respond(tripService.initTrip(carId, authorizedUser))
+                call.respond(tripService.initTrip(tripInitDto))
             }
             post("finish") {
                 val driverId = call.receive<IdInputDto>().id

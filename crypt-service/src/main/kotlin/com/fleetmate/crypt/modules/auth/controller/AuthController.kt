@@ -6,6 +6,7 @@ import com.fleetmate.crypt.modules.auth.data.dto.simple.VerifyDto
 import com.fleetmate.crypt.modules.auth.service.AuthService
 import com.fleetmate.lib.utils.kodein.KodeinController
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -31,6 +32,16 @@ class AuthController(override val di: DI) : KodeinController() {
                 post("verify") {
                     val verifyDto = call.receive<VerifyDto>()
                     call.respond(authService.verifySimple(verifyDto))
+                }
+            }
+            authenticate("default") {
+                post("refresh") {
+                    val refreshTokenDto = call.getRefresh()
+
+                    call.respond(authService.refreshUser(refreshTokenDto))
+                }
+                get("authorized") {
+                    call.respond(call.getAuthorized())
                 }
             }
         }

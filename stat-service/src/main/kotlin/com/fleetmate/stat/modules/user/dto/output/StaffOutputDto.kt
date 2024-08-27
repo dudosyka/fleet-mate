@@ -11,4 +11,5 @@ data class StaffOutputDto(
     val orderInProgress: Long,
     val orderCompleted: Long,
     val hoursCompleted: Double,
+    override val photo: List<String>?,
 ): UserBaseOutput()

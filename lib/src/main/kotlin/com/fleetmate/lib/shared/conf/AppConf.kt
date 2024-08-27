@@ -9,6 +9,7 @@ object AppConf {
     private val jwtConfig: ApplicationConfig = mainConfig.config("jwt")
     private val databaseConfig: ApplicationConfig = mainConfig.config("database")
     private val rolesConf: ApplicationConfig = mainConfig.config("roles")
+    private val positionsConf: ApplicationConfig = mainConfig.config("positions")
 
     val isDebug: Boolean = mainConfig.getString("debug") == "true"
     val needCrypt: Boolean = mainConfig.getString("crypt") == "true"
@@ -73,12 +74,18 @@ object AppConf {
     enum class FuelType(val  id: Int) {
         PETROL_92(1),
         PETROL_95(2),
-        DIESEL(3)
+        DIESEL(3);
+
+        companion object {
+            fun getById(id: Int): FuelType? {
+                return entries.firstOrNull { it.id == id }
+            }
+        }
     }
 
-    val mechanicPositionId = mainConfig.config("positions").getInt("mechanic")
-    val washerPositionId = mainConfig.config("positions").getInt("washer")
-    val driverPositionId = mainConfig.config("positions").getInt("driver")
+    val mechanicPositionId = positionsConf.getInt("mechanic")
+    val washerPositionId = positionsConf.getInt("washer")
+    val driverPositionId = positionsConf.getInt("driver")
 
     val washHoursNormalized = 0.5
 }

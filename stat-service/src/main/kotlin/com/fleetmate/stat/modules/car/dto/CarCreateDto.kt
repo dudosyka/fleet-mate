@@ -1,6 +1,5 @@
 package com.fleetmate.stat.modules.car.dto
 
-import com.fleetmate.lib.shared.conf.AppConf
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,15 +8,15 @@ data class CarCreateDto(
     val name: String,
     val mileage: Double,
     val fuelLevel: Double,
-    val registerNumber: String,
+    val registrationNumber: String,
     val brand: String,
     val model: String,
     val vin: String,
-    val fuelType: AppConf.FuelType,
-    val hours: Double,
-    val osago: Long,
-    val casco: Long,
-    val yearManufacture: Int,
+    val fuelType: Int,
+    val engineHours: Double,
+    val compulsoryCarInsurance: String,
+    val comprehensiveCarInsurance: String,
+    val yearManufactured: Int,
     val lastMaintenance: Long,
     val antifreezeBrand: String,
     val engineOilBrand: String,

@@ -5,7 +5,7 @@ import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.utils.database.FieldFilterWrapper
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.likeCond
-import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.listCond
+import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.stringListCond
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.nullableRangeCond
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.rangeCond
 import com.fleetmate.stat.modules.order.data.model.OrderModel
@@ -26,7 +26,7 @@ data class OrderFilterDto (
 ) {
 
     private fun SqlExpressionBuilder.createStatusFilterCond(statuses: List<Int>?): Op<Boolean> =
-        listCond(AppConf.OrderStatus.entries.map { StatusDto(it.id, it.name) }
+        stringListCond(AppConf.OrderStatus.entries.map { StatusDto(it.id, it.name) }
             .filter {
                 statuses?.contains(it.id) ?: false
             }.map { it.name }, OrderModel.id neq 0, OrderModel.status)

@@ -52,9 +52,13 @@ class UserService(di: DI) : KodeinService(di) {
         }
     }
 
-    fun getOneStaff(staffID: Int): StaffDto =
+    //FIXME: Check role to be not a "washer", "junior mechanic" or "mechanic"
+    fun getOneStaff(staffID: Int): StaffDto = transaction {
         UserDao[staffID].staffDto
+    }
 
-    fun getOneDriver(driverId: Int): DriverDto =
+    //FIXME: Check role to be "driver"
+    fun getOneDriver(driverId: Int): DriverDto = transaction {
         UserDao[driverId].driverDto
+    }
 }

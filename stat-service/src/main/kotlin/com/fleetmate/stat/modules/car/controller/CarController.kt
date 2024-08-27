@@ -7,6 +7,7 @@ import com.fleetmate.stat.modules.car.dto.CarFilterDto
 import com.fleetmate.stat.modules.car.dto.CarOutputDto
 import com.fleetmate.stat.modules.car.service.CarService
 import io.ktor.server.application.call
+import io.ktor.server.auth.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -21,18 +22,22 @@ class CarController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("car"){
-            post("all") {
-                val carFilterDto = call.receive<CarFilterDto>()
-                call.respond(carService.getAllFiltered(carFilterDto))
-            }
+            //TODO: admin + mechanic roles
+            authenticate("default") {
+                post("all") {
+                    val carFilterDto = call.receive<CarFilterDto>()
+                    call.respond(carService.getAllFiltered(carFilterDto))
+                }
 
-            post {
-                val carCreateDto = call.receive<CarCreateDto>()
-                call.respond(carService.create(carCreateDto))
-            }
-            post {
-               val carIdDto = call.receive<IdInputDto>()
-               call.respond<CarOutputDto>(carService.getOne(carIdDto.id))
+                post("create") {
+                    val carCreateDto = call.receive<CarCreateDto>()
+                    call.respond(carService.create(carCreateDto))
+                }
+
+                post {
+                    val carIdDto = call.receive<IdInputDto>()
+                    call.respond<CarOutputDto>(carService.getOne(carIdDto.id))
+                }
             }
         }
     }

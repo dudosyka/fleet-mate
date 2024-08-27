@@ -18,7 +18,7 @@ class RefuelService(di: DI) : KodeinService(di) {
 
     fun refuel(driverId: Int, refuelInputDto: RefuelInputDto): RefuelDto = transaction {
         val trip = TripDao.getUserActiveTrip(driverId)
-        val photoDto = photoService.upload(refuelInputDto.photoUploadDto.apply { type = AppConf.PhotoType.REFUEL })
+        val photoDto = photoService.upload(refuelInputDto.billPhoto.apply { type = AppConf.PhotoType.REFUEL })
 
         trip.car.fuelLevel += refuelInputDto.volume
         trip.car.flush()

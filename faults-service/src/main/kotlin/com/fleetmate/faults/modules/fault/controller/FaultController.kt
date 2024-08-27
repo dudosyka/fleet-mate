@@ -6,6 +6,7 @@ import com.fleetmate.faults.modules.fault.service.FaultService
 import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,23 +17,33 @@ class FaultController(override val di: DI) : KodeinController() {
     private val faultService: FaultService by instance()
 
     override fun Route.registerRoutes() {
-        post {
-            val authorizedUser = call.getAuthorized()
-            val faultInputDto = call.receive<FaultInputDto>()
+        authenticate("default") {
+            post {
+                val authorizedUser = call.getAuthorized()
+                val faultInputDto = call.receive<FaultInputDto>()
 
-            call.respond(faultService.create(authorizedUser, faultInputDto))
-        }
+                call.respond(faultService.create(authorizedUser, faultInputDto))
+            }
 
-        get("current") {
-            val authorizedUser = call.getAuthorized()
+            get("current") {
+                val authorizedUser = call.getAuthorized()
 
-            call.respond(faultService.getByUser(authorizedUser))
-        }
+                call.respond(faultService.getByUser(authorizedUser))
+            }
 
-        post("car") {
-            val carId = call.receive<IdInputDto>().id
+            route("car") {
+                post("critical") {
+                    val carId = call.receive<IdInputDto>().id
 
-            call.respond(faultService.getByCar(carId))
+                    call.respond(faultService.getCriticalByCar(carId))
+                }
+
+                post("all") {
+                    val carId = call.receive<IdInputDto>().id
+
+                    call.respond(faultService.getByCar(carId))
+                }
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.trip.modules.refuel.dto.RefuelInputDto
 import com.fleetmate.trip.modules.refuel.service.RefuelService
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,10 +18,13 @@ class RefuelController(override val di: DI) : KodeinController() {
      */
     override fun Route.registerRoutes() {
         route("refuel") {
-            post {
-                val authorizedUser = call.getAuthorized()
-                val refuelInputDto = call.receive<RefuelInputDto>()
-                call.respond(refuelService.refuel(authorizedUser.id, refuelInputDto))
+            //TODO: driver role
+            authenticate("default") {
+                post {
+                    val authorizedUser = call.getAuthorized()
+                    val refuelInputDto = call.receive<RefuelInputDto>()
+                    call.respond(refuelService.refuel(authorizedUser.id, refuelInputDto))
+                }
             }
         }
     }

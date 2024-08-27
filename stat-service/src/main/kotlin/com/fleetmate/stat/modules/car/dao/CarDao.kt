@@ -35,11 +35,11 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     var brand by CarModel.brand
     var model by CarModel.model
     var vin by CarModel.vin
-    var hours by CarModel.hours
+    var engineHours by CarModel.engineHours
     var fuelType by CarModel.fuelType
-    var osago by CarModel.osago
-    var casco by CarModel.casco
-    var yearManufacture by CarModel.yearManufacture
+    var compulsoryCarInsurance by CarModel.compulsoryCarInsurance
+    var comprehensiveCarInsurance by CarModel.comprehensiveCarInsurance
+    var yearManufactured by CarModel.yearManufactured
     var lastMaintenance by CarModel.lastMaintenance
     var antifreezeBrand by CarModel.antifreezeBrand
     var engineOilBrand by CarModel.engineOilBrand
@@ -59,12 +59,12 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
             vin,
             fuelType,
             mileage,
-            hours,
+            engineHours,
             typeId.value,
             licence,
-            osago,
-            casco,
-            yearManufacture,
+            compulsoryCarInsurance,
+            comprehensiveCarInsurance,
+            yearManufactured,
             isServiceability,
             lastMaintenance,
             antifreezeBrand,
@@ -75,7 +75,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
             photos
         )
 
-    val lastTrip: TripDao? get() =
+    private val lastTrip: TripDao? get() =
         TripDao.find {
             (TripModel.car eq idValue)
         }.orderBy(TripModel.keyReturn to SortOrder.DESC).firstOrNull()
@@ -86,19 +86,19 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     val listItemDto: CarListItemDto get() =
         CarListItemDto(simpleDto, fuelLevel, violationsCount)
 
-    val violationsCount: Int get() =
+    private val violationsCount: Int get() =
         ViolationDao.count(ViolationModel.car eq idValue).toInt()
 
-    val isServiceability: Boolean get() =
+    private val isServiceability: Boolean get() =
         FaultDao.find {
             (FaultModel.car eq idValue) and
             (FaultModel.critical eq true)
         }.count() == 0L
 
-    val licence: Int get() =
+    private val licence: Int get() =
         CarTypeDao[typeId].licenceType.value
 
-    val photos: List<String> get() {
+    private val photos: List<String> get() {
         val trip = lastTrip
         return CarPhotoModel.join(
             PhotoModel, JoinType.INNER, CarPhotoModel.photo, PhotoModel.id

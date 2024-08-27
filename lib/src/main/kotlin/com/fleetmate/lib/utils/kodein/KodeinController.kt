@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import org.kodein.di.DIAware
 import org.kodein.di.instance
 import com.fleetmate.lib.exceptions.BadRequestException
+import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.shared.modules.auth.dto.RefreshTokenDto
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.utils.security.jwt.JwtUtil
@@ -29,8 +30,13 @@ abstract class KodeinController() : DIAware {
     abstract fun Route.registerRoutes()
 
     fun ApplicationCall.getAuthorized(): AuthorizedUser {
-        val principal = principal<JWTPrincipal>()!!
+        val principal = principal<JWTPrincipal>() ?: throw ForbiddenException()
         return JwtUtil.decodeAccessToken(principal)
+    }
+
+    fun ApplicationCall.getRefresh(): RefreshTokenDto {
+        val principal = principal<JWTPrincipal>() ?: throw ForbiddenException()
+        return JwtUtil.decodeRefreshToken(principal)
     }
 
     fun Parameters.getInt(name: String, errorMsg: String): Int {
@@ -40,10 +46,5 @@ abstract class KodeinController() : DIAware {
         } catch (e: NumberFormatException) {
             throw BadRequestException(errorMsg)
         }
-    }
-
-    fun getRefresh(call: ApplicationCall): RefreshTokenDto {
-        val principal = call.principal<JWTPrincipal>()!!
-        return JwtUtil.decodeRefreshToken(principal)
     }
 }

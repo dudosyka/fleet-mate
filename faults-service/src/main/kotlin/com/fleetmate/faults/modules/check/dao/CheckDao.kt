@@ -1,6 +1,7 @@
 package com.fleetmate.faults.modules.check.dao
 
 
+import com.fleetmate.faults.modules.car.CarDao
 import com.fleetmate.faults.modules.check.dto.CheckDto
 import com.fleetmate.faults.modules.user.UserDao
 import com.fleetmate.lib.exceptions.NotFoundException
@@ -23,9 +24,9 @@ class CheckDao(id: EntityID<Int>) : BaseIntEntity<CheckDto>(id, CheckModel) {
     }
 
     var authorId by CheckModel.author
-    val author by UserDao referencedOn CheckModel.author
+    var author by UserDao referencedOn CheckModel.author
     var carId by CheckModel.car
-    val car by UserDao referencedOn CheckModel.car
+    var car by CarDao referencedOn CheckModel.car
     var startTime by CheckModel.startTime
     var finishTime by CheckModel.finishTime
     var timeExceeded by CheckModel.timeExceeded

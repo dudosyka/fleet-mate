@@ -12,7 +12,7 @@ object FaultPhotoModel : BaseIntIdTable() {
     val photo = reference("photo", PhotoModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
 
     fun append(faultId: Int, photos: List<PhotoOutputDto>) {
-        batchInsert(photos) {
+        FaultPhotoModel.batchInsert(photos) {
             this[fault] = faultId
             this[photo] = it.id
         }

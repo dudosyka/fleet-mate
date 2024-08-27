@@ -52,6 +52,7 @@ fun Application.configureSecurity() {
                     JWTPrincipal(it.payload)
             }
         }
+
         loadRole("admin", roles.admin)
         loadRole("driver", roles.driver)
         loadRole("mechanic", roles.mechanic)

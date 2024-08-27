@@ -24,9 +24,11 @@ class CarService(di: DI) : KodeinService(di) {
         carDao.fuelLevel <= 10
     }
 
-    fun getCarByUser(authorizedUser: AuthorizedUser): CarFullDto =
+    fun getCarByUser(authorizedUser: AuthorizedUser): CarFullDto = transaction {
         TripDao.getUserActiveTrip(authorizedUser.id).car.fullOutputDto
+    }
 
-    fun getOne(carId: Int): CarFullDto =
+    fun getOne(carId: Int): CarFullDto = transaction {
         CarDao[carId].fullOutputDto
+    }
 }

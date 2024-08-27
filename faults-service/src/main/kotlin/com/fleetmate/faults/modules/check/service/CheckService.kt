@@ -1,20 +1,19 @@
 package com.fleetmate.faults.modules.check.service
 
+import com.fleetmate.faults.modules.car.CarDao
 import com.fleetmate.faults.modules.check.dao.CheckDao
 import com.fleetmate.faults.modules.check.dto.FinishCheckInputDto
 import com.fleetmate.faults.modules.fault.data.dao.FaultDao
 import com.fleetmate.faults.modules.trip.TripDao
+import com.fleetmate.faults.modules.user.UserDao
 import com.fleetmate.lib.exceptions.BadRequestException
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
-import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.photo.service.PhotoService
-import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
 import io.ktor.util.date.*
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 import org.kodein.di.instance
@@ -23,8 +22,8 @@ class CheckService(di: DI) : KodeinService(di) {
     private val photoService: PhotoService by instance()
     fun start(authorizedUser: AuthorizedUser, carId: Int) = transaction {
         val check = CheckDao.new {
-            authorId = EntityID(authorizedUser.id, UserModel)
-            this.carId = EntityID(carId, CarModel)
+            author = UserDao[authorizedUser.id]
+            car = CarDao[carId]
             startTime = getTimeMillis()
         }
         check.flush()

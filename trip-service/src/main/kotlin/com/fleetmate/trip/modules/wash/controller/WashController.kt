@@ -18,7 +18,8 @@ class WashController(override val di: DI) : KodeinController() {
      */
     override fun Route.registerRoutes() {
         route("wash") {
-            authenticate {
+            //TODO: washer role
+            authenticate("default") {
                 post {
                     val authorizedUser = call.getAuthorized()
                     val carId = call.receive<IdInputDto>().id

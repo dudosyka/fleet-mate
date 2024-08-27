@@ -5,6 +5,7 @@ import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.trip.modules.car.service.CarService
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,16 +17,20 @@ class CarController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("car") {
-            get("current") {
-                val authorizedUser = call.getAuthorized()
+            //TODO: driver role
+            authenticate("default") {
+                get("current") {
+                    val authorizedUser = call.getAuthorized()
 
-                call.respond(carService.getCarByUser(authorizedUser))
+                    call.respond(carService.getCarByUser(authorizedUser))
+                }
             }
-            post {
-                val authorizedUser = call.getAuthorized()
-                val carId = call.receive<IdInputDto>().id
+            authenticate("default") {
+                post {
+                    val carId = call.receive<IdInputDto>().id
 
-                call.respond(carService.getOne(carId))
+                    call.respond(carService.getOne(carId))
+                }
             }
         }
     }

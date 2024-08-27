@@ -3,12 +3,12 @@ package com.fleetmate.trip.modules.trip.service
 import com.fleetmate.lib.exceptions.BadRequestException
 import com.fleetmate.lib.exceptions.ForbiddenException
 import com.fleetmate.lib.shared.conf.AppConf
-import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.car.data.dao.CarDao
 import com.fleetmate.trip.modules.car.service.CarService
 import com.fleetmate.trip.modules.trip.data.dao.TripDao
 import com.fleetmate.trip.modules.trip.data.dto.TripDto
+import com.fleetmate.trip.modules.trip.data.dto.TripInitDto
 import com.fleetmate.trip.modules.user.service.UserService
 import com.fleetmate.trip.modules.violation.service.ViolationService
 import io.ktor.util.date.*
@@ -22,14 +22,14 @@ class TripService(di: DI) : KodeinService(di) {
     private val userService: UserService by instance()
     private val violationService: ViolationService by instance()
 
-    suspend fun initTrip(carId: Int, authorizedUser: AuthorizedUser): TripDto = newSuspendedTransaction {
-        if (!carService.isAvailableForTrip(carId))
+    suspend fun initTrip(tripInitDto: TripInitDto): TripDto = newSuspendedTransaction {
+        if (!carService.isAvailableForTrip(tripInitDto.carId))
             throw ForbiddenException()
 
-        if (!userService.isAvailableForTrip(authorizedUser.id, CarDao[carId].toOutputDto()))
+        if (!userService.isAvailableForTrip(tripInitDto.driverId, CarDao[tripInitDto.carId].toOutputDto()))
             throw ForbiddenException()
 
-        val trip = TripDao.init(carId, authorizedUser.id, needRefuel = carService.isNeedRefuel(carId))
+        val trip = TripDao.init(tripInitDto.carId, tripInitDto.driverId, needRefuel = carService.isNeedRefuel(tripInitDto.carId))
 
         trip.toOutputDto()
     }

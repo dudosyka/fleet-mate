@@ -1,5 +1,7 @@
 package com.fleetmate.stat.modules.car.service
 
+import com.fleetmate.lib.exceptions.NotFoundException
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.car.dao.CarDao
@@ -13,27 +15,28 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 
 class CarService(di: DI) : KodeinService(di) {
-    fun getAllFiltered(carFilterDto: CarFilterDto): List<CarListItemDto> =
+    fun getAllFiltered(carFilterDto: CarFilterDto): List<CarListItemDto> = transaction {
         CarDao.find {
             with(carFilterDto) { expressionBuilder }
         }.map { it.listItemDto }
+    }
 
     fun create(carCreateDto: CarCreateDto): CarDto = transaction {
 
         CarDao.new {
             name = carCreateDto.name
-            registrationNumber = carCreateDto.registerNumber
+            registrationNumber = carCreateDto.registrationNumber
             typeId = EntityID(carCreateDto.type, CarTypeModel)
             fuelLevel = carCreateDto.fuelLevel
             mileage = carCreateDto.mileage
             brand = carCreateDto.brand
             model = carCreateDto.model
             vin = carCreateDto.vin
-            hours = carCreateDto.hours
-            fuelType = carCreateDto.fuelType.name
-            osago = carCreateDto.osago
-            casco = carCreateDto.casco
-            yearManufacture = carCreateDto.yearManufacture
+            engineHours = carCreateDto.engineHours
+            fuelType = AppConf.FuelType.getById(carCreateDto.fuelType)?.name ?: throw NotFoundException("Unknown fuel type!")
+            compulsoryCarInsurance = carCreateDto.compulsoryCarInsurance
+            comprehensiveCarInsurance = carCreateDto.comprehensiveCarInsurance
+            yearManufactured = carCreateDto.yearManufactured
             lastMaintenance = carCreateDto.lastMaintenance
             antifreezeBrand = carCreateDto.antifreezeBrand
             engineOilBrand = carCreateDto.engineOilBrand
@@ -44,6 +47,7 @@ class CarService(di: DI) : KodeinService(di) {
         }.toOutputDto()
     }
 
-    fun getOne(carId: Int): CarOutputDto =
+    fun getOne(carId: Int): CarOutputDto = transaction {
         CarDao[carId].fullOutputDto
+    }
 }

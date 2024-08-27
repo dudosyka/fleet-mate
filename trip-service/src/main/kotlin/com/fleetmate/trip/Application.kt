@@ -26,7 +26,6 @@ import com.fleetmate.trip.modules.report.service.ReportService
 import com.fleetmate.trip.modules.trip.controller.TripController
 import com.fleetmate.trip.modules.trip.service.TripService
 import com.fleetmate.trip.modules.user.service.UserService
-import com.fleetmate.trip.modules.violation.controller.ViolationController
 import com.fleetmate.trip.modules.violation.service.ViolationService
 import com.fleetmate.trip.modules.wash.controller.WashController
 import com.fleetmate.trip.modules.wash.service.WashService
@@ -68,8 +67,6 @@ fun Application.module() {
         bindSingleton { RefuelController(it) }
         bindSingleton { ReportController(it) }
         bindSingleton { TripController(it) }
-        bindSingleton { TripController(it) }
-        bindSingleton { ViolationController(it) }
         bindSingleton { WashController(it) }
     }
 

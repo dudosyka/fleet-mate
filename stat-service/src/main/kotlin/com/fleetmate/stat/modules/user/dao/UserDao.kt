@@ -82,9 +82,9 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val position by PositionDao referencedOn UserModel.position
     val departmentId by UserModel.department
     val department by DepartmentDao referencedOn UserModel.department
-    val snils by UserModel.snils
+    val insuranceNumber by UserModel.insuranceNumber
     val sectorBossId by UserModel.sectorBossId
-    val sectorBoss by UserDao referencedOn UserModel.sectorBossId
+    val sectorBoss by UserDao optionalReferencedOn UserModel.sectorBossId
 
     val lastTrip: TripDao? get() =
         TripDao.find {
@@ -104,27 +104,27 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
 
     val driverOutput: DriverOutputDto get() =
         DriverOutputDto(
-            idValue, fullName, lastTrip?.simpleDto, licenceType.name
+            idValue, fullName, lastTrip?.simpleDto, licenceType.name, photo = photos
         )
 
     fun toStaffOutput(orderInProgress: Long, orderCompleted: Long, hoursCompleted: Double): StaffOutputDto =
         StaffOutputDto(
             idValue, fullName, position.name,
             orderInProgress, orderCompleted,
-            hoursCompleted
+            hoursCompleted, photos
         )
     val staffDto: StaffDto get() =
         StaffDto(idValue, fullName, phoneNumber, department.name, position.name, photos)
 
     val driverDto: DriverDto get() =
-        DriverDto(idValue, fullName, department.name, snils, phoneNumber,
-            licenceType.name, sectorBoss.staffDto, position.name, photos)
+        DriverDto(idValue, fullName, department.name, insuranceNumber, phoneNumber,
+            licenceType.name, sectorBoss?.staffDto, position.name, photos)
 
     val photos: List<String> get() {
         return (UserPhotoModel innerJoin PhotoModel)
             .select(PhotoModel.link)
             .where {
-                UserModel.id eq idValue
+                UserPhotoModel.user eq idValue
             }
             .map {
                 it[PhotoModel.link]

@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.car.dao
 
 
+import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
@@ -28,7 +29,9 @@ class CarTypeDao(id: EntityID<Int>) : BaseIntEntity<CarTypeDto>(id, CarTypeModel
         speedLimit = carTypeUpdateDto.speedLimit ?: speedLimit
         speedError = carTypeUpdateDto.speedError ?: speedError
         licenceType = EntityID(carTypeUpdateDto.licenceType ?: licenceType.value, LicenceTypeModel)
-        flush()
-        toOutputDto()
+        if (flush())
+            toOutputDto()
+        else
+            throw InternalServerException("Failed to update CarTypeModel")
     }
 }
