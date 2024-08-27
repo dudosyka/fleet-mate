@@ -8,6 +8,7 @@ object AppConf {
     private val mainConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load().getConfig("application"))
     private val jwtConfig: ApplicationConfig = mainConfig.config("jwt")
     private val databaseConfig: ApplicationConfig = mainConfig.config("database")
+    private val rolesConf: ApplicationConfig = mainConfig.config("roles")
 
     val isDebug: Boolean = mainConfig.getString("debug") == "true"
     val needCrypt: Boolean = mainConfig.getString("crypt") == "true"
@@ -30,6 +31,13 @@ object AppConf {
         driver = databaseConfig.getString("driver"),
         user = databaseConfig.getString("user"),
         password = databaseConfig.getString("password")
+    )
+
+    val roles = RolesConf(
+        admin = rolesConf.getInt("admin"),
+        mechanic = rolesConf.getInt("mechanic"),
+        driver = rolesConf.getInt("driver"),
+        washer = rolesConf.getInt("washer")
     )
 
     enum class TripStatus() {

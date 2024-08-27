@@ -17,6 +17,10 @@ application {
     }
   }
 
+  roles {
+    // key: value
+  }
+
   database {
     url = "jdbc:postgresql://localhost:5432/fleetmate"
     //        url = "jdbc:postgresql://postgres:5432/fleetmate"

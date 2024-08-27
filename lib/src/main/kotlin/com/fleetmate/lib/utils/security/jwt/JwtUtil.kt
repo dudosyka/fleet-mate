@@ -4,16 +4,42 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.auth.jwt.*
 import io.ktor.util.date.*
-import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.exceptions.ForbiddenException
-import com.fleetmate.lib.shared.modules.auth.dto.RefreshTokenDto
-import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.plugins.Logger
+import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
+import com.fleetmate.lib.shared.modules.auth.dto.QrTokenDto
+import com.fleetmate.lib.shared.modules.auth.dto.RefreshTokenDto
+import com.fleetmate.lib.shared.modules.role.LinkedRoleOutputDto
+import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import java.util.*
 
 typealias EncodedRules = MutableMap<Int, MutableList<Int>>
 
 object JwtUtil {
+
+    private fun encodeRoles(linkedRules: List<LinkedRoleOutputDto>): EncodedRules {
+        val encoded = mutableMapOf<Int, MutableList<Int>>()
+        linkedRules.forEach {
+            encoded[it.roleId] = mutableListOf()
+        }
+
+        return encoded
+    }
+
+    private fun decodeRules(encoded: EncodedRules): List<LinkedRoleOutputDto> {
+        val decoded = mutableListOf<LinkedRoleOutputDto>()
+        encoded.forEach { (key, value) ->
+            if (value.isEmpty())
+                decoded.add(LinkedRoleOutputDto(roleId = key))
+            else
+                value.forEach { decoded.add(LinkedRoleOutputDto(roleId = key)) }
+        }
+
+        return decoded
+    }
 
     fun createToken(userId: Int, lastLogin: Long? = null): String {
         return JWT.create()
@@ -21,20 +47,25 @@ object JwtUtil {
             .withIssuedAt(Date(System.currentTimeMillis()))
             .withExpiresAt(
                 Date(
-                System.currentTimeMillis() +
-                        (if (lastLogin != null) AppConf.jwt.refreshExpirationTime else AppConf.jwt.expirationTime) * 1000
+                    System.currentTimeMillis() +
+                            (if (lastLogin != null) AppConf.jwt.refreshExpirationTime else AppConf.jwt.expirationTime) * 1000
                 )
             )
             .apply {
                 withClaim("id", userId)
+                val roles = UserRoleModel.userToRoleLinks(userId, expanded = true)
                 if (lastLogin != null)
                     withClaim("lastLogin", lastLogin)
+                else{
+                    withClaim("roles", Json.encodeToString(encodeRoles(roles)))
+                }
 
             }.sign(Algorithm.HMAC256(AppConf.jwt.secret))
     }
 
     fun decodeAccessToken(principal: JWTPrincipal): AuthorizedUser = AuthorizedUser(
         id = principal.getClaim("id", Int::class)!!,
+        roles = decodeRules(Json.decodeFromString(principal.getClaim("roles", String::class) ?: "{}"))
     )
 
     fun decodeRefreshToken(principal: JWTPrincipal): RefreshTokenDto = RefreshTokenDto(
@@ -66,13 +97,29 @@ object JwtUtil {
             }
             else {
                 AuthorizedUser(
-                    id = claims["id"]?.asInt() ?: throw ForbiddenException()
+                    id = claims["id"]?.asInt() ?: throw ForbiddenException(),
+                    roles = decodeRules(Json.decodeFromString(claims["rules"]?.asString() ?: "{}"))
                 )
             }
         } else {
             Logger.debug("verified exception", "main")
             throw ForbiddenException()
         }
+    }
+    fun createMobileAuthToken(qrTokenDto: QrTokenDto): String {
+        return JWT.create()
+            .withIssuer(AppConf.jwt.domain)
+            .withIssuedAt(Date(System.currentTimeMillis()))
+            .withExpiresAt(
+                Date(System.currentTimeMillis() + AppConf.jwt.expirationTime * 1000)
+            )
+            .apply {
+                withClaim("id", qrTokenDto.userId)
+                if (qrTokenDto.userId != null){
+                    val roles = UserRoleModel.userToRoleLinks(qrTokenDto.userId, expanded = true)
+                    withClaim("roles", Json.encodeToString(encodeRoles(roles)))
+                }
+            }.sign(Algorithm.HMAC256(AppConf.jwt.secret))
     }
 
 }
