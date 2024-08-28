@@ -1,8 +1,7 @@
 package com.fleetmate.stat.modules.car.service
 
-import com.fleetmate.lib.exceptions.NotFoundException
-import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
+import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.car.dao.CarDao
 import com.fleetmate.stat.modules.car.dto.CarCreateDto
@@ -33,7 +32,7 @@ class CarService(di: DI) : KodeinService(di) {
             model = carCreateDto.model
             vin = carCreateDto.vin
             engineHours = carCreateDto.engineHours
-            fuelType = AppConf.FuelType.getById(carCreateDto.fuelType)?.name ?: throw NotFoundException("Unknown fuel type!")
+            fuelType = EntityID(carCreateDto.fuelType, FuelTypeModel)
             compulsoryCarInsurance = carCreateDto.compulsoryCarInsurance
             comprehensiveCarInsurance = carCreateDto.comprehensiveCarInsurance
             yearManufactured = carCreateDto.yearManufactured

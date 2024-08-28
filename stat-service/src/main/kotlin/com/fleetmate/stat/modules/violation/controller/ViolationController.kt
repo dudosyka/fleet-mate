@@ -17,6 +17,9 @@ class ViolationController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("violation") {
+            get("type") {
+                call.respond(violationService.getAllTypes())
+            }
             post("trip") {
                 val tripId = call.receive<IdInputDto>().id
 

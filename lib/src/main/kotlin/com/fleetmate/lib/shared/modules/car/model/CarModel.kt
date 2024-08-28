@@ -1,6 +1,7 @@
 package com.fleetmate.lib.shared.modules.car.model
 
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
+import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
@@ -14,7 +15,7 @@ object CarModel: BaseIntIdTable() {
     val model = text("model")
     val vin = text("vin")
     val engineHours = double("hours")
-    val fuelType = text("fuel_type")
+    val fuelType = reference("fuel_type", FuelTypeModel)
     val compulsoryCarInsurance = text("compulsory_car_insurance")
     val comprehensiveCarInsurance = text("comprehensive_car_insurance")
     val yearManufactured = integer("year_manufactured")
