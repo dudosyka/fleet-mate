@@ -31,6 +31,8 @@ import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.stat.modules.order.data.model.WorkTypeModel
 import com.fleetmate.stat.modules.order.service.OrderService
+import com.fleetmate.stat.modules.photo.controller.PhotoController
+import com.fleetmate.stat.modules.photo.service.PhotoService
 import com.fleetmate.stat.modules.trip.controller.TripController
 import com.fleetmate.stat.modules.trip.service.TripService
 import com.fleetmate.stat.modules.user.controller.UserController
@@ -67,6 +69,7 @@ fun Application.module() {
         bindSingleton { TripService(it) }
         bindSingleton { UserService(it) }
         bindSingleton { ViolationService(it) }
+        bindSingleton { PhotoService(it) }
 
 
 
@@ -79,6 +82,7 @@ fun Application.module() {
         bindSingleton { TripController(it) }
         bindSingleton { UserController(it) }
         bindSingleton { ViolationController(it) }
+        bindSingleton { PhotoController(it) }
 
     }
 

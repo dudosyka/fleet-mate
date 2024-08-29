@@ -41,23 +41,23 @@ object AppConf {
         washer = rolesConf.getInt("washer")
     )
 
-    enum class TripStatus() {
-        INITIALIZED,
-        EXPLOITATION,
-        CLOSED,
-        CLOSED_DUE_TO_FAULT
+    enum class TripStatus(val id: Int) {
+        INITIALIZED(1),
+        EXPLOITATION(2),
+        CLOSED(3),
+        CLOSED_DUE_TO_FAULT(4)
     }
 
-    enum class PhotoType() {
-        REFUEL,
-        FAULT,
-        CAR
+    enum class PhotoType(val id: Int) {
+        REFUEL(1),
+        FAULT(2),
+        CAR(3)
     }
 
-    enum class ViolationType {
-        SPEEDING,
-        REFUEL,
-        WASHING
+    enum class ViolationType(val id: Int) {
+        SPEEDING(1),
+        REFUEL(2),
+        WASHING(3)
     }
 
     enum class OrderStatus(val id: Int) {

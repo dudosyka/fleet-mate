@@ -1,6 +1,8 @@
 package com.fleetmate.stat.modules.trip.service
 
 
+import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.trip.dao.TripDao
@@ -12,6 +14,10 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 
 class TripService(di: DI) : KodeinService(di) {
+    fun getAllStatuses(): List<StatusDto> =
+        AppConf.TripStatus.entries.map {
+            StatusDto(it.id, it.name)
+        }
 
     //FIXME: Dao couldn`t handle nested where clauses (should be rewrote via Model API)
     fun getAllFiltered(tripFilterDto: TripFilterDto): List<TripListItemDto> = transaction {
