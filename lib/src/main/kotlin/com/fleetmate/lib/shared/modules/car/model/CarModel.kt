@@ -15,7 +15,7 @@ object CarModel: BaseIntIdTable() {
     val model = text("model")
     val vin = text("vin")
     val engineHours = double("hours")
-    val fuelType = reference("fuel_type", FuelTypeModel)
+    val fuelType = reference("fuel_type", FuelTypeModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val compulsoryCarInsurance = text("compulsory_car_insurance")
     val comprehensiveCarInsurance = text("comprehensive_car_insurance")
     val yearManufactured = integer("year_manufactured")
