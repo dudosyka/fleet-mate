@@ -18,6 +18,11 @@ class TripController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("trip") {
+
+            get("status") {
+                call.respond(tripService.getAllStatuses())
+            }
+
             route("all") {
                 post {
                     val tripFilterDto = call.receive<TripFilterDto>()

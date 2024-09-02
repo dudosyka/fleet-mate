@@ -37,6 +37,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     var vin by CarModel.vin
     var engineHours by CarModel.engineHours
     var fuelType by CarModel.fuelType
+    var fuelTypeName by FuelDao referencedOn CarModel.fuelType
     var compulsoryCarInsurance by CarModel.compulsoryCarInsurance
     var comprehensiveCarInsurance by CarModel.comprehensiveCarInsurance
     var yearManufactured by CarModel.yearManufactured
@@ -57,7 +58,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
             model,
             registrationNumber,
             vin,
-            fuelType,
+            fuelTypeName.name,
             mileage,
             engineHours,
             typeId.value,
