@@ -10,6 +10,7 @@ import com.fleetmate.trip.modules.violation.dto.ViolationDto
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.update
 
 class ViolationDao(id: EntityID<Int>) : BaseIntEntity<ViolationDto>(id, ViolationModel) {
     companion object : BaseIntEntityClass<ViolationDto, ViolationDao>(ViolationModel) {
@@ -35,4 +36,10 @@ class ViolationDao(id: EntityID<Int>) : BaseIntEntity<ViolationDto>(id, Violatio
             idValue, type, duration, driverId.value,
             tripId.value, carId?.value, comment
         )
+    fun updateByDuration(newDuration: Long) {
+        ViolationModel.update({ ViolationModel.id eq idValue }) {
+            it[duration] = newDuration
+            it[hidden] = false
+        }
+    }
 }

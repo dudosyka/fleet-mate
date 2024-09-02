@@ -133,9 +133,9 @@ class OrderService(di: DI) : KodeinService(di) {
     fun close(orderId: Int): OrderDto = transaction {
         val order = OrderDao[orderId]
 
-        order.status = AppConf.OrderStatus.CLOSED.name
-        order.fault.status = AppConf.FaultStatus.FIXED.name
-        order.fault.critical = false
+        order.updateByStatus(AppConf.OrderStatus.CLOSED)
+        order.updateFaultByStatus(AppConf.FaultStatus.FIXED)
+        order.updateFaultByCritical(false)
 
         order.fault.flush()
         order.flush()

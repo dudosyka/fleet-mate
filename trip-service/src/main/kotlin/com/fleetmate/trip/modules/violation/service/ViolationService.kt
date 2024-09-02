@@ -47,8 +47,7 @@ class ViolationService(di: DI) : KodeinService(di) {
             if (speeding.registeredAt < trip.car.speedError)
                 speeding.delete()
             else {
-                speeding.duration = currentTime - speeding.registeredAt
-                speeding.hidden = false
+                speeding.updateByDuration(currentTime - speeding.registeredAt)
             }
             speeding.flush()
         }
