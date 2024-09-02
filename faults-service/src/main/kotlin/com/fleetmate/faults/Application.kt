@@ -12,6 +12,7 @@ import com.fleetmate.lib.shared.modules.check.model.CheckModel
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.lib.shared.modules.fault.model.FaultPhotoModel
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
+import com.fleetmate.lib.shared.modules.photo.service.PhotoService
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.DatabaseConnector
@@ -39,6 +40,7 @@ fun Application.module() {
 
     kodeinApplication("/faults") {
         // ----- Services ------
+        bindSingleton { PhotoService(it) }
         bindSingleton { CheckService(it) }
         bindSingleton { FaultService(it) }
 

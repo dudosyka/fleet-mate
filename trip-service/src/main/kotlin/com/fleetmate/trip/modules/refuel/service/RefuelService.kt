@@ -3,6 +3,8 @@ package com.fleetmate.trip.modules.refuel.service
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.shared.modules.photo.service.PhotoService
+import com.fleetmate.lib.shared.modules.trip.model.TripModel
+import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.refuel.dao.RefuelDao
 import com.fleetmate.trip.modules.refuel.dto.RefuelDto
@@ -20,13 +22,12 @@ class RefuelService(di: DI) : KodeinService(di) {
         val trip = TripDao.getUserActiveTrip(driverId)
         val photoDto = photoService.upload(refuelInputDto.billPhoto.apply { type = AppConf.PhotoType.REFUEL })
 
-        trip.car.fuelLevel += refuelInputDto.volume
-        trip.car.flush()
+        trip.car.updateByRefuel(refuelInputDto)
 
         val refuelDao = RefuelDao.new {
-            this.volume = volume
-            this.trip = trip
-            this.billPhoto = EntityID(photoDto.id, PhotoModel)
+            volume = refuelInputDto.volume
+            tripId = EntityID(trip.idValue, TripModel)
+            billPhoto = EntityID(photoDto.id, PhotoModel)
         }
 
         refuelDao.flush()

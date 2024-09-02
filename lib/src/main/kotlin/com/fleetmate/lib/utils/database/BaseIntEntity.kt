@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.ResultRow
 import com.fleetmate.lib.plugins.Logger
+import org.jetbrains.exposed.sql.Column
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
@@ -28,6 +29,12 @@ abstract class BaseIntEntity<OutputDto : SerializableAny>(id: EntityID<Int>, tab
     val json = Json { ignoreUnknownKeys = true }
 
     var noUpdate: Boolean = true
+
+    fun test(column: Column<*>) {
+        Logger.debug(_readValues)
+        Logger.debug(writeValues)
+        Logger.debug(column.columnType.nullable)
+    }
 
     companion object {
         inline fun <reified T: Any> createRollbackInstanceTemplate(instanceKlass: KClass<T>): T {

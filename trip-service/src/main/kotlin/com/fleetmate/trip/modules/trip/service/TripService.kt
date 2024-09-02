@@ -12,7 +12,6 @@ import com.fleetmate.trip.modules.trip.data.dto.TripInitDto
 import com.fleetmate.trip.modules.user.service.UserService
 import com.fleetmate.trip.modules.violation.service.ViolationService
 import io.ktor.util.date.*
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 import org.kodein.di.instance
@@ -22,16 +21,20 @@ class TripService(di: DI) : KodeinService(di) {
     private val userService: UserService by instance()
     private val violationService: ViolationService by instance()
 
-    suspend fun initTrip(tripInitDto: TripInitDto): TripDto = newSuspendedTransaction {
+    suspend fun initTrip(tripInitDto: TripInitDto): TripDto {
         if (!carService.isAvailableForTrip(tripInitDto.carId))
             throw ForbiddenException()
 
-        if (!userService.isAvailableForTrip(tripInitDto.driverId, CarDao[tripInitDto.carId].toOutputDto()))
+        val licenceType = transaction {
+            CarDao[tripInitDto.carId].licenceType
+        }
+
+        if (!userService.isAvailableForTrip(tripInitDto.driverId, licenceType))
             throw ForbiddenException()
 
-        val trip = TripDao.init(tripInitDto.carId, tripInitDto.driverId, needRefuel = carService.isNeedRefuel(tripInitDto.carId))
-
-        trip.toOutputDto()
+        return transaction {
+            TripDao.init(tripInitDto.carId, tripInitDto.driverId, needRefuel = carService.isNeedRefuel(tripInitDto.carId)).toOutputDto()
+        }
     }
 
     fun finishTrip(driverId: Int): TripDto = transaction {
@@ -54,8 +57,8 @@ class TripService(di: DI) : KodeinService(di) {
         if (trip.needWashing && !trip.isWashed)
             violationService.registerWashViolation(trip)
 
-        trip.car.mileage += trip.mileage
-        trip.car.fuelLevel -= (trip.mileage / 100) * trip.car.avgFuelConsumption
+//        trip.car.mileage += trip.mileage
+//        trip.car.fuelLevel -= (trip.mileage / 100) * trip.car.avgFuelConsumption
 
         trip.car.flush()
         trip.flush()

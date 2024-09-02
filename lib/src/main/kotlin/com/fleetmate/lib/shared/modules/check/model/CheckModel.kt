@@ -11,5 +11,5 @@ object CheckModel : BaseIntIdTable() {
     val car = reference("car", CarModel, ReferenceOption.CASCADE, ReferenceOption.CASCADE)
     val startTime = long("start_time")
     val finishTime = long("finish_time").nullable().default(null)
-    val timeExceeded = bool("time_exceeded")
+    val timeExceeded = bool("time_exceeded").default(false)
 }

@@ -7,6 +7,7 @@ import com.fleetmate.lib.shared.modules.car.model.part.CarPartToCarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
+import com.fleetmate.lib.shared.modules.photo.service.PhotoService
 import com.fleetmate.lib.shared.modules.refuel.model.RefuelModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
@@ -54,6 +55,7 @@ fun Application.module() {
         bindSingleton { CarService(it) }
         bindSingleton { NobilisService(it) }
         bindSingleton { RefuelService(it) }
+        bindSingleton { PhotoService(it) }
         bindSingleton { ReportService(it) }
         bindSingleton { TripService(it) }
         bindSingleton { UserService(it) }
