@@ -9,9 +9,7 @@ import com.fleetmate.stat.modules.car.dto.CarFilterDto
 import com.fleetmate.stat.modules.order.data.dto.order.OrderFilterDto
 import com.fleetmate.stat.modules.user.dto.filter.StaffFilterDto
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.SqlExpressionBuilder
-import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.*
 
 @Serializable
 data class FaultFilterDto (
@@ -20,16 +18,9 @@ data class FaultFilterDto (
     val carFilter: CarFilterDto? = null,
     val authorFilter: StaffFilterDto? = null,
 ) {
-    private fun SqlExpressionBuilder.createStatusFilterCond(statuses: List<Int>?): Op<Boolean> =
+    fun SqlExpressionBuilder.createStatusFilterCond(statuses: List<Int>?): Op<Boolean> =
         stringListCond(AppConf.FaultStatus.entries.map { StatusDto(it.id, it.name) }
             .filter {
                 statuses?.contains(it.id) ?: false
             }.map { it.name }, FaultModel.id neq 0, FaultModel.status)
-
-    val SqlExpressionBuilder.expressionBuilder: Op<Boolean> get() =
-        createStatusFilterCond(status) and
-        with(orderFilter ?: OrderFilterDto()) { expressionBuilder } and
-        with(carFilter ?: CarFilterDto()) { expressionBuilder } and
-        with(authorFilter ?: StaffFilterDto()) { expressionBuilder }
-
 }

@@ -84,6 +84,9 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     val simpleDto: CarSimpleDto get() =
         CarSimpleDto(idValue, name, type.name, registrationNumber)
 
+    fun simpleDto(typeName: String): CarSimpleDto =
+        CarSimpleDto(idValue, name, typeName, registrationNumber)
+
     val listItemDto: CarListItemDto get() =
         CarListItemDto(simpleDto, fuelLevel, violationsCount)
 

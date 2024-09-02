@@ -53,5 +53,4 @@ class OrderDao(id: EntityID<Int>) : BaseIntEntity<OrderDto>(id, OrderModel) {
                 it.type.hours
             )
         }.toList()
-
 }

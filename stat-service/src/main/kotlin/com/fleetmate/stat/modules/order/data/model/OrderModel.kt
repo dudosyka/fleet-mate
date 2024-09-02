@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 object OrderModel : BaseIntIdTable() {
     val number = text("number")
     val status = text("status")
+    //TODO: Rename to "mechanic"
     val mechanic = reference("machanic", UserModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val fault = reference("fault", FaultModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val startedAt = long("started_at").default(getTimeMillis())
