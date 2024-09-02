@@ -57,8 +57,10 @@ class TripService(di: DI) : KodeinService(di) {
         if (trip.needWashing && !trip.isWashed)
             violationService.registerWashViolation(trip)
 
-//        trip.car.mileage += trip.mileage
-//        trip.car.fuelLevel -= (trip.mileage / 100) * trip.car.avgFuelConsumption
+        trip.updateCarByMileageAndFuelLevel(
+            trip.car.mileage + trip.mileage,
+            trip.car.fuelLevel - (trip.mileage / 100) * trip.car.avgFuelConsumption
+        )
 
         trip.car.flush()
         trip.flush()

@@ -24,6 +24,7 @@ import io.ktor.util.date.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.update
 
 class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
     companion object: BaseIntEntityClass<TripDto, TripDao>(TripModel) {
@@ -55,7 +56,7 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
     }
 
     private var carId by TripModel.car
-    var car by CarDao referencedOn TripModel.car
+    val car by CarDao referencedOn TripModel.car
 
     private var driverId by TripModel.driver
     var driver by UserDao referencedOn TripModel.driver
@@ -107,4 +108,10 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
         ReportListItemDto(
             idValue, keyAcceptance, keyReturn ?: 0L, route, car.prettyName, violationsCount
         )
+    fun updateCarByMileageAndFuelLevel(newMileage: Double, newFuelLevel: Double) {
+        CarModel.update({CarModel.id eq carId}) {
+            it[mileage] = newMileage
+            it[fuelLevel] = newFuelLevel
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.fleetmate.stat.modules.order.data.dao
 
 
+import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
@@ -14,6 +16,7 @@ import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.stat.modules.order.data.model.WorkTypeModel
 import com.fleetmate.stat.modules.user.dao.UserDao
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.update
 
 class OrderDao(id: EntityID<Int>) : BaseIntEntity<OrderDto>(id, OrderModel) {
     companion object : BaseIntEntityClass<OrderDto, OrderDao>(OrderModel)
@@ -54,4 +57,19 @@ class OrderDao(id: EntityID<Int>) : BaseIntEntity<OrderDto>(id, OrderModel) {
             )
         }.toList()
 
+    fun updateByStatus(statusName: AppConf.OrderStatus) {
+        OrderModel.update({ OrderModel.id eq idValue }) {
+            it[status] = statusName.name
+        }
+    }
+    fun updateFaultByStatus(statusName: AppConf.FaultStatus) {
+        FaultModel.update({ FaultModel.id eq faultId }) {
+            it[status] = statusName.name
+        }
+    }
+    fun updateFaultByCritical(isCritical: Boolean) {
+        FaultModel.update({ FaultModel.id eq faultId }) {
+            it[critical] = isCritical
+        }
+    }
 }
