@@ -8,8 +8,10 @@ import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
+import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
 import com.fleetmate.lib.utils.security.bcrypt.CryptoUtil
 import io.ktor.util.date.*
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -162,6 +164,17 @@ object DatabaseInitializer {
                 it[speedError] = 10.1
                 it[avgFuelConsumption] = 20.2
             }
+        }
+    }
+
+    fun initTripViolations() {
+        ViolationModel.batchInsert(AppConf.ViolationType.entries) {
+            this[ViolationModel.type] = it.name
+            this[ViolationModel.registeredAt] = getTimeMillis()
+            this[ViolationModel.driver] = 2
+            this[ViolationModel.trip] = 1
+            this[ViolationModel.car] = 4
+            this[ViolationModel.comment] = "sdfsfsd"
         }
     }
 }

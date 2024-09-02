@@ -7,6 +7,28 @@ import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
+/*
+
+
+    "carFilter": {
+        "registrationNumber": "к027рв178",
+        "carType": [],
+        "status": []
+    },
+    "startDateRange": {
+        "topBound": 13421312312,
+        "bottomBound": 12312412
+    },
+    "endDateRange": {
+        "topBound": 13421312312,
+        "bottomBound": 12312412
+    },
+    "driverFilter": {
+        "fullName": "Full name..."
+    }
+
+ */
+
 object ViolationModel : BaseIntIdTable() {
     val type = text("type")
     val registeredAt = long("registered_at")
