@@ -5,7 +5,7 @@ import com.fleetmate.lib.utils.database.BaseIntEntity
 import com.fleetmate.lib.utils.database.BaseIntEntityClass
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.stat.modules.order.data.dto.work.WorkTypeDto
-import com.fleetmate.stat.modules.order.data.model.WorkTypeModel
+import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import org.jetbrains.exposed.dao.id.EntityID
 
 class WorkTypeDao(id: EntityID<Int>) : BaseIntEntity<WorkTypeDto>(id, WorkTypeModel) {

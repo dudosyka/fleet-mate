@@ -1,23 +1,34 @@
 package com.fleetmate.stat.modules.car.service
 
+import com.fleetmate.lib.plugins.Logger
+import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
+import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.car.dao.CarDao
-import com.fleetmate.stat.modules.car.dto.CarCreateDto
-import com.fleetmate.stat.modules.car.dto.CarDto
-import com.fleetmate.stat.modules.car.dto.CarFilterDto
-import com.fleetmate.stat.modules.car.dto.CarListItemDto
-import com.fleetmate.stat.modules.car.dto.CarOutputDto
+import com.fleetmate.stat.modules.car.dao.FuelTypeDao
+import com.fleetmate.stat.modules.car.dto.*
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 
 class CarService(di: DI) : KodeinService(di) {
     fun getAllFiltered(carFilterDto: CarFilterDto): List<CarListItemDto> = transaction {
-        CarDao.find {
-            with(carFilterDto) { expressionBuilder }
-        }.map { it.listItemDto }
+        CarModel
+            .join(ViolationModel, JoinType.LEFT, ViolationModel.car, CarModel.id)
+            .select(CarModel.columns + ViolationModel.id.count())
+            .groupBy(CarModel.id)
+            .where {
+                with(carFilterDto) { expressionBuilder }
+            }
+            .map {
+                val carDao = CarDao.wrapRow(it)
+                val violationsCount = it[ViolationModel.id.count()]
+                carDao.listItemDto(violationsCount)
+            }
     }
 
     fun create(carCreateDto: CarCreateDto): CarDto = transaction {
@@ -32,7 +43,7 @@ class CarService(di: DI) : KodeinService(di) {
             model = carCreateDto.model
             vin = carCreateDto.vin
             engineHours = carCreateDto.engineHours
-            fuelType = EntityID(carCreateDto.fuelType, FuelTypeModel)
+            fuelTypeId = EntityID(carCreateDto.fuelType, FuelTypeModel)
             compulsoryCarInsurance = carCreateDto.compulsoryCarInsurance
             comprehensiveCarInsurance = carCreateDto.comprehensiveCarInsurance
             yearManufactured = carCreateDto.yearManufactured
@@ -47,6 +58,15 @@ class CarService(di: DI) : KodeinService(di) {
     }
 
     fun getOne(carId: Int): CarOutputDto = transaction {
-        CarDao[carId].fullOutputDto
+        val carDao = CarDao[carId]
+
+        Logger.debug("Fuel type: ")
+        Logger.debug(carDao.fuelType.toOutputDto())
+
+        carDao.fullOutputDto
+    }
+
+    fun getAllFuelTypes(): List<FuelTypeDto> = transaction {
+        FuelTypeDao.all().map(FuelTypeDao::toOutputDto)
     }
 }

@@ -37,6 +37,7 @@ object AppConf {
     val roles = RolesConf(
         admin = rolesConf.getInt("admin"),
         mechanic = rolesConf.getInt("mechanic"),
+        juniorMechanic = rolesConf.getInt("junior_mechanic"),
         driver = rolesConf.getInt("driver"),
         washer = rolesConf.getInt("washer")
     )

@@ -40,6 +40,7 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
     var author by UserDao referencedOn FaultModel.author
     var comment by FaultModel.comment
     var critical by FaultModel.critical
+    var status by FaultModel.status
 
 
     override fun toOutputDto(): FaultDto =

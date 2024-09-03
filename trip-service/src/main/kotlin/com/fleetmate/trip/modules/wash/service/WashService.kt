@@ -6,6 +6,7 @@ import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.trip.modules.trip.data.dao.TripDao
 import com.fleetmate.trip.modules.wash.dao.WashDao
 import com.fleetmate.trip.modules.wash.dto.WashDto
+import io.ktor.util.date.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
@@ -17,6 +18,7 @@ class WashService(di: DI) : KodeinService(di) {
         val wash = WashDao.new {
             authorId = EntityID(authorizedUser.id, UserModel)
             tripId = trip.id
+            timestamp = getTimeMillis()
         }
         wash.flush()
 

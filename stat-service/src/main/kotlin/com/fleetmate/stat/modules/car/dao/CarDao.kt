@@ -36,8 +36,8 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     var model by CarModel.model
     var vin by CarModel.vin
     var engineHours by CarModel.engineHours
-    var fuelType by CarModel.fuelType
-    var fuelTypeName by FuelDao referencedOn CarModel.fuelType
+    var fuelTypeId by CarModel.fuelType
+    var fuelType by FuelTypeDao referencedOn CarModel.fuelType
     var compulsoryCarInsurance by CarModel.compulsoryCarInsurance
     var comprehensiveCarInsurance by CarModel.comprehensiveCarInsurance
     var yearManufactured by CarModel.yearManufactured
@@ -58,7 +58,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
             model,
             registrationNumber,
             vin,
-            fuelTypeName.name,
+            fuelType.name,
             mileage,
             engineHours,
             typeId.value,
@@ -87,11 +87,11 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     fun simpleDto(typeName: String): CarSimpleDto =
         CarSimpleDto(idValue, name, typeName, registrationNumber)
 
-    val listItemDto: CarListItemDto get() =
+    fun listItemDto(violationsCount: Long): CarListItemDto =
         CarListItemDto(simpleDto, fuelLevel, violationsCount)
 
-    private val violationsCount: Int get() =
-        ViolationDao.count(ViolationModel.car eq idValue).toInt()
+    private val violationsCount: Long get() =
+        ViolationDao.count(ViolationModel.car eq idValue)
 
     private val isServiceability: Boolean get() =
         FaultDao.find {

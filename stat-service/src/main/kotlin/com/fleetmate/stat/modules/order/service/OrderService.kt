@@ -50,14 +50,13 @@ class OrderService(di: DI) : KodeinService(di) {
                 likeCond(orderFilterDto.orderNumber, OrderModel.id neq 0, OrderModel.number) and
                 rangeCond(orderFilterDto.startDateRange, OrderModel.id neq 0, OrderModel.startedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
                 nullableRangeCond(orderFilterDto.endDateRange, OrderModel.id neq 0, OrderModel.closedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
-                with(orderFilterDto) { createStatusFilterCond(status) } and
+                with(orderFilterDto) { statusFilterCond } and
                 likeCond(orderFilterDto.juniorMechanicFilter?.fullName, OrderModel.id neq 0, OrderModel._juniorMechanicFilterSimplifier) and
                 likeCond(orderFilterDto.mechanicFilter?.fullName, OrderModel.id neq 0, UserModel.fullName)
             }
             .map(processor)
     }
 
-    //FIXME: Dao couldn`t handle nested where clauses (should be rewrote via Model API)
     fun getAllFiltered(orderFilterDto: OrderFilterDto): List<OrderListItemDto> = transaction {
         getAllAs(orderFilterDto, OrderModel.columns +
             listOf(CarModel.id, CarModel.name, CarModel.registrationNumber, CarTypeModel.name) +
@@ -91,24 +90,26 @@ class OrderService(di: DI) : KodeinService(di) {
     }
 
 
-    //FIXME: Check that mechanicId user has mechanic role
     fun create(createOrderDto: CreateOrderDto): OrderDto = transaction {
-        var fault = FaultDao[createOrderDto.faultId]
+        val faultDao = FaultDao[createOrderDto.faultId]
 
-        if (fault.status != AppConf.FaultStatus.CREATED.name)
+        if (faultDao.status != AppConf.FaultStatus.CREATED.name)
+            throw ForbiddenException()
+
+        val mechanicDao = UserDao[createOrderDto.mechanicId]
+
+        if (!mechanicDao.roles.contains(AppConf.roles.mechanic))
             throw ForbiddenException()
 
         val order = OrderDao.new {
             number = createOrderDto.number
             status = AppConf.OrderStatus.CREATED.name
-            mechanic = UserDao[createOrderDto.mechanicId]
-            fault = FaultDao[createOrderDto.faultId]
+            mechanic = mechanicDao
+            fault = faultDao
             startedAt = getTimeMillis()
         }
 
-        fault.critical = true
-        fault.status = AppConf.FaultStatus.UNDER_WORK.name
-        fault.flush()
+        faultDao.updateToUnderWork()
 
         order.toOutputDto()
     }
@@ -127,18 +128,18 @@ class OrderService(di: DI) : KodeinService(di) {
             this[WorkActorsModel.order] = order.idValue
         }
 
+        order.updateJuniorMechanicSimplifier(createWorkDto.actors)
+
         work.orderWorkDto
     }
 
     fun close(orderId: Int): OrderDto = transaction {
         val order = OrderDao[orderId]
 
-        order.updateByStatus(AppConf.OrderStatus.CLOSED)
-        order.updateFaultByStatus(AppConf.FaultStatus.FIXED)
-        order.updateFaultByCritical(false)
+        if (order.closedAt != null)
+            throw ForbiddenException()
 
-        order.fault.flush()
-        order.flush()
+        order.updateToClosed()
 
         val actors = order.works.map { it.actors }.flatten().map { it.id }
         val dividedHours = order.hours / actors.size
@@ -152,14 +153,9 @@ class OrderService(di: DI) : KodeinService(di) {
             it[closed] = true
         }
 
-        order.toOutputDto()
+        OrderDao[orderId].toOutputDto()
     }
 
-    //FIXME:
-    // Cannot join with com.fleetmate.stat.modules.order.data.model.OrderModel@a2e7c09b as there is multiple primary key <-> foreign key references.
-    // com.fleetmate.stat.modules.order.data.model.OrderModel.id -> com.fleetmate.stat.modules.order.data.model.WorkActorsModel.order, com.fleetmate.stat.modules.order.data.model.WorkModel.order
-    // 22:02:18.324 [eventLoopGroupProxy-4-2] DEBUG com.fleetmate.ExceptionFilter -- Stacktrace => java.lang.IllegalStateException: Cannot join with com.fleetmate.stat.modules.order.data.model.OrderModel@a2e7c09b as there is multiple primary key <-> foreign key references.
-    // com.fleetmate.stat.modules.order.data.model.OrderModel.id -> com.fleetmate.stat.modules.order.data.model.WorkActorsModel.order, com.fleetmate.stat.modules.order.data.model.WorkModel.order
     fun getWorkListByJuniorMechanic(juniorMechanicId: Int): List<MechanicWorkListItemDto> = transaction {
         WorkDao.getByJuniorMechanic(juniorMechanicId)
     }

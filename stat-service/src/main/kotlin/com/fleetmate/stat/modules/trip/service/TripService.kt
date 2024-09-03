@@ -33,10 +33,7 @@ class TripService(di: DI) : KodeinService(di) {
             StatusDto(it.id, it.name)
         }
 
-    //FIXME: Dao couldn`t handle nested where clauses (should be rewrote via Model API)
     fun getAllFiltered(tripFilterDto: TripFilterDto): List<TripListItemDto> = transaction {
-//        val tripDao = TripDao[1]
-//        Logger.debug(tripDao.mileage)
         TripModel
             .join(CarModel, JoinType.INNER, TripModel.car, CarModel.id) {
                 with(tripFilterDto.carFilter ?: CarFilterDto()) { expressionBuilder }

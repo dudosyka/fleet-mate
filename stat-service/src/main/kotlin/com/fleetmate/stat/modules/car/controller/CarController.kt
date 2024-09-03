@@ -10,9 +10,7 @@ import io.ktor.server.application.call
 import io.ktor.server.auth.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
+import io.ktor.server.routing.*
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -24,6 +22,9 @@ class CarController(override val di: DI) : KodeinController() {
         route("car"){
             //TODO: admin + mechanic roles
             authenticate("default") {
+                get("fuels") {
+                    call.respond(carService.getAllFuelTypes())
+                }
                 post("all") {
                     val carFilterDto = call.receive<CarFilterDto>()
                     call.respond(carService.getAllFiltered(carFilterDto))

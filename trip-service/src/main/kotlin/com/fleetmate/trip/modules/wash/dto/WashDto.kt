@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class WashDto (
     val id: Int,
     val tripId: Int,
-    val authorId: Int
+    val authorId: Int,
+    val timestamp: Long,
 )

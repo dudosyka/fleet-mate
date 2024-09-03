@@ -1,4 +1,4 @@
-package com.fleetmate.stat.modules.order.data.model
+package com.fleetmate.lib.shared.modules.fault.model
 
 
 import com.fleetmate.lib.utils.database.BaseIntIdTable

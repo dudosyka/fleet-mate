@@ -29,7 +29,7 @@ import com.fleetmate.stat.modules.order.controller.OrderController
 import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.order.data.model.WorkModel
-import com.fleetmate.stat.modules.order.data.model.WorkTypeModel
+import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.stat.modules.order.service.OrderService
 import com.fleetmate.stat.modules.photo.controller.PhotoController
 import com.fleetmate.stat.modules.photo.service.PhotoService
@@ -95,5 +95,7 @@ fun Application.module() {
     ) {
         DatabaseInitializer.initCarSubTables()
         DatabaseInitializer.initTripViolations()
+        DatabaseInitializer.initFuelTypes()
+        DatabaseInitializer.initWorkTypes()
     }
 }

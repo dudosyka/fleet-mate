@@ -2,7 +2,6 @@ package com.fleetmate.stat.modules.fault.dto
 
 
 import com.fleetmate.lib.shared.conf.AppConf
-import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.stringListCond
 import com.fleetmate.stat.modules.car.dto.CarFilterDto
@@ -18,9 +17,11 @@ data class FaultFilterDto (
     val carFilter: CarFilterDto? = null,
     val authorFilter: StaffFilterDto? = null,
 ) {
-    fun SqlExpressionBuilder.createStatusFilterCond(statuses: List<Int>?): Op<Boolean> =
-        stringListCond(AppConf.FaultStatus.entries.map { StatusDto(it.id, it.name) }
-            .filter {
-                statuses?.contains(it.id) ?: false
-            }.map { it.name }, FaultModel.id neq 0, FaultModel.status)
+    val SqlExpressionBuilder.statusFilterCond: Op<Boolean> get() =
+        if (status == null)
+            FaultModel.id neq 0
+        else
+            stringListCond(AppConf.FaultStatus.entries.filter {
+                    status.contains(it.id)
+                }.map { it.name }, FaultModel.id neq 0, FaultModel.status)
 }

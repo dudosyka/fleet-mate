@@ -12,5 +12,5 @@ class TripListItemDto(
     val finishedAt: Long? = null,
     val driver: UserSimpleDto,
     val car: CarSimpleDto,
-    var violations: Long = 0L
+    var violations: Long? = null
 )

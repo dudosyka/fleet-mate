@@ -12,7 +12,7 @@ import com.fleetmate.stat.modules.order.data.dto.work.WorkDto
 import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.order.data.model.WorkModel
-import com.fleetmate.stat.modules.order.data.model.WorkTypeModel
+import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.stat.modules.user.dto.MechanicWorkListItemDto
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.JoinType
@@ -25,7 +25,7 @@ class WorkDao(id: EntityID<Int>) : BaseIntEntity<WorkDto>(id, WorkModel) {
             WorkActorsModel
                 .leftJoin(WorkModel)
                 .leftJoin(WorkTypeModel)
-                .leftJoin(OrderModel)
+                .join(OrderModel, JoinType.LEFT, OrderModel.id, WorkModel.order)
                 .leftJoin(FaultModel)
                 .join(UserModel, JoinType.LEFT, OrderModel.mechanic, UserModel.id)
                 .select(
@@ -44,7 +44,6 @@ class WorkDao(id: EntityID<Int>) : BaseIntEntity<WorkDto>(id, WorkModel) {
                         it[UserModel.fullName]
                     )
                 }
-            listOf()
         }
 
     }

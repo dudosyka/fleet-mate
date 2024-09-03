@@ -17,11 +17,13 @@ class WashDao(id: EntityID<Int>) : BaseIntEntity<WashDto>(id, WashModel) {
 
     var authorId by WashModel.author
     val author by UserDao referencedOn WashModel.author
+    var timestamp by WashModel.timestamp
 
     override fun toOutputDto(): WashDto =
         WashDto(
             idValue,
             tripId.value,
-            authorId.value
+            authorId.value,
+            timestamp
         )
 }

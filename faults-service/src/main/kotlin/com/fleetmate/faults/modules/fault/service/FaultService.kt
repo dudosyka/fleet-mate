@@ -30,6 +30,7 @@ class FaultService(di: DI) : KodeinService(di) {
             tripId = trip?.id
             author = UserDao[authorizedUser.id]
             comment = faultInputDto.comment
+            status = AppConf.FaultStatus.CREATED.name
             critical = true
         }
 

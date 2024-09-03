@@ -68,8 +68,8 @@ abstract class BaseIntEntityClass<Output : SerializableAny, E : BaseIntEntity<Ou
             field inList filter
 
 
-    fun SqlExpressionBuilder.stringListCond(filter: List<String>?, defaultCond: Op<Boolean>, field: Column<String>): Op<Boolean> =
-        if (filter == null)
+    fun SqlExpressionBuilder.stringListCond(filter: List<String>, defaultCond: Op<Boolean>, field: Column<String>): Op<Boolean> =
+        if (filter.isEmpty())
             defaultCond
         else
             field inList filter

@@ -5,7 +5,9 @@ import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartToCarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
+import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
+import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
 import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
@@ -97,20 +99,24 @@ object DatabaseInitializer {
             }
 
             UserRoleModel.insert {
-                it[roleId] = AppConf.roles.admin
+                it[role] = AppConf.roles.admin
                 it[user] = 1
             }
             UserRoleModel.insert {
-                it[roleId] = AppConf.roles.driver
+                it[role] = AppConf.roles.driver
                 it[user] = 2
             }
             UserRoleModel.insert {
-                it[roleId] = AppConf.roles.mechanic
+                it[role] = AppConf.roles.mechanic
                 it[user] = 3
             }
             UserRoleModel.insert {
-                it[roleId] = AppConf.roles.washer
+                it[role] = AppConf.roles.washer
                 it[user] = 4
+            }
+            UserRoleModel.insert {
+                it[user] = 5
+                it[role] = AppConf.roles.juniorMechanic
             }
         }
     }
@@ -176,5 +182,21 @@ object DatabaseInitializer {
             this[ViolationModel.car] = 4
             this[ViolationModel.comment] = "sdfsfsd"
         }
+    }
+
+    fun initFuelTypes() {
+        if (FuelTypeModel.selectAll().empty())
+            FuelTypeModel.batchInsert(AppConf.FuelType.entries) {
+                this[FuelTypeModel.id] = it.id
+                this[FuelTypeModel.name] = it.name
+            }
+    }
+
+    fun initWorkTypes() {
+        if (WorkTypeModel.selectAll().empty())
+            WorkTypeModel.batchInsert(listOf(1, 2, 3)) {
+                this[WorkTypeModel.name] = "Work type #$it"
+                this[WorkTypeModel.hours] = it.toDouble()
+            }
     }
 }

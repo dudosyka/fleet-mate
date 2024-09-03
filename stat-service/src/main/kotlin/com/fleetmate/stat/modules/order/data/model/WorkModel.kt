@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.order.data.model
 
 
+import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 

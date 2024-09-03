@@ -2,62 +2,150 @@ package com.fleetmate.stat.modules.user.service
 
 
 import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
+import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
+import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
+import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
+import com.fleetmate.stat.modules.order.data.model.OrderModel
+import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
+import com.fleetmate.stat.modules.order.data.model.WorkModel
+import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
+import com.fleetmate.lib.shared.modules.wash.model.WashModel
+import com.fleetmate.stat.modules.user.dao.PositionDao.Companion.nullableRangeCond
+import com.fleetmate.stat.modules.user.dao.PositionDao.Companion.rangeCond
 import com.fleetmate.stat.modules.user.dao.UserDao
 import com.fleetmate.stat.modules.user.dto.UserFilterDto
+import com.fleetmate.stat.modules.user.dto.filter.StaffFilterDto
 import com.fleetmate.stat.modules.user.dto.output.DriverDto
 import com.fleetmate.stat.modules.user.dto.output.DriverOutputDto
 import com.fleetmate.stat.modules.user.dto.output.StaffDto
 import com.fleetmate.stat.modules.user.dto.output.StaffOutputDto
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 
 class UserService(di: DI) : KodeinService(di) {
     fun getDriversFiltered(userFilterDto: UserFilterDto): List<DriverOutputDto> = transaction {
-        UserDao.find {
-            with(userFilterDto) { expressionBuilder }
-        }.map {
-            val output = it.driverOutput
-            output.violationCount = UserDao.driverViolations(output.id, userFilterDto.dateRange).count()
-            output
-        }
+        UserModel
+            .innerJoin(LicenceTypeModel)
+            .join(UserRoleModel, JoinType.INNER, UserModel.id, UserRoleModel.user) {
+                UserRoleModel.role eq AppConf.roles.driver
+            }
+            .join(ViolationModel, JoinType.LEFT, UserModel.id, ViolationModel.driver)
+            .select(
+                UserModel.id, UserModel.fullName,
+                LicenceTypeModel.name,
+                ViolationModel.id.count()
+            )
+            .groupBy(UserModel.id, LicenceTypeModel.name)
+            .where {
+                UserModel.position inList (listOf(AppConf.driverPositionId)) and
+                with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
+            }
+            .map {
+                val userDao = UserDao.wrapRow(it)
+                DriverOutputDto(
+                    userDao.idValue,
+                    userDao.fullName,
+                    userDao.lastTrip?.simpleDto,
+                    it[LicenceTypeModel.name],
+                    violationCount = it[ViolationModel.id.count()],
+                    null
+                )
+            }
     }
 
     fun getStaffFiltered(userFilterDto: UserFilterDto): List<StaffOutputDto> = transaction {
-        UserDao.find {
-            UserModel.position inList (listOf(AppConf.mechanicPositionId, AppConf.washerPositionId))
-            with(userFilterDto) { expressionBuilder }
-        }.map { userDao ->
-            if (userDao.positionId.value == AppConf.washerPositionId) {
-                val washes = UserDao.washerOrders(userDao.idValue, userFilterDto.dateRange)
-                userDao.toStaffOutput(
-                    0,
-                    washes.count(),
-                    washes.count() * AppConf.washHoursNormalized
-                )
-            } else {
-                val orders = UserDao.mechanicOrders(
-                    userDao.idValue, userFilterDto.dateRange
-                )
-                userDao.toStaffOutput(
-                    orders.count { it.closedAt == null }.toLong(),
-                    orders.count { it.closedAt != null }.toLong(),
-                    UserDao.hoursCompleted(
-                        userDao.idValue, userFilterDto.dateRange
-                    )
+        // Firstly select all junior_mechanics
+        val completedOrders = OrderModel.alias("completed_orders")
+        val ordersInProgress = OrderModel.alias("order_in_progress")
+        UserModel
+            .innerJoin(PositionModel)
+            .join(UserRoleModel, JoinType.INNER, UserModel.id, UserRoleModel.user) {
+                UserRoleModel.role inList listOf(AppConf.roles.juniorMechanic)
+            }
+            .join(WorkActorsModel, JoinType.LEFT, WorkActorsModel.actor, UserModel.id)
+            .join(completedOrders, JoinType.LEFT, WorkActorsModel.order, completedOrders[OrderModel.id]) {
+                completedOrders[OrderModel.closedAt].isNotNull() and
+                nullableRangeCond(
+                    userFilterDto.dateRange,
+                    completedOrders[OrderModel.closedAt].isNotNull(),
+                    completedOrders[OrderModel.closedAt],
+                    Long.MIN_VALUE, Long.MAX_VALUE
                 )
             }
-        }
+            .join(ordersInProgress, JoinType.LEFT, WorkActorsModel.order, ordersInProgress[OrderModel.id]) {
+                completedOrders[OrderModel.closedAt].isNull()
+            }
+            .join(WorkModel, JoinType.LEFT, completedOrders[OrderModel.id], WorkModel.order)
+            .join(WorkTypeModel, JoinType.LEFT, WorkModel.type, WorkTypeModel.id)
+            .select(
+                ordersInProgress[OrderModel.id].countDistinct(),
+                completedOrders[OrderModel.id].countDistinct(),
+                WorkTypeModel.hours.sum(),
+                UserModel.id, UserModel.fullName,
+                PositionModel.name
+            )
+            .groupBy(UserModel.id, PositionModel.name, WorkActorsModel.id)
+            .where {
+                with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
+            }
+            .map {
+                val userDao = UserDao.wrapRow(it)
+                StaffOutputDto(
+                    userDao.idValue,
+                    userDao.fullName,
+                    it[PositionModel.name],
+                    it[ordersInProgress[OrderModel.id].countDistinct()],
+                    it[completedOrders[OrderModel.id].countDistinct()],
+                    it[WorkTypeModel.hours.sum()] ?: 0.0,
+                    null
+                )
+            } /* Then select all washers */ + UserModel
+            .innerJoin(PositionModel)
+            .join(UserRoleModel, JoinType.INNER, UserModel.id, UserRoleModel.user) {
+                UserRoleModel.role inList listOf(AppConf.roles.washer)
+            }
+            .join(WashModel, JoinType.LEFT, UserModel.id, WashModel.author) {
+                rangeCond(
+                    userFilterDto.dateRange,
+                    WashModel.timestamp.isNotNull(),
+                    WashModel.timestamp,
+                    Long.MIN_VALUE, Long.MAX_VALUE
+                )
+            }
+            .select(
+                UserModel.id, UserModel.fullName,
+                PositionModel.name,
+                WashModel.id.count()
+            )
+            .groupBy(UserModel.id, PositionModel.name)
+            .where {
+                UserModel.position inList (listOf(AppConf.washerPositionId)) and
+                with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
+            }
+            .map {
+                val userDao = UserDao.wrapRow(it)
+                val washCount = it[WashModel.id.count()]
+                StaffOutputDto(
+                    userDao.idValue,
+                    userDao.fullName,
+                    it[PositionModel.name],
+                    0, //For washers its always zero
+                    washCount,
+                    washCount * 2.0, //Every wash = 2 hours
+                    null
+                )
+            }
     }
 
-    //FIXME: Check role to be not a "washer", "junior mechanic" or "mechanic"
     fun getOneStaff(staffID: Int): StaffDto = transaction {
         UserDao[staffID].staffDto
     }
 
-    //FIXME: Check role to be "driver"
     fun getOneDriver(driverId: Int): DriverDto = transaction {
         UserDao[driverId].driverDto
     }

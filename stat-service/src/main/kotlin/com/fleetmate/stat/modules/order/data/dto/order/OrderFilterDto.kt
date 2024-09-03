@@ -2,7 +2,6 @@ package com.fleetmate.stat.modules.order.data.dto.order
 
 
 import com.fleetmate.lib.shared.conf.AppConf
-import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.utils.database.FieldFilterWrapper
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.stringListCond
 import com.fleetmate.stat.modules.order.data.model.OrderModel
@@ -21,10 +20,12 @@ data class OrderFilterDto (
     val juniorMechanicFilter: StaffFilterDto? = null,
 ) {
 
-    fun SqlExpressionBuilder.createStatusFilterCond(statuses: List<Int>?): Op<Boolean> =
-        stringListCond(AppConf.OrderStatus.entries.map { StatusDto(it.id, it.name) }
-            .filter {
-                statuses?.contains(it.id) ?: false
-            }.map { it.name }, OrderModel.id neq 0, OrderModel.status)
+    val SqlExpressionBuilder.statusFilterCond: Op<Boolean> get() =
+        if (status == null)
+            OrderModel.id neq 0
+        else
+            stringListCond(AppConf.OrderStatus.entries.filter {
+                    status.contains(it.id)
+                }.map { it.name }, OrderModel.id neq 0, OrderModel.status)
 
 }
