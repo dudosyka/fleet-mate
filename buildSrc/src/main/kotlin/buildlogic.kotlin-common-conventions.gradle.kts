@@ -2,6 +2,8 @@ val kotlinVersion: String by project
 val kotlinxCoroutinesVersion: String by project
 
 val ktorVersion: String by project
+val kotestVersion: String by project
+val ktorKotestVersion: String by project
 val kodeinVersion: String by project
 val jbcryptVersion: String by project
 
@@ -66,6 +68,8 @@ dependencies {
     testImplementation(kotlin("test-junit"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest.extensions:kotest-assertions-ktor:$ktorKotestVersion")
 
     //Logging and metrics
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -89,6 +93,12 @@ java {
     }
 }
 
-tasks.named<Test>("test") {
+//tasks.register("test", Test::class)
+
+tasks.named<Test>("test").configure {
     useJUnitPlatform()
+}
+
+tasks.named("build").configure {
+
 }
