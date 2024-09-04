@@ -5,6 +5,7 @@ import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.violation.service.ViolationService
 import io.ktor.server.application.call
+import io.ktor.server.auth.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
@@ -17,13 +18,17 @@ class ViolationController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("violation") {
-            get("type") {
-                call.respond(violationService.getAllTypes())
+            authenticate("default") {
+                get("type") {
+                    call.respond(violationService.getAllTypes())
+                }
             }
-            post("trip") {
-                val tripId = call.receive<IdInputDto>().id
+            authenticate("admin", "mechanic") {
+                post("trip") {
+                    val tripId = call.receive<IdInputDto>().id
 
-                call.respond(violationService.getByTrip(tripId))
+                    call.respond(violationService.getByTrip(tripId))
+                }
             }
         }
     }

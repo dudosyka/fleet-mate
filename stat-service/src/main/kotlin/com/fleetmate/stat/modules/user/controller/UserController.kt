@@ -6,6 +6,7 @@ import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.user.dto.UserFilterDto
 import com.fleetmate.stat.modules.user.service.UserService
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,30 +16,32 @@ import org.kodein.di.instance
 class UserController(override val di: DI) : KodeinController() {
     private val userService: UserService by instance()
     override fun Route.registerRoutes() {
-        route("staff") {
-            post("all") {
-                val userFilterDto = call.receive<UserFilterDto>()
+        authenticate("admin", "mechanic") {
+            route("staff") {
+                post("all") {
+                    val userFilterDto = call.receive<UserFilterDto>()
 
-                call.respond(userService.getStaffFiltered(userFilterDto))
+                    call.respond(userService.getStaffFiltered(userFilterDto))
+                }
+
+                post {
+                    val staffId = call.receive<IdInputDto>().id
+
+                    call.respond(userService.getOneStaff(staffId))
+                }
             }
+            route("drivers") {
+                post("all") {
+                    val userFilterDto = call.receive<UserFilterDto>()
 
-            post {
-                val staffId = call.receive<IdInputDto>().id
+                    call.respond(userService.getDriversFiltered(userFilterDto))
+                }
 
-                call.respond(userService.getOneStaff(staffId))
-            }
-        }
-        route("drivers") {
-            post("all") {
-                val userFilterDto = call.receive<UserFilterDto>()
+                post {
+                    val driverId = call.receive<IdInputDto>().id
 
-                call.respond(userService.getDriversFiltered(userFilterDto))
-            }
-
-            post {
-                val driverId = call.receive<IdInputDto>().id
-
-                call.respond(userService.getOneDriver(driverId))
+                    call.respond(userService.getOneDriver(driverId))
+                }
             }
         }
     }
