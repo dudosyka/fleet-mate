@@ -30,6 +30,7 @@ import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
+import com.fleetmate.stat.modules.car.controller.FuelController
 import com.fleetmate.stat.modules.order.service.OrderService
 import com.fleetmate.stat.modules.photo.controller.PhotoController
 import com.fleetmate.stat.modules.photo.service.PhotoService
@@ -83,6 +84,7 @@ fun Application.module() {
         bindSingleton { UserController(it) }
         bindSingleton { ViolationController(it) }
         bindSingleton { PhotoController(it) }
+        bindSingleton { FuelController(it) }
 
     }
 

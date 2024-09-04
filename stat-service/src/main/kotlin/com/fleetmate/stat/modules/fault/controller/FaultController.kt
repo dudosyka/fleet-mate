@@ -6,6 +6,7 @@ import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.fault.dto.FaultFilterDto
 import com.fleetmate.stat.modules.fault.service.FaultService
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,25 +18,28 @@ class FaultController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("fault") {
-            get("status") {
-                call.respond(faultService.getAllStatuses())
+            authenticate("default") {
+                get("status") {
+                    call.respond(faultService.getAllStatuses())
+                }
             }
+            authenticate("admin", "mechanic") {
+                route("all") {
+                    post {
+                        val faultFilterDto = call.receive<FaultFilterDto>()
 
-            route("all") {
+                        call.respond(faultService.getAllFiltered(faultFilterDto))
+                    }
+                    post("driver") {
+                        val driverId = call.receive<IdInputDto>().id
+                        call.respond(faultService.getByDriver(driverId))
+                    }
+                }
                 post {
-                    val faultFilterDto = call.receive<FaultFilterDto>()
+                    val faultId = call.receive<IdInputDto>().id
 
-                    call.respond(faultService.getAllFiltered(faultFilterDto))
+                    call.respond(faultService.getOne(faultId))
                 }
-                post("driver") {
-                    val driverId = call.receive<IdInputDto>().id
-                    call.respond(faultService.getByDriver(driverId))
-                }
-            }
-            post {
-                val faultId = call.receive<IdInputDto>().id
-
-                call.respond(faultService.getOne(faultId))
             }
         }
     }

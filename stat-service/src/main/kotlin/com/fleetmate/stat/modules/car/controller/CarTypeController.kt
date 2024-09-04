@@ -6,6 +6,7 @@ import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.car.dto.type.CarTypeUpdateDto
 import com.fleetmate.stat.modules.car.service.CarTypeService
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,15 +18,19 @@ class CarTypeController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("car/type") {
-            patch {
-                val carTypeUpdateDto = call.receive<CarTypeUpdateDto>()
+            authenticate("admin", "mechanic") {
+                patch {
+                    val carTypeUpdateDto = call.receive<CarTypeUpdateDto>()
 
-                call.respond(carTypeService.update(carTypeUpdateDto))
+                    call.respond(carTypeService.update(carTypeUpdateDto))
+                }
             }
-            post {
-                val carTypeId = call.receive<IdInputDto>().id
+            authenticate("default") {
+                post {
+                    val carTypeId = call.receive<IdInputDto>().id
 
-                call.respond(carTypeService.getOne(carTypeId))
+                    call.respond(carTypeService.getOne(carTypeId))
+                }
             }
         }
     }

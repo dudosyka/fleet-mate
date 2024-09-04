@@ -20,11 +20,7 @@ class CarController(override val di: DI) : KodeinController() {
 
     override fun Route.registerRoutes() {
         route("car"){
-            //TODO: admin + mechanic roles
-            authenticate("default") {
-                get("fuels") {
-                    call.respond(carService.getAllFuelTypes())
-                }
+            authenticate("admin", "mechanic") {
                 post("all") {
                     val carFilterDto = call.receive<CarFilterDto>()
                     call.respond(carService.getAllFiltered(carFilterDto))

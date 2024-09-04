@@ -19,10 +19,7 @@ class OrderController(override val di: DI) : KodeinController() {
     private val orderService: OrderService by instance()
 
     override fun Route.registerRoutes() {
-
-        //TODO: admin + mechanic roles
-        authenticate("default") {
-
+        authenticate("admin", "mechanic") {
             route("order") {
                 get("status") {
                     call.respond(orderService.getAllStatuses())
@@ -65,7 +62,8 @@ class OrderController(override val di: DI) : KodeinController() {
                     call.respond(orderService.close(orderId))
                 }
             }
-
+        }
+        authenticate("washer") {
             route("wash") {
                 post("washer") {
                     val washerId = call.receive<IdInputDto>().id
