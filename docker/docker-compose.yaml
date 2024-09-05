@@ -77,6 +77,18 @@ services:
     #          memory: 7168M #7GB
     restart: always
     entrypoint: /bin/bash /home/crypt-startup.sh
+  file:
+    build: jvm-services
+    volumes:
+      - ./jvm-services/dist:/opt/application
+      - ./jvm-services/home:/home
+    networks:
+      - iternal
+      - exposed
+    depends_on:
+      - postgres
+    restart: always
+    entrypoint: /bin/bash /home/file-startup.sh
   nginx:
     build: ./nginx
     ports:
