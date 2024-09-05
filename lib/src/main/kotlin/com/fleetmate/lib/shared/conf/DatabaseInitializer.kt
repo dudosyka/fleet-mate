@@ -169,6 +169,7 @@ object DatabaseInitializer {
                 it[speedLimit] = 56.4
                 it[speedError] = 10.1
                 it[avgFuelConsumption] = 20.2
+                it[photo] = "type1.svg"
             }
         }
     }

@@ -96,7 +96,6 @@ fun Application.module() {
         DepartmentModel, PositionModel, UserPhotoModel,
     ) {
         DatabaseInitializer.initCarSubTables()
-        DatabaseInitializer.initTripViolations()
         DatabaseInitializer.initFuelTypes()
         DatabaseInitializer.initWorkTypes()
     }

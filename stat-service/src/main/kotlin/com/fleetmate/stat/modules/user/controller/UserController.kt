@@ -26,8 +26,9 @@ class UserController(override val di: DI) : KodeinController() {
 
                 post {
                     val staffId = call.receive<IdInputDto>().id
+                    val authorizedUser = call.getAuthorized()
 
-                    call.respond(userService.getOneStaff(staffId))
+                    call.respond(userService.getOneStaff(authorizedUser, staffId))
                 }
             }
             route("drivers") {
@@ -39,8 +40,9 @@ class UserController(override val di: DI) : KodeinController() {
 
                 post {
                     val driverId = call.receive<IdInputDto>().id
+                    val authorizedUser = call.getAuthorized()
 
-                    call.respond(userService.getOneDriver(driverId))
+                    call.respond(userService.getOneDriver(authorizedUser, driverId))
                 }
             }
         }

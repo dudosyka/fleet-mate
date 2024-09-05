@@ -2,6 +2,7 @@ package com.fleetmate.stat.modules.user.service
 
 
 import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
@@ -146,11 +147,17 @@ class UserService(di: DI) : KodeinService(di) {
             }
     }
 
-    fun getOneStaff(staffID: Int): StaffDto = transaction {
-        UserDao[staffID].staffDto
+    fun getOneStaff(authorizedUser: AuthorizedUser, staffID: Int): StaffDto = transaction {
+        if (staffID == 0)
+            UserDao[authorizedUser.id].staffDto
+        else
+            UserDao[staffID].staffDto
     }
 
-    fun getOneDriver(driverId: Int): DriverDto = transaction {
-        UserDao[driverId].driverDto
+    fun getOneDriver(authorizedUser: AuthorizedUser, driverId: Int): DriverDto = transaction {
+        if (driverId == 0)
+            UserDao[authorizedUser.id].driverDto
+        else
+            UserDao[driverId].driverDto
     }
 }
