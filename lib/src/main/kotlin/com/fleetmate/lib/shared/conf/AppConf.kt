@@ -84,9 +84,18 @@ object AppConf {
         }
     }
 
-    val mechanicPositionId = positionsConf.getInt("mechanic")
-    val washerPositionId = positionsConf.getInt("washer")
-    val driverPositionId = positionsConf.getInt("driver")
+    enum class Positions(val id: Int) {
+        MECHANIC(positionsConf.getInt("mechanic")),
+        JUNIOR_MECHANIC(positionsConf.getInt("junior_mechanic")),
+        WASHER(positionsConf.getInt("washer")),
+        DRIVER(positionsConf.getInt("driver"))
+    }
 
-    val washHoursNormalized = 0.5
+    enum class CarStatus(val id: Int) {
+        FREE(1),
+        IN_USE(2),
+        UNDER_REPAIR(3)
+    }
+
+    const val washHoursNormalized = 0.5
 }

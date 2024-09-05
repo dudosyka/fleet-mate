@@ -1,5 +1,6 @@
 package com.fleetmate.crypt.modules.auth.service
 
+import com.fleetmate.crypt.modules.auth.data.UserDao
 import com.fleetmate.crypt.modules.auth.data.dto.AdminAuthInputDto
 import com.fleetmate.crypt.modules.auth.data.dto.simple.SimpleAuthInputDto
 import com.fleetmate.crypt.modules.auth.data.dto.TokenOutputDto
@@ -114,5 +115,11 @@ class AuthService(override val di: DI) : KodeinService(di) {
         val tokenPair = generateTokenPair(userId, lastLogin)
         commit()
         tokenPair
+    }
+
+    fun test_entity_exception(id: Int) = transaction {
+        val userDao = UserDao[id]
+
+        userDao.toOutputDto()
     }
 }

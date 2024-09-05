@@ -24,5 +24,6 @@ data class CarOutputDto(
     val engineOilViscosity: String,
     val adBlue: Boolean,
     val ownership: Boolean,
+    val status: String,
     val photos: List<String>
 )

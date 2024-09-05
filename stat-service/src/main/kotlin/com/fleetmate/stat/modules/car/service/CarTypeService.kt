@@ -16,4 +16,8 @@ class CarTypeService(di: DI) : KodeinService(di) {
     fun getOne(carTypeId: Int): CarTypeDto = transaction {
         CarTypeDao[carTypeId].toOutputDto()
     }
+
+    fun getAll(): List<CarTypeDto> = transaction {
+        CarTypeDao.all().map { it.toOutputDto() }
+    }
 }

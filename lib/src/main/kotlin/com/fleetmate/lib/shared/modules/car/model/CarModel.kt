@@ -1,5 +1,6 @@
 package com.fleetmate.lib.shared.modules.car.model
 
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
@@ -25,5 +26,6 @@ object CarModel: BaseIntIdTable() {
     val engineOilViscosity = text("engine_oil_viscosity")
     val adBlue = bool("adBlue")
     val ownership = bool("ownership")
+    val status = text("status").default(AppConf.CarStatus.FREE.name)
 
 }

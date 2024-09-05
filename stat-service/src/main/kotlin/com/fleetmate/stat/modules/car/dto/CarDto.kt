@@ -10,5 +10,6 @@ data class CarDto (
     val registrationNumber: String,
     val typeId: Int,
     val fuelLevel: Double,
-    val mileage: Double
+    val mileage: Double,
+    val status: String
 )

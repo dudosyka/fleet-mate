@@ -9,5 +9,6 @@ data class CarTypeDto (
     val name: String,
     val speedLimit: Double,
     val speedError: Double,
-    val licenceType: Int
+    val licenceType: Int,
+    val photo: String
 )

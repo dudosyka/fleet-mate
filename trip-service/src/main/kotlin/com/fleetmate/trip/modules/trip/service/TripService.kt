@@ -33,6 +33,7 @@ class TripService(di: DI) : KodeinService(di) {
             throw ForbiddenException()
 
         return transaction {
+            CarDao[tripInitDto.carId].updateStatus(AppConf.CarStatus.IN_USE)
             TripDao.init(tripInitDto.carId, tripInitDto.driverId, needRefuel = carService.isNeedRefuel(tripInitDto.carId)).toOutputDto()
         }
     }

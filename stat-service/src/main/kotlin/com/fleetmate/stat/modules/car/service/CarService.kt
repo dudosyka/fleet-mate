@@ -1,6 +1,8 @@
 package com.fleetmate.stat.modules.car.service
 
 import com.fleetmate.lib.plugins.Logger
+import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
@@ -53,7 +55,6 @@ class CarService(di: DI) : KodeinService(di) {
             engineOilViscosity = carCreateDto.engineOilViscosity
             adBlue = carCreateDto.adBlue
             ownership = carCreateDto.ownership
-
         }.toOutputDto()
     }
 
@@ -69,4 +70,9 @@ class CarService(di: DI) : KodeinService(di) {
     fun getAllFuelTypes(): List<FuelTypeDto> = transaction {
         FuelTypeDao.all().map(FuelTypeDao::toOutputDto)
     }
+
+    fun getAllStatuses(): List<StatusDto> =
+        AppConf.CarStatus.entries.map {
+            StatusDto(it.id, it.name)
+        }
 }

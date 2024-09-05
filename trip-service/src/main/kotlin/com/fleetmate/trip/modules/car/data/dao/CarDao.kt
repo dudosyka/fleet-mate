@@ -1,5 +1,6 @@
 package com.fleetmate.trip.modules.car.data.dao
 
+import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartToCarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
@@ -68,6 +69,12 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     fun updateByRefuel(refuelInputDto: RefuelInputDto) {
         CarModel.update({ CarModel.id eq idValue }) {
             it[fuelLevel] = fuelLevel + refuelInputDto.volume
+        }
+    }
+
+    fun updateStatus(status: AppConf.CarStatus) {
+        CarModel.update({ CarModel.id eq idValue }) {
+            it[CarModel.status] = status.name
         }
     }
 }

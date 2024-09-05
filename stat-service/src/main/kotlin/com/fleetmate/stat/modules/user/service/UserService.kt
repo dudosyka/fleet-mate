@@ -42,7 +42,6 @@ class UserService(di: DI) : KodeinService(di) {
             )
             .groupBy(UserModel.id, LicenceTypeModel.name)
             .where {
-                UserModel.position inList (listOf(AppConf.driverPositionId)) and
                 with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
             }
             .map {
@@ -63,12 +62,20 @@ class UserService(di: DI) : KodeinService(di) {
         val completedOrders = OrderModel.alias("completed_orders")
         val ordersInProgress = OrderModel.alias("order_in_progress")
         UserModel
-            .innerJoin(PositionModel)
-            .join(UserRoleModel, JoinType.INNER, UserModel.id, UserRoleModel.user) {
-                UserRoleModel.role inList listOf(AppConf.roles.juniorMechanic)
+            .join(UserRoleModel, JoinType.INNER, UserRoleModel.user, UserModel.id) {
+                UserRoleModel.role eq AppConf.roles.juniorMechanic
             }
             .join(WorkActorsModel, JoinType.LEFT, WorkActorsModel.actor, UserModel.id)
-            .join(completedOrders, JoinType.LEFT, WorkActorsModel.order, completedOrders[OrderModel.id]) {
+            .join(WorkModel, JoinType.LEFT,  WorkActorsModel.work, WorkModel.id) {
+                nullableRangeCond(
+                    userFilterDto.dateRange,
+                    WorkModel.id.isNotNull(),
+                    WorkModel.doneAt,
+                    Long.MIN_VALUE, Long.MAX_VALUE
+                )
+            }
+            .join(WorkTypeModel, JoinType.LEFT, WorkModel.type, WorkTypeModel.id)
+            .join(completedOrders, JoinType.LEFT, WorkModel.order, completedOrders[OrderModel.id]) {
                 completedOrders[OrderModel.closedAt].isNotNull() and
                 nullableRangeCond(
                     userFilterDto.dateRange,
@@ -77,19 +84,16 @@ class UserService(di: DI) : KodeinService(di) {
                     Long.MIN_VALUE, Long.MAX_VALUE
                 )
             }
-            .join(ordersInProgress, JoinType.LEFT, WorkActorsModel.order, ordersInProgress[OrderModel.id]) {
+            .join(ordersInProgress, JoinType.LEFT, WorkModel.order, ordersInProgress[OrderModel.id]) {
                 completedOrders[OrderModel.closedAt].isNull()
             }
-            .join(WorkModel, JoinType.LEFT, completedOrders[OrderModel.id], WorkModel.order)
-            .join(WorkTypeModel, JoinType.LEFT, WorkModel.type, WorkTypeModel.id)
             .select(
                 ordersInProgress[OrderModel.id].countDistinct(),
                 completedOrders[OrderModel.id].countDistinct(),
                 WorkTypeModel.hours.sum(),
-                UserModel.id, UserModel.fullName,
-                PositionModel.name
+                UserModel.id, UserModel.fullName
             )
-            .groupBy(UserModel.id, PositionModel.name, WorkActorsModel.id)
+            .groupBy(UserModel.id)
             .where {
                 with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
             }
@@ -98,11 +102,11 @@ class UserService(di: DI) : KodeinService(di) {
                 StaffOutputDto(
                     userDao.idValue,
                     userDao.fullName,
-                    it[PositionModel.name],
-                    it[ordersInProgress[OrderModel.id].countDistinct()],
-                    it[completedOrders[OrderModel.id].countDistinct()],
-                    it[WorkTypeModel.hours.sum()] ?: 0.0,
-                    null
+                    AppConf.Positions.JUNIOR_MECHANIC.name,
+                    orderInProgress = it[ordersInProgress[OrderModel.id].countDistinct()],
+                    orderCompleted = it[completedOrders[OrderModel.id].countDistinct()],
+                    hoursCompleted = it[WorkTypeModel.hours.sum()] ?: 0.0,
+                    photo = listOf()
                 )
             } /* Then select all washers */ + UserModel
             .innerJoin(PositionModel)
@@ -124,7 +128,7 @@ class UserService(di: DI) : KodeinService(di) {
             )
             .groupBy(UserModel.id, PositionModel.name)
             .where {
-                UserModel.position inList (listOf(AppConf.washerPositionId)) and
+                UserModel.position inList (listOf(AppConf.Positions.WASHER.id)) and
                 with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
             }
             .map {
@@ -136,8 +140,8 @@ class UserService(di: DI) : KodeinService(di) {
                     it[PositionModel.name],
                     0, //For washers its always zero
                     washCount,
-                    washCount * 2.0, //Every wash = 2 hours
-                    null
+                    washCount * AppConf.washHoursNormalized, //Every wash = 2 hours
+                    listOf()
                 )
             }
     }

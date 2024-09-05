@@ -13,4 +13,5 @@ object CarTypeModel : BaseIntIdTable() {
     val speedLimit = double("speed_limit")
     val speedError = double("speed_error")
     val avgFuelConsumption = double("avg_fuel_consumption")
+    val photo = text("photo")
 }

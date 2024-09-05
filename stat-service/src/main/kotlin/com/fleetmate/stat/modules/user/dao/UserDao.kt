@@ -1,7 +1,7 @@
 package com.fleetmate.stat.modules.user.dao
 
 
-import com.fleetmate.lib.exceptions.ForbiddenException
+import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
@@ -60,17 +60,17 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
         UserSimpleDto(idValue, fullName)
 
     val staffDto: StaffDto get() =
-        if (roles.contains(AppConf.roles.washer) || roles.contains(AppConf.roles.mechanic) || roles.contains(AppConf.roles.juniorMechanic))
+        if (roles.contains(AppConf.roles.washer) || roles.contains(AppConf.roles.mechanic) || roles.contains(AppConf.roles.juniorMechanic) || roles.contains(AppConf.roles.admin))
             StaffDto(idValue, fullName, phoneNumber, department.name, position.name, photos)
         else
-            throw ForbiddenException()
+            throw NotFoundException("")
 
     val driverDto: DriverDto get() =
         if (roles.contains(AppConf.roles.driver))
             DriverDto(idValue, fullName, department.name, insuranceNumber, phoneNumber,
                 licenceType.name, sectorBoss?.staffDto, position.name, photos)
         else
-            throw ForbiddenException()
+            throw NotFoundException("")
 
     val photos: List<String> get() {
         return (UserPhotoModel innerJoin PhotoModel)

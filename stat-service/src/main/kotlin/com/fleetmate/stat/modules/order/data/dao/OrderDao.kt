@@ -16,7 +16,6 @@ import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.user.dao.UserDao
-import io.ktor.util.date.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.update
 
@@ -57,10 +56,10 @@ class OrderDao(id: EntityID<Int>) : BaseIntEntity<OrderDto>(id, OrderModel) {
             )
         }.toList()
 
-    fun updateToClosed() {
+    fun updateToClosed(closedAt: Long) {
         OrderModel.update({ OrderModel.id eq idValue }) {
             it[status] = AppConf.OrderStatus.CLOSED.name
-            it[closedAt] = getTimeMillis()
+            it[this.closedAt] = closedAt
         }
         FaultModel.update({ FaultModel.id eq faultId.value }) {
             it[status] = AppConf.FaultStatus.FIXED.name

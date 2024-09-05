@@ -25,6 +25,7 @@ import com.fleetmate.stat.modules.order.data.dto.order.*
 import com.fleetmate.stat.modules.order.data.dto.work.CreateWorkDto
 import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
+import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.stat.modules.user.dao.UserDao
 import com.fleetmate.stat.modules.user.dto.MechanicWorkListItemDto
 import com.fleetmate.stat.modules.user.model.UserHoursModel
@@ -41,10 +42,10 @@ class OrderService(di: DI) : KodeinService(di) {
 
     fun <T> getAllAs(orderFilterDto: OrderFilterDto, columnSet: List<Column<*>>, processor: ( input: ResultRow ) -> T): List<T> {
         return OrderModel
-            .join(UserModel, JoinType.INNER, UserModel.id, OrderModel.mechanic)
             .innerJoin(FaultModel)
             .innerJoin(CarModel)
             .innerJoin(CarTypeModel)
+            .join(UserModel, JoinType.INNER, UserModel.id, OrderModel.mechanic)
             .select(columnSet)
             .where {
                 likeCond(orderFilterDto.orderNumber, OrderModel.id neq 0, OrderModel.number) and
@@ -110,6 +111,7 @@ class OrderService(di: DI) : KodeinService(di) {
         }
 
         faultDao.updateToUnderWork()
+        faultDao.car.updateStatus(AppConf.CarStatus.UNDER_REPAIR)
 
         order.toOutputDto()
     }
@@ -139,7 +141,8 @@ class OrderService(di: DI) : KodeinService(di) {
         if (order.closedAt != null)
             throw ForbiddenException()
 
-        order.updateToClosed()
+        val closedAt = getTimeMillis()
+        order.updateToClosed(closedAt)
 
         val actors = order.works.map { it.actors }.flatten().map { it.id }
         val dividedHours = order.hours / actors.size
@@ -152,6 +155,14 @@ class OrderService(di: DI) : KodeinService(di) {
         WorkActorsModel.update({ WorkActorsModel.order eq orderId }) {
             it[closed] = true
         }
+
+        WorkModel.update({
+            WorkModel.id inList order.works.map { it.idValue }
+        }) {
+            it[doneAt] = closedAt
+        }
+
+        order.fault.car.updateToFree()
 
         OrderDao[orderId].toOutputDto()
     }

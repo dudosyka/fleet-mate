@@ -31,6 +31,9 @@ class CarTypeController(override val di: DI) : KodeinController() {
 
                     call.respond(carTypeService.getOne(carTypeId))
                 }
+                get {
+                    call.respond(carTypeService.getAll())
+                }
             }
         }
     }
