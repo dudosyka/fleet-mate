@@ -6,6 +6,7 @@ import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.car.model.CarPhotoModel
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
+import com.fleetmate.lib.shared.modules.car.model.part.CarPartToCarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
 import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
@@ -92,11 +93,15 @@ fun Application.module() {
         CarModel, CarPartModel, CarPhotoModel, FaultModel, PhotoModel,
         TripModel, ViolationModel, CarTypeModel, LicenceTypeModel,
         OrderModel, WorkActorsModel, WorkModel, WorkTypeModel,
-        WashModel, UserModel, UserHoursModel, ViolationModel,
-        DepartmentModel, PositionModel, UserPhotoModel,
+        WashModel, UserModel, UserHoursModel, DepartmentModel,
+        PositionModel, UserPhotoModel, CarPartToCarPartModel
     ) {
-        DatabaseInitializer.initCarSubTables()
-        DatabaseInitializer.initFuelTypes()
+        DatabaseInitializer.initTestPhotos()
+        DatabaseInitializer.initCars()
+        DatabaseInitializer.initTrips()
+        DatabaseInitializer.initTripViolations()
+        DatabaseInitializer.initFaults()
         DatabaseInitializer.initWorkTypes()
+
     }
 }
