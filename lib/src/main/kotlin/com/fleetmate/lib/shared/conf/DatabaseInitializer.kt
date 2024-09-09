@@ -1,6 +1,7 @@
 package com.fleetmate.lib.shared.conf
 
 import com.fleetmate.lib.shared.modules.car.model.CarModel
+import com.fleetmate.lib.shared.modules.car.model.CarPhotoModel
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartToCarPartModel
@@ -17,6 +18,7 @@ import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
 import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
+import com.fleetmate.lib.shared.modules.wash.model.WashModel
 import com.fleetmate.lib.utils.security.bcrypt.CryptoUtil
 import io.ktor.util.date.*
 import org.jetbrains.exposed.dao.id.EntityID
@@ -292,7 +294,6 @@ object DatabaseInitializer {
     private fun initCarTypes() {
         if (CarTypeModel.selectAll().empty()) {
             CarTypeModel.batchInsert(listOf(1, 2, 3)) {
-                this[CarTypeModel.id] = it
                 this[CarTypeModel.licenceType] = it
                 this[CarTypeModel.name] = "car_type_$it"
                 this[CarTypeModel.rootPart] = 1
@@ -303,6 +304,7 @@ object DatabaseInitializer {
             }
         }
     }
+
     private fun initLicenceType() {
         if (LicenceTypeModel.selectAll().empty()) {
             LicenceTypeModel.insert {
@@ -325,7 +327,7 @@ object DatabaseInitializer {
     }
     fun initTrips() = transaction {
         if (TripModel.selectAll().empty()) {
-            TripModel.batchInsert(AppConf.TripStatus.entries) {
+            val trips = TripModel.batchInsert(AppConf.TripStatus.entries) {
                 this[TripModel.car] = it.id
                 this[TripModel.driver] = it.id + 1
                 this[TripModel.status] = it.name
@@ -338,6 +340,8 @@ object DatabaseInitializer {
                         this[TripModel.driverCheckAfterTrip] = checksIds[1]
                         this[TripModel.mechanicCheckBeforeTrip] = checksIds[2]
                         this[TripModel.mechanicCheckAfterTrip] = checksIds[3]
+
+                        initChecksPhotos(checksIds, it.id)
                     }
                     this[TripModel.keyReturn] = getTimeMillis()
 
@@ -346,24 +350,57 @@ object DatabaseInitializer {
                     if (checksIds.isNotEmpty()) {
                         this[TripModel.driverCheckBeforeTrip] = checksIds[0]
                         this[TripModel.mechanicCheckBeforeTrip] = checksIds[1]
+
+                        initChecksPhotos(checksIds, it.id)
                     }
                 }
-            }
-            TripModel.batchInsert(listOf(1, 2)) {
-                this[TripModel.car] = 4 + it
-                this[TripModel.driver] = 5 + it
-                this[TripModel.status] = AppConf.TripStatus.EXPLOITATION.name
-                this[TripModel.keyAcceptance] = getTimeMillis()
+            }.map {
+                Triple(
+                    it[TripModel.id].value,
+                    it[TripModel.status],
+                    it[TripModel.keyAcceptance]
+                )
+            }.toList() + TripModel.batchInsert(listOf(1, 2)) {
+                    this[TripModel.car] = 4 + it
+                    this[TripModel.driver] = 5 + it
+                    this[TripModel.status] = AppConf.TripStatus.EXPLOITATION.name
+                    this[TripModel.keyAcceptance] = getTimeMillis()
 
-                val checksIds = initCheckForCarBeforeTrip(4 + it, 5 + it)
-                if (checksIds.isNotEmpty()) {
-                    this[TripModel.driverCheckBeforeTrip] = checksIds[0]
-                    this[TripModel.mechanicCheckBeforeTrip] = checksIds[1]
+                    val checksIds = initCheckForCarBeforeTrip(4 + it, 5 + it)
+                    if (checksIds.isNotEmpty()) {
+                        this[TripModel.driverCheckBeforeTrip] = checksIds[0]
+                        this[TripModel.mechanicCheckBeforeTrip] = checksIds[1]
+                    }
+                }.map {
+                    Triple(
+                        it[TripModel.id].value,
+                        it[TripModel.status],
+                        it[TripModel.keyAcceptance]
+                    )
                 }
+
+            WashModel.batchInsert(
+                trips.filter {
+                    it.second != AppConf.TripStatus.CLOSED_DUE_TO_FAULT.name
+                }
+            ) { trip ->
+                this[WashModel.trip] = trip.first
+                this[WashModel.author] = 21
+                this[WashModel.timestamp] = trip.third + 1
             }
+
+
             CarModel.update({ CarModel.id lessEq 6 }) {
                 it[status] = AppConf.CarStatus.IN_USE.name
             }
+        }
+    }
+
+    private fun initChecksPhotos(checksIds: List<Int>, carId: Int) {
+        CarPhotoModel.batchInsert(checksIds) {
+            this[CarPhotoModel.photo] = 1
+            this[CarPhotoModel.check] = it
+            this[CarPhotoModel.car] = carId
         }
     }
     private fun initAllChecksForCar(carId: Int, driverId: Int): List<Int> {
