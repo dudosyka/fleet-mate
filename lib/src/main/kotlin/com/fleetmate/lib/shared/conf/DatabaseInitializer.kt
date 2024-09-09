@@ -24,6 +24,7 @@ import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 object DatabaseInitializer {
     fun initUsers() = transaction {
@@ -273,7 +274,7 @@ object DatabaseInitializer {
                 this[CarModel.engineOilViscosity] = "engine_oil_viscosity_$it"
                 this[CarModel.adBlue] = false
                 this[CarModel.ownership] = true
-                this[CarModel.status] = AppConf.CarStatus.UNDER_REPAIR.name
+                this[CarModel.status] = AppConf.CarStatus.FREE.name
             }
             commit()
         }
@@ -291,6 +292,7 @@ object DatabaseInitializer {
     private fun initCarTypes() {
         if (CarTypeModel.selectAll().empty()) {
             CarTypeModel.batchInsert(listOf(1, 2, 3)) {
+                this[CarTypeModel.id] = it
                 this[CarTypeModel.licenceType] = it
                 this[CarTypeModel.name] = "car_type_$it"
                 this[CarTypeModel.rootPart] = 1
@@ -301,7 +303,6 @@ object DatabaseInitializer {
             }
         }
     }
-
     private fun initLicenceType() {
         if (LicenceTypeModel.selectAll().empty()) {
             LicenceTypeModel.insert {
@@ -331,7 +332,7 @@ object DatabaseInitializer {
                 this[TripModel.keyAcceptance] = getTimeMillis()
 
                 if (it.name != AppConf.TripStatus.EXPLOITATION.name && it.name != AppConf.TripStatus.INITIALIZED.name) {
-                    val checksIds = initAllChecksForCar(it.id)
+                    val checksIds = initAllChecksForCar(it.id, it.id + 1)
                     if (checksIds.isNotEmpty()) {
                         this[TripModel.driverCheckBeforeTrip] = checksIds[0]
                         this[TripModel.driverCheckAfterTrip] = checksIds[1]
@@ -341,7 +342,7 @@ object DatabaseInitializer {
                     this[TripModel.keyReturn] = getTimeMillis()
 
                 } else {
-                    val checksIds = initCheckForCarBeforeTrip(it.id)
+                    val checksIds = initCheckForCarBeforeTrip(it.id, it.id + 1)
                     if (checksIds.isNotEmpty()) {
                         this[TripModel.driverCheckBeforeTrip] = checksIds[0]
                         this[TripModel.mechanicCheckBeforeTrip] = checksIds[1]
@@ -354,18 +355,20 @@ object DatabaseInitializer {
                 this[TripModel.status] = AppConf.TripStatus.EXPLOITATION.name
                 this[TripModel.keyAcceptance] = getTimeMillis()
 
-                val checksIds = initCheckForCarBeforeTrip(4 + it)
+                val checksIds = initCheckForCarBeforeTrip(4 + it, 5 + it)
                 if (checksIds.isNotEmpty()) {
                     this[TripModel.driverCheckBeforeTrip] = checksIds[0]
                     this[TripModel.mechanicCheckBeforeTrip] = checksIds[1]
                 }
             }
+            CarModel.update({ CarModel.id lessEq 6 }) {
+                it[status] = AppConf.CarStatus.IN_USE.name
+            }
         }
     }
-
-    private fun initAllChecksForCar(carId: Int): List<Int> {
-        return CheckModel.batchInsert(listOf(1, 2, 3, 4)) {
-            this[CheckModel.author] = it + 9
+    private fun initAllChecksForCar(carId: Int, driverId: Int): List<Int> {
+        return CheckModel.batchInsert(listOf(driverId, 2, driverId, 2)) {
+            this[CheckModel.author] = if (it == driverId) driverId else it + 9
             this[CheckModel.car] = carId
             this[CheckModel.startTime] = getTimeMillis()
             this[CheckModel.finishTime] = getTimeMillis()
@@ -373,10 +376,9 @@ object DatabaseInitializer {
             it[CheckModel.id].value
         }.toList()
     }
-
-    private fun initCheckForCarBeforeTrip(carId: Int): List<Int> {
-        return CheckModel.batchInsert(listOf(1, 2)) {
-                this[CheckModel.author] = it + 10
+    private fun initCheckForCarBeforeTrip(carId: Int, driverId: Int): List<Int> {
+        return CheckModel.batchInsert(listOf(driverId, 2)) {
+                this[CheckModel.author] = if (it == driverId) driverId else it + 10
                 this[CheckModel.car] = carId
                 this[CheckModel.startTime] = getTimeMillis()
                 this[CheckModel.finishTime] = getTimeMillis()
@@ -384,14 +386,12 @@ object DatabaseInitializer {
                 it[CheckModel.id].value
             }.toList()
     }
-
     private fun getCars(): List<Int> =
         CarModel.select(
             CarModel.id
         ).map {
             it[CarModel.id].value
         }
-
     fun initFaults() = transaction {
         val cars = getCars()
         cars.forEach { id ->
@@ -431,6 +431,10 @@ object DatabaseInitializer {
                 it[fault] = faultID
                 it[photo] = 1
             }
+        }
+
+        CarModel.update({ CarModel.id inList listOf(8, 9)}) {
+            it[status] = AppConf.CarStatus.UNDER_REPAIR.name
         }
     }
 }
