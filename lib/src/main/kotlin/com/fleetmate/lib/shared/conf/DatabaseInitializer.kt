@@ -429,48 +429,49 @@ object DatabaseInitializer {
             it[CarModel.id].value
         }
     fun initFaults() = transaction {
-        val cars = getCars()
-        cars.forEach { id ->
-            val faults = FaultModel.batchInsert(listOf(4, 6)) {
-                this[FaultModel.car] = id
-                this[FaultModel.carPart] = it
+        if (FaultModel.selectAll().empty()) {
+            val cars = getCars()
+            cars.forEach { id ->
+                val faults = FaultModel.batchInsert(listOf(4, 6)) {
+                    this[FaultModel.car] = id
+                    this[FaultModel.carPart] = it
+                    this[FaultModel.author] = 1
+                    this[FaultModel.comment] = "comment_$it"
+                    this[FaultModel.critical] = false
+                    this[FaultModel.status] = AppConf.FaultStatus.CREATED.name
+                }.map {
+                    it[FaultModel.id].value
+                }.toList()
+
+                faults.forEach { faultID ->
+                    FaultPhotoModel.insert {
+                        it[fault] = faultID
+                        it[photo] = 1
+                    }
+                }
+
+            }
+            val criticalFaults = FaultModel.batchInsert(listOf(8, 9)) {
+                this[FaultModel.car] = it
+                this[FaultModel.carPart] = 6
                 this[FaultModel.author] = 1
-                this[FaultModel.comment] = "comment_$it"
-                this[FaultModel.critical] = false
+                this[FaultModel.comment] = "comment_critical$it"
+                this[FaultModel.critical] = true
                 this[FaultModel.status] = AppConf.FaultStatus.CREATED.name
             }.map {
                 it[FaultModel.id].value
             }.toList()
 
-            faults.forEach { faultID ->
+            criticalFaults.forEach { faultID ->
                 FaultPhotoModel.insert {
                     it[fault] = faultID
                     it[photo] = 1
                 }
             }
 
-        }
-
-        val criticalFaults = FaultModel.batchInsert(listOf(8, 9)) {
-            this[FaultModel.car] = it
-            this[FaultModel.carPart] = 6
-            this[FaultModel.author] = 1
-            this[FaultModel.comment] = "comment_critical$it"
-            this[FaultModel.critical] = true
-            this[FaultModel.status] = AppConf.FaultStatus.CREATED.name
-        }.map {
-            it[FaultModel.id].value
-        }.toList()
-
-        criticalFaults.forEach { faultID ->
-            FaultPhotoModel.insert {
-                it[fault] = faultID
-                it[photo] = 1
+            CarModel.update({ CarModel.id inList listOf(8, 9)}) {
+                it[status] = AppConf.CarStatus.UNDER_REPAIR.name
             }
-        }
-
-        CarModel.update({ CarModel.id inList listOf(8, 9)}) {
-            it[status] = AppConf.CarStatus.UNDER_REPAIR.name
         }
     }
 }
