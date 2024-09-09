@@ -1099,7 +1099,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"id\": 1\n}",
+											"raw": "{\n    \"id\": 4\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1126,7 +1126,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"id\": 1\n}",
+											"raw": "{\n    \"id\": 9\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1696,7 +1696,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"registrationNumber\": \"к027рв\",\n    \"carType\": [1],\n    \"status\": [1]\n}",
+									"raw": "{\n    \"registrationNumber\": \"р68\",\n    \"carType\": [1],\n    \"status\": [3]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1944,7 +1944,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"id\": 3\n} ",
+									"raw": "{\n    \"id\": 4\n} ",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2107,6 +2107,65 @@
 									"body": "{\n    \"httpStatusCode\": 400,\n    \"httpStatusText\": \"Bad request\",\n    \"data\": \"Failed to convert request body to class com.fleetmate.lib.shared.dto.IdInputDto\",\n    \"message\": \"Failed to convert request body to class com.fleetmate.lib.shared.dto.IdInputDto\"\n}"
 								}
 							]
+						},
+						{
+							"name": "Statuses",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{statServiceHost}}/car/status",
+									"host": [
+										"{{statServiceHost}}"
+									],
+									"path": [
+										"car",
+										"status"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{statServiceHost}}/car/status",
+											"host": [
+												"{{statServiceHost}}"
+											],
+											"path": [
+												"car",
+												"status"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Content-Length",
+											"value": "80"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"FREE\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"IN_USE\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"UNDER_REPAIR\"\n    }\n]"
+								}
+							]
 						}
 					],
 					"auth": {
@@ -2211,7 +2270,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"status\": [],\n    \"orderFilter\": {\n        \"orderNumber\": \"number\",\n        \"status\": [],\n        \"startDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"endDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"mechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        },\n        \"juniorMechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        }\n    },\n    \"carFilter\": {\n        \"registrationNumber\": \"к027рв178\",\n        \"carType\": [],\n        \"status\": []\n    }\n}",
+									"raw": "{\n    \"status\": [2],\n    \"orderFilter\": {\n        \"orderNumber\": \"1234\",\n        \"status\": [1]\n    },\n    \"createdDate\": {\n        \"specificValue\": 1725829200000\n    },\n    \"carFilter\": {\n        \"registrationNumber\": \"683\",\n        \"carType\": [1],\n        \"status\": [3]\n    },\n    \"authorFilter\": {\n        \"fullName\": \"Grand\",\n        \"phoneNumber\": \"8911\",\n        \"licenceNumber\": \"boba\"\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2231,13 +2290,13 @@
 							},
 							"response": [
 								{
-									"name": "Available filters",
+									"name": "Success (+ ALL available filters)",
 									"originalRequest": {
 										"method": "POST",
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"status\": [],\n    \"orderFilter\": {\n        \"orderNumber\": \"number\",\n        \"status\": [],\n        \"startDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"endDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"mechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        },\n        \"juniorMechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        }\n    },\n    \"carFilter\": {\n        \"registrationNumber\": \"к027рв178\",\n        \"carType\": [],\n        \"status\": []\n    }\n}",
+											"raw": "{\n    \"status\": [2],\n    \"orderFilter\": {\n        \"orderNumber\": \"1234\",\n        \"status\": [1]\n    },\n    \"createdDate\": {\n        \"specificValue\": 1725829200000\n    },\n    \"carFilter\": {\n        \"registrationNumber\": \"683\",\n        \"carType\": [1],\n        \"status\": [3]\n    },\n    \"authorFilter\": {\n        \"fullName\": \"Grand\",\n        \"phoneNumber\": \"8911\",\n        \"licenceNumber\": \"boba\"\n    }\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2265,7 +2324,7 @@
 										},
 										{
 											"key": "Content-Length",
-											"value": "2"
+											"value": "175"
 										},
 										{
 											"key": "Content-Type",
@@ -2277,56 +2336,7 @@
 										}
 									],
 									"cookie": [],
-									"body": "[]"
-								},
-								{
-									"name": "Success",
-									"originalRequest": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{statServiceHost}}/fault/all",
-											"host": [
-												"{{statServiceHost}}"
-											],
-											"path": [
-												"fault",
-												"all"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Vary",
-											"value": "Origin"
-										},
-										{
-											"key": "Content-Length",
-											"value": "183"
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json"
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive"
-										}
-									],
-									"cookie": [],
-									"body": "[\n    {\n        \"id\": 1,\n        \"orderNumber\": \"1234\",\n        \"status\": \"FIXED\",\n        \"createdAt\": \"2024-09-03T21:46:14.230482\",\n        \"car\": {\n            \"id\": 4,\n            \"name\": \"Name\",\n            \"typeName\": \"new type nam 2e\",\n            \"registrationNumber\": \"к027рв178\"\n        }\n    }\n]"
+									"body": "[\n    {\n        \"id\": 11,\n        \"orderNumber\": \"1234\",\n        \"status\": \"UNDER_WORK\",\n        \"createdAt\": 1725914272516,\n        \"car\": {\n            \"id\": 3,\n            \"name\": \"car_name_3\",\n            \"typeName\": \"car_type_1\",\n            \"registrationNumber\": \"р683рс 78\"\n        }\n    }\n]"
 								}
 							]
 						},
@@ -2579,7 +2589,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"number\": \"1234\",\n    \"mechanicId\": 1,\n    \"faultId\": 1\n}",
+											"raw": "{\n    \"number\": \"1234\",\n    \"mechanicId\": 12,\n    \"faultId\": 5\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2633,7 +2643,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"orderId\": 1,\n    \"workType\": 1,\n    \"actors\": []\n}",
+											"raw": "{\n    \"orderId\": 2,\n    \"workType\": 2,\n    \"actors\": [16]\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2692,7 +2702,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"id\": 1\n}",
+											"raw": "{\n    \"id\": 5\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2808,7 +2818,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"orderFilter\": {\n        \"orderNumber\": \"number\",\n        \"status\": [],\n        \"startDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"endDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"mechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        },\n        \"juniorMechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        }\n    }\n}",
+									"raw": "{\n    \"orderNumber\": \"1234\",\n    \"status\": [2],\n    \"startDate\": {\n        \"specificValue\": 1725829200000\n    },\n    \"endDate\": {\n        \"specificValue\": 1725829200000\n    },\n    \"mechanicFilter\": {\n        \"fullName\": \"Mechanic\"\n    },\n    \"juniorMechanicFilter\": {\n        \"fullName\": \"Junior2\"\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2828,13 +2838,13 @@
 							},
 							"response": [
 								{
-									"name": "Available filters",
+									"name": "Success (+ ALL available filters)",
 									"originalRequest": {
 										"method": "POST",
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"orderFilter\": {\n        \"orderNumber\": \"number\",\n        \"status\": [],\n        \"startDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"endDateRange\": {\n            \"topBound\": 13421312312,\n            \"bottomBound\": 12312412\n        },\n        \"mechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        },\n        \"juniorMechanicFilter\": {\n            \"fullName\": \"Full name...\"\n        }\n    }\n}",
+											"raw": "{\n    \"orderNumber\": \"1234\",\n    \"status\": [2],\n    \"startDate\": {\n        \"specificValue\": 1725829200000\n    },\n    \"endDate\": {\n        \"specificValue\": 1725829200000\n    },\n    \"mechanicFilter\": {\n        \"fullName\": \"Mechanic\"\n    },\n    \"juniorMechanicFilter\": {\n        \"fullName\": \"Junior2\"\n    }\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -2862,7 +2872,7 @@
 										},
 										{
 											"key": "Content-Length",
-											"value": "2"
+											"value": "261"
 										},
 										{
 											"key": "Content-Type",
@@ -2874,56 +2884,7 @@
 										}
 									],
 									"cookie": [],
-									"body": "[]"
-								},
-								{
-									"name": "Success",
-									"originalRequest": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{statServiceHost}}/order/all",
-											"host": [
-												"{{statServiceHost}}"
-											],
-											"path": [
-												"order",
-												"all"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Vary",
-											"value": "Origin"
-										},
-										{
-											"key": "Content-Length",
-											"value": "239"
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json"
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive"
-										}
-									],
-									"cookie": [],
-									"body": "[\n    {\n        \"id\": 1,\n        \"orderNumber\": \"1234\",\n        \"startedAt\": 1725396383960,\n        \"closedAt\": 1725398446188,\n        \"mechanic\": {\n            \"id\": 3,\n            \"fullName\": \"Mechanic Mechanic\"\n        },\n        \"hours\": 3,\n        \"car\": {\n            \"id\": 4,\n            \"name\": \"Name\",\n            \"typeName\": \"new type nam 2e\",\n            \"registrationNumber\": \"к027рв178\"\n        }\n    }\n]"
+									"body": "[\n    {\n        \"id\": 1,\n        \"orderNumber\": \"1234\",\n        \"startedAt\": 1725914272516,\n        \"status\": \"CLOSED\",\n        \"closedAt\": 1725916493831,\n        \"mechanic\": {\n            \"id\": 12,\n            \"fullName\": \"Mechanic Mechanic 1\"\n        },\n        \"hours\": 2,\n        \"car\": {\n            \"id\": 9,\n            \"name\": \"car_name_9\",\n            \"typeName\": \"car_type_1\",\n            \"registrationNumber\": \"р689рс 78\"\n        }\n    }\n]"
 								}
 							]
 						},
@@ -3094,7 +3055,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"carFilter\": {\n        \"registrationNumber\": \"к027рв178\",\n        \"carType\": [],\n        \"status\": []\n    },\n    \"startDateRange\": {\n        \"topBound\": 13421312312,\n        \"bottomBound\": 12312412\n    },\n    \"endDateRange\": {\n        \"topBound\": 13421312312,\n        \"bottomBound\": 12312412\n    },\n    \"driverFilter\": {\n        \"fullName\": \"Full name...\"\n    }\n\n}",
+									"raw": "{\n    \"carFilter\": {\n        \"registrationNumber\": \"р68\",\n        \"carType\": [1],\n        \"status\": [2]\n    },\n    \"startDate\": {\n        \"specificValue\": 1725915600000\n    },\n    \"endDate\": {\n        \"specificValue\": 1725915600000\n    },\n    \"driverFilter\": {\n        \"fullName\": \"Driver\",\n        \"phoneNumber\": \"+79025426203\",\n        \"licenceNumber\": \"licence_number\"\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3114,13 +3075,13 @@
 							},
 							"response": [
 								{
-									"name": "Available filters",
+									"name": "Success (+ ALL available filters)",
 									"originalRequest": {
 										"method": "POST",
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"carFilter\": {\n        \"registrationNumber\": \"к027рв178\",\n        \"carType\": [],\n        \"status\": []\n    },\n    \"startDateRange\": {\n        \"topBound\": 13421312312,\n        \"bottomBound\": 12312412\n    },\n    \"endDateRange\": {\n        \"topBound\": 13421312312,\n        \"bottomBound\": 12312412\n    },\n    \"driverFilter\": {\n        \"fullName\": \"Full name...\"\n    }\n\n}",
+											"raw": "{\n    \"carFilter\": {\n        \"registrationNumber\": \"р68\",\n        \"carType\": [1],\n        \"status\": [2]\n    },\n    \"startDate\": {\n        \"specificValue\": 1725915600000\n    },\n    \"endDate\": {\n        \"specificValue\": 1725915600000\n    },\n    \"driverFilter\": {\n        \"fullName\": \"Driver\",\n        \"phoneNumber\": \"+79025426203\",\n        \"licenceNumber\": \"licence_number\"\n    }\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3148,7 +3109,7 @@
 										},
 										{
 											"key": "Content-Length",
-											"value": "2"
+											"value": "237"
 										},
 										{
 											"key": "Content-Type",
@@ -3160,56 +3121,7 @@
 										}
 									],
 									"cookie": [],
-									"body": "[]"
-								},
-								{
-									"name": "Success",
-									"originalRequest": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{statServiceHost}}/trip/all",
-											"host": [
-												"{{statServiceHost}}"
-											],
-											"path": [
-												"trip",
-												"all"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "Vary",
-											"value": "Origin"
-										},
-										{
-											"key": "Content-Length",
-											"value": "216"
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json"
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive"
-										}
-									],
-									"cookie": [],
-									"body": "[\n    {\n        \"id\": 1,\n        \"status\": \"EXPLOITATION\",\n        \"startedAt\": 1724938476448,\n        \"driver\": {\n            \"id\": 2,\n            \"fullName\": \"Driver Driver\"\n        },\n        \"car\": {\n            \"id\": 4,\n            \"name\": \"Name\",\n            \"typeName\": \"new type nam 2e\",\n            \"registrationNumber\": \"к027рв178\"\n        },\n        \"violations\": 192\n    }\n]"
+									"body": "[\n    {\n        \"id\": 3,\n        \"status\": \"CLOSED\",\n        \"startedAt\": 1725918912243,\n        \"finishedAt\": 1725918912267,\n        \"driver\": {\n            \"id\": 4,\n            \"fullName\": \"Driver Driver3\"\n        },\n        \"car\": {\n            \"id\": 3,\n            \"name\": \"car_name_3\",\n            \"typeName\": \"car_type_1\",\n            \"registrationNumber\": \"р683рс 78\"\n        },\n        \"violations\": 3\n    }\n]"
 								}
 							]
 						},
@@ -3220,7 +3132,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"id\": 1\n}",
+									"raw": "{\n    \"id\": 2\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3375,7 +3287,17 @@
 							"name": "Statuses",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{statServiceHost}}/trip/status",
+									"host": [
+										"{{statServiceHost}}"
+									],
+									"path": [
+										"trip",
+										"status"
+									]
+								}
 							},
 							"response": [
 								{
@@ -3467,7 +3389,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"dateRange\": {\n        \"bottomBound\": 1725398446164,\n        \"topBound\": 1725398446165\n    },\n    \"staffFilter\": {\n        \"fullName\": \"Mech\"\n    }\n}",
+											"raw": "{\n    \"dateRange\": {\n        \"bottomBound\": 1725398446164,\n        \"topBound\": 1725398446165\n    },\n    \"staffFilter\": {\n        \"fullName\": \"Juni\"\n    }\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3544,7 +3466,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"id\": 3\n}",
+											"raw": "{\n    \"id\": 0\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3611,6 +3533,34 @@
 											"body": "{\n    \"id\": 3,\n    \"fullName\": \"Mechanic Mechanic\",\n    \"phoneNumber\": \"89110885759\",\n    \"department\": \"Test department\",\n    \"position\": \"Test position\",\n    \"photo\": []\n}"
 										}
 									]
+								},
+								{
+									"name": "Export to pdf",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"dateRange\": {\n        \"bottomBound\": 1725398446164,\n        \"topBound\": 1725398446165\n    },\n    \"staffFilter\": {\n        \"fullName\": \"Juni\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{statServiceHost}}/staff/all/xls",
+											"host": [
+												"{{statServiceHost}}"
+											],
+											"path": [
+												"staff",
+												"all",
+												"xls"
+											]
+										}
+									},
+									"response": []
 								}
 							]
 						},
@@ -3624,7 +3574,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"staffFilter\": {\n        \"fullName\": \"\"\n    }\n}",
+											"raw": "{\n    \"staffFilter\": {\n        \"fullName\": \"Driver\"\n    }\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3701,7 +3651,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"id\": 3\n}",
+											"raw": "{\n    \"id\": 7\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3967,12 +3917,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{fileServiceHost}}/compressed_car1.jpg1724939038613.jpg",
+							"raw": "{{fileServiceHost}}/type1.svg",
 							"host": [
 								"{{fileServiceHost}}"
 							],
 							"path": [
-								"compressed_car1.jpg1724939038613.jpg"
+								"type1.svg"
 							]
 						}
 					},
@@ -4032,7 +3982,7 @@
 		},
 		{
 			"key": "cryptServiceHost",
-			"value": "http://localhost:8081/bridge"
+			"value": "https://russ.dudosyka.ru/bridge"
 		},
 		{
 			"key": "tripServiceHost",
@@ -4044,11 +3994,11 @@
 		},
 		{
 			"key": "statServiceHost",
-			"value": "http://localhost:8083/stat"
+			"value": "https://russ.dudosyka.ru/stat"
 		},
 		{
 			"key": "fileServiceHost",
-			"value": "http://localhost:8085/file",
+			"value": "https://russ.dudosyka.ru/file",
 			"type": "string"
 		}
 	]
