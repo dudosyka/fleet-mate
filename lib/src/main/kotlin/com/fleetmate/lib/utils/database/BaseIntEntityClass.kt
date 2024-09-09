@@ -81,6 +81,12 @@ abstract class BaseIntEntityClass<Output : SerializableAny, E : BaseIntEntity<Ou
         else
             field like "%$filter%"
 
+    fun SqlExpressionBuilder.nullableLikeCond(filter: String?, defaultCond: Op<Boolean>, field: Column<String?>): Op<Boolean> =
+        if (filter == null)
+            defaultCond
+        else
+            field like "%$filter%"
+
     fun SqlExpressionBuilder.booleanCond(filter: Boolean?, defaultCond: Op<Boolean>, field: Column<Boolean>, reversed: Boolean = false): Op<Boolean> =
         if (filter == null)
             defaultCond

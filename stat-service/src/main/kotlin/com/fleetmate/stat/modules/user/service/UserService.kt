@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.user.service
 
 
+import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
@@ -38,6 +39,7 @@ class UserService(di: DI) : KodeinService(di) {
             .join(ViolationModel, JoinType.LEFT, UserModel.id, ViolationModel.driver)
             .select(
                 UserModel.id, UserModel.fullName,
+                UserModel.licenceNumber,
                 LicenceTypeModel.name,
                 ViolationModel.id.count()
             )
@@ -51,7 +53,7 @@ class UserService(di: DI) : KodeinService(di) {
                     userDao.idValue,
                     userDao.fullName,
                     userDao.lastTrip?.simpleDto,
-                    it[LicenceTypeModel.name],
+                    licenceNumber = userDao.licenceNumber ?: throw InternalServerException(""),
                     violationCount = it[ViolationModel.id.count()],
                     null
                 )

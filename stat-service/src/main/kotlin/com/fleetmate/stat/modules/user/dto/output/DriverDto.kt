@@ -12,5 +12,6 @@ data class DriverDto(
     val licenceType: String,
     val sectorBossId: StaffDto?,
     val position: String,
-    override val photo: List<String>? = null
+    override val photo: List<String>? = null,
+    val licenceNumber: String,
 ): UserBaseOutput()

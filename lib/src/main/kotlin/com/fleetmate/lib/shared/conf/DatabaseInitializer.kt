@@ -199,6 +199,7 @@ object DatabaseInitializer {
             this[UserModel.login] = "driver_$it"
             this[UserModel.email] = "driver$it@gmail.com"
             this[UserModel.phoneNumber] = "+7902542620$it"
+            this[UserModel.licenceNumber] = "licence_number driver $it"
             this[UserModel.hash] = CryptoUtil.hash("driver_$it")
             this[UserModel.fullName] = "Driver Driver$it"
             this[UserModel.birthday] = getTimeMillis()

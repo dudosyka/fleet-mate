@@ -23,6 +23,7 @@ object UserModel: BaseIntIdTable() {
     val position = reference("position", PositionModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val department = reference("department", DepartmentModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val sectorBossId = reference("sector_boss_id", UserModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE).nullable().default(null)
+    val licenceNumber = text("licence_number").nullable().default(null)
 
     fun getByLogin(login: String): ResultRow = transaction {
         select(UserModel.id, hash).where {

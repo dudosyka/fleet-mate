@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.user.dao
 
 
+import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
@@ -37,6 +38,7 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val insuranceNumber by UserModel.insuranceNumber
     val sectorBossId by UserModel.sectorBossId
     val sectorBoss by UserDao optionalReferencedOn UserModel.sectorBossId
+    val licenceNumber by UserModel.licenceNumber
 
     val lastTrip: TripDao? get() =
         TripDao.find {
@@ -68,7 +70,8 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val driverDto: DriverDto get() =
         if (roles.contains(AppConf.roles.driver))
             DriverDto(idValue, fullName, department.name, insuranceNumber, phoneNumber,
-                licenceType.name, sectorBoss?.staffDto, position.name, photos)
+                licenceType.name, sectorBoss?.staffDto, position.name, photos,
+                licenceNumber ?: throw InternalServerException("a driver's license cannot be missing from the driver"))
         else
             throw NotFoundException("")
 
