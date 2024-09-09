@@ -51,8 +51,8 @@ class TripService(di: DI) : KodeinService(di) {
             )
             .groupBy(TripModel.id, UserModel.id, CarModel.id, CarTypeModel.name)
             .where {
-                rangeCond(tripFilterDto.startDateRange, TripModel.id neq 0, TripModel.keyAcceptance, Long.MIN_VALUE, Long.MAX_VALUE) and
-                nullableRangeCond(tripFilterDto.endDateRange, TripModel.id neq 0, TripModel.keyReturn,  Long.MIN_VALUE, Long.MAX_VALUE)
+                rangeCond(tripFilterDto.startDate, TripModel.id neq 0, TripModel.keyAcceptance, Long.MIN_VALUE, Long.MAX_VALUE) and
+                nullableRangeCond(tripFilterDto.endDate, TripModel.id neq 0, TripModel.keyReturn,  Long.MIN_VALUE, Long.MAX_VALUE)
             }
             .map {
                 val userDao = UserDao.wrapRow(it)

@@ -62,7 +62,6 @@ object DatabaseInitializer {
 
         }
     }
-
     private fun initCarSubTables() {
         if (CarTypeModel.selectAll().empty()) {
             CarPartModel.insert {
@@ -113,7 +112,6 @@ object DatabaseInitializer {
             initCarTypes()
         }
     }
-
     private fun getTrips(): List<Triple<Int, Int, Int>> =
         TripModel.select(
             TripModel.id,
@@ -126,7 +124,6 @@ object DatabaseInitializer {
                 it[TripModel.driver].value
             )
         }
-
     fun initTripViolations() = transaction {
         val trips = getTrips()
 
@@ -141,7 +138,6 @@ object DatabaseInitializer {
             }
         }
     }
-
     private fun initFuelTypes() {
         if (FuelTypeModel.selectAll().empty())
             FuelTypeModel.batchInsert(AppConf.FuelType.entries) {
@@ -149,7 +145,6 @@ object DatabaseInitializer {
                 this[FuelTypeModel.name] = it.name
             }
     }
-
     fun initWorkTypes() = transaction {
         if (WorkTypeModel.selectAll().empty())
             WorkTypeModel.batchInsert(listOf(1, 2, 3)) {
@@ -294,6 +289,7 @@ object DatabaseInitializer {
     private fun initCarTypes() {
         if (CarTypeModel.selectAll().empty()) {
             CarTypeModel.batchInsert(listOf(1, 2, 3)) {
+                this[CarTypeModel.id] = it
                 this[CarTypeModel.licenceType] = it
                 this[CarTypeModel.name] = "car_type_$it"
                 this[CarTypeModel.rootPart] = 1

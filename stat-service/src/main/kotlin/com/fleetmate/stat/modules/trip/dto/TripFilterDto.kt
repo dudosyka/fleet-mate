@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TripFilterDto(
     val carFilter: CarFilterDto? = null,
-    val startDateRange: FieldFilterWrapper<Long>? = null,
-    val endDateRange: FieldFilterWrapper<Long>? = null,
+    var startDate: FieldFilterWrapper<Long>? = null,
+    var endDate: FieldFilterWrapper<Long>? = null,
     val driverFilter: StaffFilterDto? = null
 )
