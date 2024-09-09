@@ -20,7 +20,7 @@ class UserController(override val di: DI) : KodeinController() {
             route("staff") {
                 post("all") {
                     val userFilterDto = call.receive<UserFilterDto>()
-
+                    userFilterDto.parseRanges()
                     call.respond(userService.getStaffFiltered(userFilterDto))
                 }
 
