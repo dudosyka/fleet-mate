@@ -10,6 +10,7 @@ data class OrderListItemDto (
     val id: Int,
     val orderNumber: String,
     val startedAt: Long,
+    val status: String,
     val closedAt: Long? = null,
     val mechanic: UserSimpleDto,
     val hours: Double = 0.0,

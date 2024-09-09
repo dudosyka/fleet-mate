@@ -11,4 +11,10 @@ data class TripFilterDto(
     var startDate: FieldFilterWrapper<Long>? = null,
     var endDate: FieldFilterWrapper<Long>? = null,
     val driverFilter: StaffFilterDto? = null
-)
+) {
+    fun parseRanges() {
+        val rangeSize = (24 * 60 * 60 * 1000L)
+        startDate = startDate?.createRangeFromSpecificValue(rangeSize)
+        endDate = endDate?.createRangeFromSpecificValue(rangeSize)
+    }
+}

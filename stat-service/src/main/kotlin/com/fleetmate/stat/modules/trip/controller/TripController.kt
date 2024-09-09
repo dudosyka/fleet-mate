@@ -2,7 +2,6 @@ package com.fleetmate.stat.modules.trip.controller
 
 
 import com.fleetmate.lib.shared.dto.IdInputDto
-import com.fleetmate.lib.utils.database.FieldFilterWrapper
 import com.fleetmate.lib.utils.kodein.KodeinController
 import com.fleetmate.stat.modules.trip.dto.TripFilterDto
 import com.fleetmate.stat.modules.trip.service.TripService
@@ -31,24 +30,7 @@ class TripController(override val di: DI) : KodeinController() {
                         val tripFilterDto = call.receive<TripFilterDto>()
                         // Front send to us the specific value for the start and the end of the trip
                         // we need to create a "fake" window to make it acceptable for rangeConditions
-                        tripFilterDto.startDate = with(tripFilterDto.startDate) {
-                            if (this == null || specificValue == null)
-                                null
-                            else
-                                FieldFilterWrapper(
-                                    bottomBound = specificValue,
-                                    topBound = (this.specificValue ?: 0L) + (24 * 60 * 60 * 1000)
-                                )
-                        }
-                        tripFilterDto.endDate = with(tripFilterDto.endDate) {
-                            if (this == null || specificValue == null)
-                                null
-                            else
-                                FieldFilterWrapper(
-                                    bottomBound = specificValue,
-                                    topBound = (this.specificValue ?: 0L) + (24 * 60 * 60 * 1000)
-                                )
-                        }
+                        tripFilterDto.parseRanges()
                         call.respond(tripService.getAllFiltered(tripFilterDto))
                     }
                     post("driver") {

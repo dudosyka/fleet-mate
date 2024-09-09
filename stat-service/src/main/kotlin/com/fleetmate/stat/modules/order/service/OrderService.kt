@@ -49,8 +49,8 @@ class OrderService(di: DI) : KodeinService(di) {
             .select(columnSet)
             .where {
                 likeCond(orderFilterDto.orderNumber, OrderModel.id neq 0, OrderModel.number) and
-                rangeCond(orderFilterDto.startDateRange, OrderModel.id neq 0, OrderModel.startedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
-                nullableRangeCond(orderFilterDto.endDateRange, OrderModel.id neq 0, OrderModel.closedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
+                rangeCond(orderFilterDto.startDate, OrderModel.id neq 0, OrderModel.startedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
+                nullableRangeCond(orderFilterDto.endDate, OrderModel.id neq 0, OrderModel.closedAt, Long.MIN_VALUE, Long.MAX_VALUE) and
                 with(orderFilterDto) { statusFilterCond } and
                 likeCond(orderFilterDto.juniorMechanicFilter?.fullName, OrderModel.id neq 0, OrderModel._juniorMechanicFilterSimplifier) and
                 likeCond(orderFilterDto.mechanicFilter?.fullName, OrderModel.id neq 0, UserModel.fullName)
@@ -69,6 +69,7 @@ class OrderService(di: DI) : KodeinService(di) {
                     orderDao.idValue,
                     orderDao.number,
                     orderDao.startedAt,
+                    orderDao.status,
                     orderDao.closedAt,
                     mechanicDao.simpleDto,
                     orderDao.hours,

@@ -26,6 +26,7 @@ class OrderController(override val di: DI) : KodeinController() {
                 }
                 post("all") {
                     val orderFilterDto = call.receive<OrderFilterDto>()
+                    orderFilterDto.parseRanges()
 
                     call.respond(orderService.getAllFiltered(orderFilterDto))
                 }

@@ -14,11 +14,17 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder
 data class OrderFilterDto (
     val orderNumber: String? = null,
     val status: List<Int>? = null,
-    val startDateRange: FieldFilterWrapper<Long>? = null,
-    val endDateRange: FieldFilterWrapper<Long>? = null,
+    var startDate: FieldFilterWrapper<Long>? = null,
+    var endDate: FieldFilterWrapper<Long>? = null,
     val mechanicFilter: StaffFilterDto? = null,
     val juniorMechanicFilter: StaffFilterDto? = null,
 ) {
+
+    fun parseRanges() {
+        val rangeSize = (24 * 60 * 60 * 1000L)
+        startDate = startDate?.createRangeFromSpecificValue(rangeSize)
+        endDate = endDate?.createRangeFromSpecificValue(rangeSize)
+    }
 
     val SqlExpressionBuilder.statusFilterCond: Op<Boolean> get() =
         if (status == null)
