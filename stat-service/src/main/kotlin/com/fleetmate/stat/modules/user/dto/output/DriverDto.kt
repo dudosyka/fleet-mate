@@ -9,7 +9,7 @@ data class DriverDto(
     val department: String,
     val snils: String,
     val phoneNumber: String,
-    val licenceType: String,
+    val licenceTypes: List<String>,
     val sectorBossId: StaffDto?,
     val position: String,
     override val photo: List<String>? = null,

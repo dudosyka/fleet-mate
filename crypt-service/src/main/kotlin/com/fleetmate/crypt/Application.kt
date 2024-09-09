@@ -12,6 +12,7 @@ import com.fleetmate.lib.shared.conf.DatabaseInitializer
 import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
+import com.fleetmate.lib.shared.modules.user.model.UserLicenceModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
 import com.fleetmate.lib.utils.database.DatabaseConnector
@@ -50,7 +51,7 @@ fun Application.module() {
     }
 
     DatabaseConnector(
-        ECDH, UserModel, UserRoleModel, PositionModel, DepartmentModel, LicenceTypeModel, UserLoginModel
+        ECDH, UserModel, UserRoleModel, UserLicenceModel, PositionModel, DepartmentModel, LicenceTypeModel, UserLoginModel
     ) {
         DatabaseInitializer.initUsers()
         commit()

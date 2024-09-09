@@ -11,7 +11,7 @@ data class UserDto(
     val phoneNumber: String,
     val fullName: String,
     val birthday: Long,
-    val licenceTypeId: Int,
+    val licenceTypes: List<String>,
     val positionId: Int,
     val departmentId: Int
 )

@@ -4,8 +4,10 @@ package com.fleetmate.stat.modules.user.dao
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.exceptions.NotFoundException
 import com.fleetmate.lib.shared.conf.AppConf
+import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
+import com.fleetmate.lib.shared.modules.user.model.UserLicenceModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
 import com.fleetmate.lib.utils.database.BaseIntEntity
@@ -29,8 +31,6 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val hash by UserModel.hash
     val fullName by UserModel.fullName
     val birthday by UserModel.birthday
-    val licenceTypeId by UserModel.licenceType
-    val licenceType by LicenceTypeDao referencedOn UserModel.licenceType
     val positionId by UserModel.position
     val position by PositionDao referencedOn UserModel.position
     val departmentId by UserModel.department
@@ -40,16 +40,21 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val sectorBoss by UserDao optionalReferencedOn UserModel.sectorBossId
     val licenceNumber by UserModel.licenceNumber
 
+
     val lastTrip: TripDao? get() =
         TripDao.find {
             (TripModel.driver eq idValue)
         }.orderBy(TripModel.keyReturn to SortOrder.DESC).firstOrNull()
 
+    val licenceTypes: List<String> get() =
+        UserLicenceModel.innerJoin(LicenceTypeModel).select(LicenceTypeModel.name).where { UserLicenceModel.user eq idValue }.map {
+            it[LicenceTypeModel.name]
+        }
 
     override fun toOutputDto(): UserDto =
         UserDto(
             idValue, login, email, phoneNumber,
-            fullName, birthday, licenceTypeId.value,
+            fullName, birthday, licenceTypes,
             positionId.value, departmentId.value
         )
 
@@ -70,7 +75,7 @@ class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     val driverDto: DriverDto get() =
         if (roles.contains(AppConf.roles.driver))
             DriverDto(idValue, fullName, department.name, insuranceNumber, phoneNumber,
-                licenceType.name, sectorBoss?.staffDto, position.name, photos,
+                licenceTypes, sectorBoss?.staffDto, position.name, photos,
                 licenceNumber ?: throw InternalServerException("a driver's license cannot be missing from the driver"))
         else
             throw NotFoundException("")

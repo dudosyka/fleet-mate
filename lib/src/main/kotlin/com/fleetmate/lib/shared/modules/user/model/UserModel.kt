@@ -1,7 +1,6 @@
 package com.fleetmate.lib.shared.modules.user.model
 
 import com.fleetmate.lib.exceptions.NotFoundException
-import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.utils.database.BaseIntIdTable
@@ -18,8 +17,7 @@ object UserModel: BaseIntIdTable() {
 
     val fullName = text("fullname")
     val birthday = long("birthday")
-    val insuranceNumber = text("snils")
-    val licenceType = reference("licence_type", LicenceTypeModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
+    val insuranceNumber = text("insurance_number")
     val position = reference("position", PositionModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val department = reference("department", DepartmentModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
     val sectorBossId = reference("sector_boss_id", UserModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE).nullable().default(null)

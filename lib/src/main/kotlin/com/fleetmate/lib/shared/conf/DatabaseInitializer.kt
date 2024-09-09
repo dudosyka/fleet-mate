@@ -15,6 +15,7 @@ import com.fleetmate.lib.shared.modules.photo.data.model.PhotoModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
 import com.fleetmate.lib.shared.modules.type.model.FuelTypeModel
+import com.fleetmate.lib.shared.modules.user.model.UserLicenceModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
 import com.fleetmate.lib.shared.modules.violation.model.ViolationModel
@@ -46,7 +47,6 @@ object DatabaseInitializer {
                 it[fullName] = "Grand Admin Admin"
                 it[birthday] = getTimeMillis()
                 it[insuranceNumber] = "1234-1234-143-143"
-                it[licenceType] = 1
                 it[position] = 1
                 it[department] = 1
             }
@@ -177,7 +177,6 @@ object DatabaseInitializer {
             this[UserModel.insuranceNumber] = "9876-1234-143-$it"
             this[UserModel.position] = AppConf.Positions.MECHANIC.id
             this[UserModel.department] = 1
-            this[UserModel.licenceType] = 4
         }
     }
     private fun initJuniorMechanics() {
@@ -191,7 +190,6 @@ object DatabaseInitializer {
             this[UserModel.insuranceNumber] = "4321-1234-143-$it"
             this[UserModel.position] = AppConf.Positions.JUNIOR_MECHANIC.id
             this[UserModel.department] = 1
-            this[UserModel.licenceType] = 4
         }
     }
     private fun initDrivers() {
@@ -206,7 +204,12 @@ object DatabaseInitializer {
             this[UserModel.insuranceNumber] = "1234-1234-143-$it"
             this[UserModel.position] = AppConf.Positions.DRIVER.id
             this[UserModel.department] = 1
-            this[UserModel.licenceType] = 1
+        }.forEach {
+            user ->
+                UserLicenceModel.insert {
+                    it[UserLicenceModel.user] = user[UserModel.id]
+                    it[licence] = 1
+                }
         }
     }
     private fun initWashers() {
@@ -220,7 +223,6 @@ object DatabaseInitializer {
             this[UserModel.insuranceNumber] = "5252-1234-143-$it"
             this[UserModel.position] = AppConf.Positions.WASHER.id
             this[UserModel.department] = 1
-            this[UserModel.licenceType] = 4
         }
     }
     private fun initRoles() {

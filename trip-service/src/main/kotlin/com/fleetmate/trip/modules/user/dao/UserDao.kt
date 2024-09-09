@@ -10,14 +10,14 @@ import org.jetbrains.exposed.dao.id.EntityID
 class UserDao(id: EntityID<Int>) : BaseIntEntity<UserDto>(id, UserModel) {
     companion object: BaseIntEntityClass<UserDto, UserDao>(UserModel)
 
-    val licenceType by UserModel.licenceType
+    val licenceNumber by UserModel.licenceNumber
     val fullName by UserModel.fullName
     val birthday by UserModel.birthday
 
     override fun toOutputDto(): UserDto =
         UserDto(
             idValue,
-            licenceType.value,
+            licenceNumber ?: "",
             fullName,
             birthday
         )
