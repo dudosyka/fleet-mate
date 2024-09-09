@@ -41,6 +41,7 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
     var comment by FaultModel.comment
     var critical by FaultModel.critical
     var status by FaultModel.status
+    var timestamp by FaultModel.timestamp
 
 
     override fun toOutputDto(): FaultDto =

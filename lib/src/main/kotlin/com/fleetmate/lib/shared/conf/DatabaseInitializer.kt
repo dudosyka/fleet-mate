@@ -438,6 +438,7 @@ object DatabaseInitializer {
                 this[FaultModel.comment] = "comment_$it"
                 this[FaultModel.critical] = false
                 this[FaultModel.status] = AppConf.FaultStatus.CREATED.name
+                this[FaultModel.timestamp] = getTimeMillis()
             }.map {
                 it[FaultModel.id].value
             }.toList()
@@ -458,6 +459,7 @@ object DatabaseInitializer {
             this[FaultModel.comment] = "comment_critical$it"
             this[FaultModel.critical] = true
             this[FaultModel.status] = AppConf.FaultStatus.CREATED.name
+            this[FaultModel.timestamp] = getTimeMillis()
         }.map {
             it[FaultModel.id].value
         }.toList()

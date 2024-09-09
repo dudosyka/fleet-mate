@@ -15,6 +15,7 @@ import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.shared.modules.photo.service.PhotoService
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
+import io.ktor.util.date.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
 import org.kodein.di.instance
@@ -32,6 +33,7 @@ class FaultService(di: DI) : KodeinService(di) {
             comment = faultInputDto.comment
             status = AppConf.FaultStatus.CREATED.name
             critical = true
+            timestamp = getTimeMillis()
         }
 
         FaultPhotoModel.append(fault.idValue, photoService.upload(faultInputDto.photos.map { it.type = AppConf.PhotoType.FAULT; it }))

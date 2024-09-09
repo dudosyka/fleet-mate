@@ -1,7 +1,6 @@
 package com.fleetmate.stat.modules.fault.service
 
 
-import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.shared.modules.car.model.CarModel
@@ -13,6 +12,7 @@ import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.utils.database.idValue
 import com.fleetmate.lib.utils.kodein.KodeinService
 import com.fleetmate.stat.modules.car.dao.CarDao
+import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.rangeCond
 import com.fleetmate.stat.modules.car.dto.CarFilterDto
 import com.fleetmate.stat.modules.fault.dao.FaultDao
 import com.fleetmate.stat.modules.fault.dto.FaultFilterDto
@@ -23,6 +23,7 @@ import com.fleetmate.stat.modules.order.data.model.OrderModel
 import com.fleetmate.stat.modules.order.service.OrderService
 import com.fleetmate.stat.modules.user.dto.filter.StaffFilterDto
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
@@ -38,16 +39,20 @@ class FaultService(di: DI) : KodeinService(di) {
 
     fun getAllFiltered(faultFilterDto: FaultFilterDto): List<FaultListItemDto> = transaction {
         val correctOrders = if (faultFilterDto.orderFilter != null)
-            orderService.getAllAs(faultFilterDto.orderFilter, listOf(OrderModel.fault)) {
-                it[OrderModel.fault].value
+            orderService.getAllAs(faultFilterDto.orderFilter, listOf(OrderModel.id)) {
+                it[OrderModel.id].value
             } else null
 
-        Logger.debug(faultFilterDto)
+        //We must set INNER join when the order filter is provided to cut off the faults whose orders are not correct
+        val joinType = if (faultFilterDto.orderFilter != null)
+            JoinType.INNER
+        else
+            JoinType.LEFT
 
         FaultModel
-            .join(OrderModel, JoinType.LEFT, OrderModel.fault, FaultModel.id){
-                if (correctOrders != null)
-                    OrderModel.id inList correctOrders
+            .join(OrderModel, joinType, OrderModel.fault, FaultModel.id) {
+                if (faultFilterDto.orderFilter != null)
+                    (OrderModel.id inList (correctOrders ?: listOf()))
                 else
                     OrderModel.id neq 0
             }
@@ -59,13 +64,14 @@ class FaultService(di: DI) : KodeinService(di) {
                 with(faultFilterDto.authorFilter ?: StaffFilterDto()) { expressionBuilder }
             }
             .select(
-                FaultModel.id, FaultModel.status, FaultModel.createdAt,
+                FaultModel.id, FaultModel.status, FaultModel.timestamp,
                 OrderModel.number,
                 CarModel.id, CarModel.name, CarModel.registrationNumber,
                 CarTypeModel.name
             )
             .where {
-                with(faultFilterDto) { statusFilterCond }
+                with(faultFilterDto) { statusFilterCond } and
+                rangeCond(faultFilterDto.createdDateRange(), FaultModel.id neq 0, FaultModel.timestamp, Long.MIN_VALUE, Long.MAX_VALUE)
             }
             .map {
                 val faultDao = FaultDao.wrapRow(it)
@@ -74,7 +80,7 @@ class FaultService(di: DI) : KodeinService(di) {
                     faultDao.idValue,
                     it[OrderModel.number],
                     faultDao.status,
-                    faultDao.createdAt.toString(),
+                    faultDao.timestamp,
                     carDao.simpleDto(it[CarTypeModel.name])
                 )
             }

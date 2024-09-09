@@ -4,7 +4,6 @@ package com.fleetmate.stat.modules.user.service
 import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
-import com.fleetmate.lib.shared.modules.car.model.licence.LicenceTypeModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
@@ -32,7 +31,6 @@ import org.kodein.di.DI
 class UserService(di: DI) : KodeinService(di) {
     fun getDriversFiltered(userFilterDto: UserFilterDto): List<DriverOutputDto> = transaction {
         UserModel
-            .innerJoin(LicenceTypeModel)
             .join(UserRoleModel, JoinType.INNER, UserModel.id, UserRoleModel.user) {
                 UserRoleModel.role eq AppConf.roles.driver
             }
@@ -40,10 +38,9 @@ class UserService(di: DI) : KodeinService(di) {
             .select(
                 UserModel.id, UserModel.fullName,
                 UserModel.licenceNumber,
-                LicenceTypeModel.name,
                 ViolationModel.id.count()
             )
-            .groupBy(UserModel.id, LicenceTypeModel.name)
+            .groupBy(UserModel.id)
             .where {
                 with (userFilterDto.staffFilter ?: StaffFilterDto()) { expressionBuilder }
             }
