@@ -18,10 +18,18 @@ class UserController(override val di: DI) : KodeinController() {
     override fun Route.registerRoutes() {
         authenticate("admin", "mechanic") {
             route("staff") {
-                post("all") {
-                    val userFilterDto = call.receive<UserFilterDto>()
+                route("all") {
+                    post {
+                        val userFilterDto = call.receive<UserFilterDto>()
 
-                    call.respond(userService.getStaffFiltered(userFilterDto))
+                        call.respond(userService.getStaffFiltered(userFilterDto))
+                    }
+
+                    post("xls") {
+                        val userFilterDto = call.receive<UserFilterDto>()
+
+                        call.respondBytes(userService.exportStaffToPdf(userFilterDto))
+                    }
                 }
 
                 post {

@@ -2,6 +2,7 @@ package com.fleetmate.stat.modules.user.service
 
 
 import com.fleetmate.lib.exceptions.InternalServerException
+import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
@@ -24,9 +25,12 @@ import com.fleetmate.stat.modules.user.dto.output.DriverDto
 import com.fleetmate.stat.modules.user.dto.output.DriverOutputDto
 import com.fleetmate.stat.modules.user.dto.output.StaffDto
 import com.fleetmate.stat.modules.user.dto.output.StaffOutputDto
+import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.kodein.di.DI
+import java.io.ByteArrayOutputStream
 
 class UserService(di: DI) : KodeinService(di) {
     fun getDriversFiltered(userFilterDto: UserFilterDto): List<DriverOutputDto> = transaction {
@@ -144,6 +148,40 @@ class UserService(di: DI) : KodeinService(di) {
                     listOf()
                 )
             }
+    }
+
+    fun exportStaffToPdf(userFilterDto: UserFilterDto) = transaction {
+        val workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet("Сотрудники")
+        val headerRow = sheet.createRow(0)
+        headerRow.createCell(0).setCellValue( "ФИО" )
+        headerRow.createCell(1).setCellValue( "Должность" )
+        headerRow.createCell(2).setCellValue( "Наряды в работе" )
+        headerRow.createCell(3).setCellValue( "Завершенные наряды" )
+        headerRow.createCell(4).setCellValue( "Часы" )
+
+        getStaffFiltered(userFilterDto).mapIndexed {
+            index, user ->
+                Logger.debug(index)
+                Logger.debug(user)
+                val dataRow = sheet.createRow(index + 1)
+                val fullNameCell = dataRow.createCell(0, CellType.STRING)
+                fullNameCell.setCellValue(user.fullName)
+                val positionCell = dataRow.createCell(1, CellType.STRING)
+                positionCell.setCellValue(user.position)
+                val ordersInProgressCell = dataRow.createCell(2, CellType.STRING)
+                ordersInProgressCell.setCellValue(user.orderInProgress.toString())
+                val completedOrdersCell = dataRow.createCell(3, CellType.STRING)
+                completedOrdersCell.setCellValue(user.orderCompleted.toString())
+                val hoursCell = dataRow.createCell(4, CellType.STRING)
+                hoursCell.setCellValue(user.hoursCompleted.toString())
+        }
+
+        val outputStream = ByteArrayOutputStream()
+        workbook.write(outputStream)
+        workbook.close()
+
+        outputStream.toByteArray()
     }
 
     fun getOneStaff(authorizedUser: AuthorizedUser, staffID: Int): StaffDto = transaction {
