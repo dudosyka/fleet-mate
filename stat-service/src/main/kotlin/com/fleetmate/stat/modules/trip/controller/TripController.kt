@@ -32,16 +32,22 @@ class TripController(override val di: DI) : KodeinController() {
                         // Front send to us the specific value for the start and the end of the trip
                         // we need to create a "fake" window to make it acceptable for rangeConditions
                         tripFilterDto.startDate = with(tripFilterDto.startDate) {
-                            FieldFilterWrapper(
-                                topBound = this?.specificValue,
-                                bottomBound = (this?.specificValue ?: 0L) + 1
-                            )
+                            if (this == null || specificValue == null)
+                                null
+                            else
+                                FieldFilterWrapper(
+                                    bottomBound = specificValue,
+                                    topBound = (this.specificValue ?: 0L) + (24 * 60 * 60 * 1000)
+                                )
                         }
                         tripFilterDto.endDate = with(tripFilterDto.endDate) {
-                            FieldFilterWrapper(
-                                topBound = this?.specificValue,
-                                bottomBound = (this?.specificValue ?: 0L) + 1
-                            )
+                            if (this == null || specificValue == null)
+                                null
+                            else
+                                FieldFilterWrapper(
+                                    bottomBound = specificValue,
+                                    topBound = (this.specificValue ?: 0L) + (24 * 60 * 60 * 1000)
+                                )
                         }
                         call.respond(tripService.getAllFiltered(tripFilterDto))
                     }
