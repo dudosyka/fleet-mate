@@ -9,7 +9,7 @@ data class FaultListItemDto (
     val id: Int,
     val orderNumber: String?,
     val status: String,
-    val createdAt: String,
+    val createdAt: Long,
     val car: CarSimpleDto,
 
 )

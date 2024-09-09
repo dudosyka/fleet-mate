@@ -1,6 +1,5 @@
 package com.fleetmate.lib.shared.modules.fault.model
 
-
 import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
 import com.fleetmate.lib.shared.modules.trip.model.TripModel
@@ -16,4 +15,5 @@ object FaultModel : BaseIntIdTable() {
     val comment = text("comment")
     val critical = bool("critical").default(true)
     val status = text("status")
+    val timestamp = long("timestamp")
 }

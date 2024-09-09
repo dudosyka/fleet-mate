@@ -33,6 +33,7 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
     val comment by FaultModel.comment
     var critical by FaultModel.critical
     var status by FaultModel.status
+    var timestamp by FaultModel.timestamp
 
     private val orderList by OrderDao referrersOn OrderModel.fault
 

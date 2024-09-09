@@ -3,6 +3,7 @@ package com.fleetmate.stat.modules.fault.dto
 
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.fault.model.FaultModel
+import com.fleetmate.lib.utils.database.FieldFilterWrapper
 import com.fleetmate.stat.modules.car.dao.CarTypeDao.Companion.stringListCond
 import com.fleetmate.stat.modules.car.dto.CarFilterDto
 import com.fleetmate.stat.modules.order.data.dto.order.OrderFilterDto
@@ -15,6 +16,7 @@ data class FaultFilterDto (
     val status: List<Int>? = null,
     val orderFilter: OrderFilterDto? = null,
     val carFilter: CarFilterDto? = null,
+    var createdDate: FieldFilterWrapper<Long>? = null,
     val authorFilter: StaffFilterDto? = null,
 ) {
     val SqlExpressionBuilder.statusFilterCond: Op<Boolean> get() =
@@ -24,4 +26,9 @@ data class FaultFilterDto (
             stringListCond(AppConf.FaultStatus.entries.filter {
                     status.contains(it.id)
                 }.map { it.name }, FaultModel.id neq 0, FaultModel.status)
+
+    fun createdDateRange(): FieldFilterWrapper<Long>? {
+        createdDate = createdDate?.createRangeFromSpecificValue(24 * 60 * 60 * 1000)
+        return createdDate
+    }
 }
