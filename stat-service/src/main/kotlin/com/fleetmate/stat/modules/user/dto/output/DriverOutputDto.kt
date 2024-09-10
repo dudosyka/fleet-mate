@@ -12,4 +12,5 @@ data class DriverOutputDto (
     val licenceNumber: String,
     var violationCount: Long = 0L,
     override val photo: List<String>?,
+    val departmentName: String
 ): UserBaseOutput()
