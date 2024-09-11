@@ -5,6 +5,7 @@ import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
+import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
@@ -42,6 +43,7 @@ class UserService(di: DI) : KodeinService(di) {
             .select(
                 UserModel.id, UserModel.fullName,
                 UserModel.licenceNumber,
+                UserModel.department,
                 ViolationModel.id.count()
             )
             .groupBy(UserModel.id)
@@ -56,7 +58,8 @@ class UserService(di: DI) : KodeinService(di) {
                     userDao.lastTrip?.simpleDto,
                     licenceNumber = userDao.licenceNumber ?: throw InternalServerException(""),
                     violationCount = it[ViolationModel.id.count()],
-                    null
+                    photo = null,
+                    departmentName = userDao.department.name
                 )
             }
     }
