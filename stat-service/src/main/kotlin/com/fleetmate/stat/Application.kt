@@ -35,7 +35,9 @@ import com.fleetmate.stat.modules.car.controller.FuelController
 import com.fleetmate.stat.modules.order.service.OrderService
 import com.fleetmate.stat.modules.photo.controller.PhotoController
 import com.fleetmate.stat.modules.photo.service.PhotoService
+import com.fleetmate.stat.modules.trip.controller.CheckController
 import com.fleetmate.stat.modules.trip.controller.TripController
+import com.fleetmate.stat.modules.trip.service.CheckService
 import com.fleetmate.stat.modules.trip.service.TripService
 import com.fleetmate.stat.modules.user.controller.UserController
 import com.fleetmate.stat.modules.user.model.UserHoursModel
@@ -72,6 +74,7 @@ fun Application.module() {
         bindSingleton { UserService(it) }
         bindSingleton { ViolationService(it) }
         bindSingleton { PhotoService(it) }
+        bindSingleton { CheckService(it) }
 
 
 
@@ -86,6 +89,7 @@ fun Application.module() {
         bindSingleton { ViolationController(it) }
         bindSingleton { PhotoController(it) }
         bindSingleton { FuelController(it) }
+        bindSingleton { CheckController(it) }
 
     }
 
