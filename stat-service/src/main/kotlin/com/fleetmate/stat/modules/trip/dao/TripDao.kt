@@ -56,7 +56,7 @@ class TripDao(id: EntityID<Int>) : BaseIntEntity<TripDto>(id, TripModel) {
         TripSimpleDto(idValue, route, keyAcceptance, keyReturn ?: 0L)
 
     val listItemDto: TripListItemDto get() =
-        TripListItemDto(idValue, status, keyAcceptance, keyReturn, driver.simpleDto, car.simpleDto)
+        TripListItemDto(idValue, status, keyAcceptance, keyReturn, driver.simpleDto, car.simpleDto, route)
 
     val listDriverDto: DriverTripListItemDto
         get() =

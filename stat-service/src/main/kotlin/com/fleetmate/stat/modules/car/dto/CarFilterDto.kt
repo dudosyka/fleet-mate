@@ -13,11 +13,16 @@ import org.jetbrains.exposed.sql.and
 
 @Serializable
 data class CarFilterDto(
+    val id: Int? = null,
     val registrationNumber: String? = null,
     val carType: List<Int>? = null,
     val status: List<Int>? = null
 ) {
     val SqlExpressionBuilder.expressionBuilder: Op<Boolean> get() =
+        (if (id != null)
+            CarModel.id eq id
+        else
+            CarModel.id neq 0) and
         likeCond(registrationNumber, CarModel.id neq 0, CarModel.registrationNumber) and
         listCond(carType, CarModel.id neq 0, CarModel.type) and
         stringListCond(AppConf.CarStatus.entries.filter {

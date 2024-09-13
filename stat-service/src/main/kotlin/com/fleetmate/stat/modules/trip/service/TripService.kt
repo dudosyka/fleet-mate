@@ -45,7 +45,7 @@ class TripService(di: DI) : KodeinService(di) {
             }
             .join(ViolationModel, JoinType.LEFT, ViolationModel.trip, TripModel.id)
             .select(
-                TripModel.id, TripModel.status, TripModel.keyAcceptance, TripModel.keyReturn,
+                TripModel.id, TripModel.status, TripModel.keyAcceptance, TripModel.keyReturn, TripModel.route,
                 UserModel.id, UserModel.fullName,
                 CarModel.id, CarModel.name, CarModel.registrationNumber,
                 CarTypeModel.name, ViolationModel.id.count()
@@ -66,6 +66,7 @@ class TripService(di: DI) : KodeinService(di) {
                     tripDao.keyReturn,
                     userDao.simpleDto,
                     carDao.simpleDto(it[CarTypeModel.name]),
+                    tripDao.route,
                     it[ViolationModel.id.count()]
                 )
             }

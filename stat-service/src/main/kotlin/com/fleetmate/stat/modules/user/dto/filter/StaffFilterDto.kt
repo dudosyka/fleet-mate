@@ -11,11 +11,16 @@ import org.jetbrains.exposed.sql.and
 
 @Serializable
 data class StaffFilterDto (
+    val id: Int? = null,
     val fullName: String? = null,
     val phoneNumber: String? = null,
     val licenceNumber: String? = null
 ) {
     val SqlExpressionBuilder.expressionBuilder: Op<Boolean> get() =
+        (if (id != null)
+            UserModel.id eq id
+        else
+            UserModel.id neq 0) and
         likeCond(fullName, UserModel.id neq 0, UserModel.fullName) and
         likeCond(phoneNumber, UserModel.id neq 0, UserModel.phoneNumber) and
         nullableLikeCond(licenceNumber, UserModel.id neq 0, UserModel.licenceNumber)
