@@ -2616,7 +2616,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"id\": 1\n}",
+											"raw": "{\n    \"id\": 2\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -3341,6 +3341,174 @@
 									"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"INITIALIZED\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"EXPLOITATION\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"CLOSED\"\n    },\n    {\n        \"id\": 4,\n        \"name\": \"CLOSED_DUE_TO_FAULT\"\n    }\n]"
 								}
 							]
+						},
+						{
+							"name": "Get one",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{statServiceHost}}/trip",
+									"host": [
+										"{{statServiceHost}}"
+									],
+									"path": [
+										"trip"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{statServiceHost}}/trip",
+											"host": [
+												"{{statServiceHost}}"
+											],
+											"path": [
+												"trip"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.18.0 (Ubuntu)"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 13 Sep 2024 17:16:36 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "300"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"carId\": 1,\n    \"driverId\": 2,\n    \"status\": \"INITIALIZED\",\n    \"route\": \"\",\n    \"avgSpeed\": 0,\n    \"mileage\": 0,\n    \"keyAcceptance\": 1726077452811,\n    \"driverCheckBeforeTripId\": 1,\n    \"driverCheckAfterTripId\": null,\n    \"mechanicCheckBeforeTripId\": 2,\n    \"mechanicCheckAfterTripId\": null,\n    \"keyReturn\": null,\n    \"needWashing\": false,\n    \"needRefuel\": false\n}"
+								}
+							]
+						},
+						{
+							"name": "Get check info",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{statServiceHost}}/trip/check",
+									"host": [
+										"{{statServiceHost}}"
+									],
+									"path": [
+										"trip",
+										"check"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{statServiceHost}}/trip/check",
+											"host": [
+												"{{statServiceHost}}"
+											],
+											"path": [
+												"trip",
+												"check"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.18.0 (Ubuntu)"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 13 Sep 2024 17:52:30 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "44"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"authorId\": 2,\n    \"photos\": [\n        \"type1.svg\"\n    ]\n}"
+								}
+							]
 						}
 					],
 					"auth": {
@@ -3460,6 +3628,34 @@
 									]
 								},
 								{
+									"name": "Export to pdf",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"dateRange\": {\n        \"bottomBound\": 1725398446164,\n        \"topBound\": 1725398446165\n    },\n    \"staffFilter\": {\n        \"fullName\": \"Juni\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{statServiceHost}}/staff/all/xls",
+											"host": [
+												"{{statServiceHost}}"
+											],
+											"path": [
+												"staff",
+												"all",
+												"xls"
+											]
+										}
+									},
+									"response": []
+								},
+								{
 									"name": "Get one",
 									"request": {
 										"method": "POST",
@@ -3533,34 +3729,6 @@
 											"body": "{\n    \"id\": 3,\n    \"fullName\": \"Mechanic Mechanic\",\n    \"phoneNumber\": \"89110885759\",\n    \"department\": \"Test department\",\n    \"position\": \"Test position\",\n    \"photo\": []\n}"
 										}
 									]
-								},
-								{
-									"name": "Export to pdf",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"dateRange\": {\n        \"bottomBound\": 1725398446164,\n        \"topBound\": 1725398446165\n    },\n    \"staffFilter\": {\n        \"fullName\": \"Juni\"\n    }\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{statServiceHost}}/staff/all/xls",
-											"host": [
-												"{{statServiceHost}}"
-											],
-											"path": [
-												"staff",
-												"all",
-												"xls"
-											]
-										}
-									},
-									"response": []
 								}
 							]
 						},
