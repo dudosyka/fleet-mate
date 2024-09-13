@@ -17,6 +17,7 @@ import com.fleetmate.stat.modules.car.dto.CarFilterDto
 import com.fleetmate.stat.modules.trip.dao.TripDao
 import com.fleetmate.stat.modules.trip.dto.TripFilterDto
 import com.fleetmate.stat.modules.car.dto.CarTripListItemDto
+import com.fleetmate.stat.modules.trip.dto.TripDto
 import com.fleetmate.stat.modules.user.dto.driver.DriverTripListItemDto
 import com.fleetmate.stat.modules.trip.dto.TripListItemDto
 import com.fleetmate.stat.modules.user.dao.UserDao
@@ -96,5 +97,9 @@ class TripService(di: DI) : KodeinService(di) {
             output.violations = TripDao.violations(output.id).count()
             output
         }
+    }
+
+    fun getOne(tripId: Int): TripDto = transaction {
+        TripDao[tripId].toOutputDto()
     }
 }

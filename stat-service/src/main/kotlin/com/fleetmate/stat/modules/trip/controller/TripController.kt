@@ -3,6 +3,7 @@ package com.fleetmate.stat.modules.trip.controller
 
 import com.fleetmate.lib.shared.dto.IdInputDto
 import com.fleetmate.lib.utils.kodein.KodeinController
+import com.fleetmate.stat.modules.trip.dto.TripDto
 import com.fleetmate.stat.modules.trip.dto.TripFilterDto
 import com.fleetmate.stat.modules.trip.service.TripService
 import io.ktor.server.application.call
@@ -41,6 +42,12 @@ class TripController(override val di: DI) : KodeinController() {
                         val carId = call.receive<IdInputDto>().id
                         call.respond(tripService.getByCar(carId))
                     }
+                }
+
+                post {
+                    val tripId = call.receive<IdInputDto>().id
+
+                    call.respond<TripDto>(tripService.getOne(tripId))
                 }
             }
         }
