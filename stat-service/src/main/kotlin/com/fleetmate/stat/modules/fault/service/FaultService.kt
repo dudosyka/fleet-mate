@@ -3,6 +3,7 @@ package com.fleetmate.stat.modules.fault.service
 
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.dto.StatusDto
+import com.fleetmate.lib.shared.modules.car.dto.CarPartDto
 import com.fleetmate.lib.shared.modules.car.model.CarModel
 import com.fleetmate.lib.shared.modules.car.model.part.CarPartModel
 import com.fleetmate.lib.shared.modules.car.model.type.CarTypeModel
@@ -50,6 +51,7 @@ class FaultService(di: DI) : KodeinService(di) {
             JoinType.LEFT
 
         FaultModel
+            .join(CarPartModel, JoinType.INNER, FaultModel.carPart, CarPartModel.id)
             .join(OrderModel, joinType, OrderModel.fault, FaultModel.id) {
                 if (faultFilterDto.orderFilter != null)
                     (OrderModel.id inList (correctOrders ?: listOf()))
@@ -59,7 +61,7 @@ class FaultService(di: DI) : KodeinService(di) {
             .join(CarModel, JoinType.INNER, CarModel.id, FaultModel.car) {
                 with(faultFilterDto.carFilter ?: CarFilterDto()) { expressionBuilder }
             }
-            .innerJoin(CarTypeModel)
+            .join(CarTypeModel, JoinType.INNER, CarModel.type, CarTypeModel.id)
             .join(UserModel, JoinType.INNER, UserModel.id, FaultModel.author) {
                 with(faultFilterDto.authorFilter ?: StaffFilterDto()) { expressionBuilder }
             }
@@ -67,7 +69,8 @@ class FaultService(di: DI) : KodeinService(di) {
                 FaultModel.id, FaultModel.status, FaultModel.timestamp,
                 OrderModel.number,
                 CarModel.id, CarModel.name, CarModel.registrationNumber,
-                CarTypeModel.name
+                CarTypeModel.name,
+                CarPartModel.name, CarPartModel.id
             )
             .where {
                 with(faultFilterDto) { statusFilterCond } and
@@ -81,7 +84,11 @@ class FaultService(di: DI) : KodeinService(di) {
                     it[OrderModel.number],
                     faultDao.status,
                     faultDao.timestamp,
-                    carDao.simpleDto(it[CarTypeModel.name])
+                    carDao.simpleDto(it[CarTypeModel.name]),
+                    CarPartDto(
+                        id = it[CarPartModel.id].value,
+                        name = it[CarPartModel.name]
+                    )
                 )
             }
     }

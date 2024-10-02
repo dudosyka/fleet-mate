@@ -47,7 +47,7 @@ class FaultDao(id: EntityID<Int>) : BaseIntEntity<FaultDto>(id, FaultModel) {
 
     val fullOutputDto: FaultOutputDto get() =
         FaultOutputDto(
-            idValue, createdAt.toString(), author.fullName, carPart.name, status, comment, photos
+            idValue, createdAt.toString(), author.fullName, critical, carPart.name, status, carId.value, car.name, order?.idValue, comment, photos
         )
 
     val photos: List<String> get() {
