@@ -9,5 +9,5 @@ import org.jetbrains.exposed.sql.ReferenceOption
 object RefuelModel : BaseIntIdTable() {
     val volume = double("volume")
     val trip = reference("trip", TripModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
-    val billPhone = reference("bill_photo", PhotoModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
+    val billPhoto = reference("bill_photo", PhotoModel, ReferenceOption.RESTRICT, ReferenceOption.CASCADE)
 }

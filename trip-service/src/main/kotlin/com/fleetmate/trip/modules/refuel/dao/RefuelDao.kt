@@ -14,7 +14,7 @@ class RefuelDao(id: EntityID<Int>) : BaseIntEntity<RefuelDto>(id, RefuelModel) {
     var volume by RefuelModel.volume
     var trip by TripDao referencedOn RefuelModel.trip
     var tripId by RefuelModel.trip
-    var billPhoto by RefuelModel.billPhone
+    var billPhoto by RefuelModel.billPhoto
 
     override fun toOutputDto(): RefuelDto =
         RefuelDto(

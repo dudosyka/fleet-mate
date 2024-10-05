@@ -1,6 +1,7 @@
 package com.fleetmate.stat.modules.trip.dto
 
 
+import com.fleetmate.stat.modules.trip.dto.refuel.RefuelDto
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,5 +20,6 @@ data class TripDto(
     val mechanicCheckAfterTripId: Int?,
     val keyReturn: Long?,
     val needWashing: Boolean,
-    val needRefuel: Boolean
+    val needRefuel: Boolean,
+    val refuels: List<RefuelDto>
 )
