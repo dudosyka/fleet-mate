@@ -8,6 +8,7 @@ data class CarDto (
     val id: Int,
     val name: String,
     val registrationNumber: String,
+    val registrationCertificateNumber: String,
     val typeId: Int,
     val fuelLevel: Double,
     val mileage: Double,

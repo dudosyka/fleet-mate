@@ -28,6 +28,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
 
     var name by CarModel.name
     var registrationNumber by CarModel.registrationNumber
+    var registrationCertificateNumber by CarModel.registrationCertificateNumber
     var typeId by CarModel.type
     var type by CarTypeDao referencedOn CarModel.type
     var fuelLevel by CarModel.fuelLevel
@@ -50,7 +51,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
     var status by CarModel.status
 
     override fun toOutputDto(): CarDto =
-        CarDto(idValue, name, registrationNumber, typeId.value, fuelLevel, mileage, status)
+        CarDto(idValue, name, registrationNumber, registrationCertificateNumber, typeId.value, fuelLevel, mileage, status)
 
     val fullOutputDto: CarOutputDto get() =
         CarOutputDto(
@@ -58,6 +59,7 @@ class CarDao(id: EntityID<Int>) : BaseIntEntity<CarDto>(id, CarModel) {
             brand,
             model,
             registrationNumber,
+            registrationCertificateNumber,
             vin,
             fuelType.name,
             mileage,
