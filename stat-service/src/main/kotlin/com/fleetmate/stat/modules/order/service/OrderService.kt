@@ -2,6 +2,7 @@ package com.fleetmate.stat.modules.order.service
 
 
 import com.fleetmate.lib.exceptions.ForbiddenException
+import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.dto.StatusDto
 import com.fleetmate.lib.shared.modules.car.model.CarModel
@@ -99,6 +100,9 @@ class OrderService(di: DI) : KodeinService(di) {
             throw ForbiddenException()
 
         val mechanicDao = UserDao[createOrderDto.mechanicId]
+
+        Logger.debug(mechanicDao.login, "main")
+        Logger.debug(mechanicDao.roles, "main")
 
         if (!mechanicDao.roles.contains(AppConf.roles.mechanic))
             throw ForbiddenException()

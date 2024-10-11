@@ -9,6 +9,7 @@ data class CarCreateDto(
     val mileage: Double,
     val fuelLevel: Double,
     val registrationNumber: String,
+    val registrationCertificateNumber: String,
     val brand: String,
     val model: String,
     val vin: String,

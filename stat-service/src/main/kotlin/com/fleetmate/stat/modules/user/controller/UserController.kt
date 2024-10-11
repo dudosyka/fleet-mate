@@ -17,7 +17,18 @@ class UserController(override val di: DI) : KodeinController() {
     private val userService: UserService by instance()
     override fun Route.registerRoutes() {
         authenticate("admin", "mechanic") {
+            route("licences") {
+                get {
+                    call.respond(userService.getLicenceTypes())
+                }
+            }
             route("staff") {
+                get("mechanics") {
+                    call.respond(userService.getMechanics())
+                }
+                get("junior-mechanics") {
+                    call.respond(userService.getJuniorMechanics())
+                }
                 route("all") {
                     post {
                         val userFilterDto = call.receive<UserFilterDto>()

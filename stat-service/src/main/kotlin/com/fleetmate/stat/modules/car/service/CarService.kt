@@ -38,6 +38,7 @@ class CarService(di: DI) : KodeinService(di) {
         CarDao.new {
             name = carCreateDto.name
             registrationNumber = carCreateDto.registrationNumber
+            registrationCertificateNumber = carCreateDto.registrationCertificateNumber
             typeId = EntityID(carCreateDto.type, CarTypeModel)
             fuelLevel = carCreateDto.fuelLevel
             mileage = carCreateDto.mileage

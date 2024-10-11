@@ -5,7 +5,6 @@ import com.fleetmate.lib.exceptions.InternalServerException
 import com.fleetmate.lib.plugins.Logger
 import com.fleetmate.lib.shared.conf.AppConf
 import com.fleetmate.lib.shared.modules.auth.dto.AuthorizedUser
-import com.fleetmate.lib.shared.modules.department.model.DepartmentModel
 import com.fleetmate.lib.shared.modules.position.model.PositionModel
 import com.fleetmate.lib.shared.modules.user.model.UserModel
 import com.fleetmate.lib.shared.modules.user.model.UserRoleModel
@@ -17,15 +16,14 @@ import com.fleetmate.stat.modules.order.data.model.WorkActorsModel
 import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.lib.shared.modules.wash.model.WashModel
+import com.fleetmate.stat.modules.user.dao.LicenceTypeDao
 import com.fleetmate.stat.modules.user.dao.PositionDao.Companion.nullableRangeCond
 import com.fleetmate.stat.modules.user.dao.PositionDao.Companion.rangeCond
 import com.fleetmate.stat.modules.user.dao.UserDao
 import com.fleetmate.stat.modules.user.dto.UserFilterDto
+import com.fleetmate.stat.modules.user.dto.driver.LicenceTypeDto
 import com.fleetmate.stat.modules.user.dto.filter.StaffFilterDto
-import com.fleetmate.stat.modules.user.dto.output.DriverDto
-import com.fleetmate.stat.modules.user.dto.output.DriverOutputDto
-import com.fleetmate.stat.modules.user.dto.output.StaffDto
-import com.fleetmate.stat.modules.user.dto.output.StaffOutputDto
+import com.fleetmate.stat.modules.user.dto.output.*
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.jetbrains.exposed.sql.*
@@ -199,5 +197,37 @@ class UserService(di: DI) : KodeinService(di) {
             UserDao[authorizedUser.id].driverDto
         else
             UserDao[driverId].driverDto
+    }
+
+    fun getLicenceTypes(): List<LicenceTypeDto> = transaction {
+        LicenceTypeDao.all().map { it.toOutputDto() }
+    }
+
+    fun getMechanics(): List<SimpleStaffDto> = transaction {
+        UserModel
+            .join(UserRoleModel, JoinType.INNER) {
+                UserRoleModel.role eq AppConf.roles.mechanic
+            }
+            .select(UserModel.fullName, UserModel.id)
+            .map {
+                SimpleStaffDto(
+                    id = it[UserModel.id].value,
+                    fullName = it[UserModel.fullName]
+                )
+            }
+    }
+
+    fun getJuniorMechanics(): List<SimpleStaffDto> = transaction {
+        UserModel
+            .join(UserRoleModel, JoinType.INNER) {
+                UserRoleModel.role eq AppConf.roles.juniorMechanic
+            }
+            .select(UserModel.fullName, UserModel.id)
+            .map {
+                SimpleStaffDto(
+                    id = it[UserModel.id].value,
+                    fullName = it[UserModel.fullName]
+                )
+            }
     }
 }
