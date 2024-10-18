@@ -206,9 +206,10 @@ class UserService(di: DI) : KodeinService(di) {
     fun getMechanics(): List<SimpleStaffDto> = transaction {
         UserModel
             .join(UserRoleModel, JoinType.INNER) {
-                UserRoleModel.role eq AppConf.roles.mechanic
+                (UserRoleModel.user eq UserModel.id) and (UserRoleModel.role eq AppConf.roles.mechanic)
             }
             .select(UserModel.fullName, UserModel.id)
+            .groupBy(UserModel.id)
             .map {
                 SimpleStaffDto(
                     id = it[UserModel.id].value,
@@ -220,7 +221,7 @@ class UserService(di: DI) : KodeinService(di) {
     fun getJuniorMechanics(): List<SimpleStaffDto> = transaction {
         UserModel
             .join(UserRoleModel, JoinType.INNER) {
-                UserRoleModel.role eq AppConf.roles.juniorMechanic
+                (UserRoleModel.user eq UserModel.id) and (UserRoleModel.role eq AppConf.roles.juniorMechanic)
             }
             .select(UserModel.fullName, UserModel.id)
             .map {
