@@ -7,6 +7,7 @@ import com.fleetmate.stat.modules.order.data.dto.order.CreateOrderDto
 import com.fleetmate.stat.modules.order.data.dto.order.OrderFilterDto
 import com.fleetmate.stat.modules.order.data.dto.work.CreateWorkDto
 import com.fleetmate.stat.modules.order.service.OrderService
+import com.fleetmate.stat.modules.order.service.WorkService
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -17,9 +18,15 @@ import org.kodein.di.instance
 
 class OrderController(override val di: DI) : KodeinController() {
     private val orderService: OrderService by instance()
+    private val workService: WorkService by instance()
 
     override fun Route.registerRoutes() {
         authenticate("admin", "mechanic") {
+            route("work") {
+                get("types") {
+                    call.respond(workService.getAllTypes())
+                }
+            }
             route("order") {
                 get("status") {
                     call.respond(orderService.getAllStatuses())

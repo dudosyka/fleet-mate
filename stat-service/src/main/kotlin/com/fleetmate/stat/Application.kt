@@ -33,6 +33,7 @@ import com.fleetmate.stat.modules.order.data.model.WorkModel
 import com.fleetmate.lib.shared.modules.fault.model.WorkTypeModel
 import com.fleetmate.stat.modules.car.controller.FuelController
 import com.fleetmate.stat.modules.order.service.OrderService
+import com.fleetmate.stat.modules.order.service.WorkService
 import com.fleetmate.stat.modules.photo.controller.PhotoController
 import com.fleetmate.stat.modules.photo.service.PhotoService
 import com.fleetmate.stat.modules.trip.controller.CheckController
@@ -75,6 +76,7 @@ fun Application.module() {
         bindSingleton { ViolationService(it) }
         bindSingleton { PhotoService(it) }
         bindSingleton { CheckService(it) }
+        bindSingleton { WorkService(it) }
 
 
 
